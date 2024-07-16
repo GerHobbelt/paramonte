@@ -1395,11 +1395,11 @@ endif()
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 if (MATLAB_ENABLED)
-    if (NOT "${matlabdir}" STREQUAL "")
-        message(NOTICE "${pmattn} Searching for MATLAB in the specified directory: ${matlabdir}")
-        set(Matlab_ROOT_DIR "${matlabdir}")
-    else()
+    if ("${matlabdir}" STREQUAL "")
         message(NOTICE "${pmattn} Searching for MATLAB...")
+    else()
+        set(Matlab_ROOT_DIR "${matlabdir}")
+        message(NOTICE "${pmattn} Searching for MATLAB in the specified installation root directory: ${matlabdir}")
     endif()
     message(NOTICE "${pmattn} Sit back and relax...this search may take a few minutes...")
     find_package(Matlab)
@@ -1411,12 +1411,12 @@ if (MATLAB_ENABLED)
                 "${pmwarn} If you believe MATLAB exists on your system, specify the MATLAB directory containing\n"
                 "${pmwarn} the target version of MATLAB to the ParaMonte build script via the command line argument:\n"
                 "${pmwarn} \n"
-                "${pmwarn}      install.sh --matlabdir path_to_matlab_root_directory\n"
+                "${pmwarn}      install.sh --lang matlab --matlabdir path_to_matlab_root_directory\n"
                 "${pmwarn} \n"
                 "${pmwarn} or if you are calling CMake command directly, specify the path to the directory\n"
                 "${pmwarn} by defining either `matlabdir` or `Matlab_ROOT_DIR` on the CMake command line:\n"
                 "${pmwarn} \n"
-                "${pmwarn}      cmake -Dmatlabdir=path_to_matlab_root_directory\n"
+                "${pmwarn}      cmake -Dlang=matlab -Dmatlabdir=path_to_matlab_root_directory\n"
                 "${pmwarn} \n"
                 "${pmwarn} The MATLAB root directory is the directory that is returned by the MATLAB command `matlabroot`.\n"
                 "${pmwarn} An example of the MATLAB root directory (on Windows) is 'C:\\Program Files\\MATLAB\\R2017b'.\n"

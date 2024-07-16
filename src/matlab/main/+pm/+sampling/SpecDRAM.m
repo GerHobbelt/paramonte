@@ -1,52 +1,43 @@
+%>  \brief
+%>  This is the base class for the ParaMonte sampler DRAM specifications.<br>
+%>  This is an abstract class that is not meant to be used by the user.<br>
+%>  See the class constructor.
+%>
+%>  \note
+%>  All class attributes can be set after constructing an instance of this class.
+%>
+%>  \note
+%>  The DRAM simulation specifications are all described on this page:
+%>  https://www.cdslab.org/paramonte/notes/usage/paradram/specifications/
+%>
+%>  \note
+%>  See below for information on the methods.
+%>
+%>  \return
+%>  An object of class ``pm.sampling.SpecDRAM``.
+%>
+%>  \interface{SpecDRAM}
+%>  \code{.m}
+%>
+%>      spec = pm.sampling.SpecDRAM()
+%>      spec = pm.sampling.SpecDRAM([])
+%>      spec = pm.sampling.SpecDRAM([], [])
+%>      spec = pm.sampling.SpecDRAM(method)
+%>      spec = pm.sampling.SpecDRAM(method, [])
+%>      spec = pm.sampling.SpecDRAM([], silent)
+%>      spec = pm.sampling.SpecDRAM(method, silent)
+%>
+%>  \endcode
+%>  \final{SpecDRAM}
+%>
+%>  \author
+%>  \JoshuaOsborne, May 21 2024, 3:45 AM, University of Texas at Arlington<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 classdef SpecDRAM < pm.sampling.SpecMCMC
-    %
-    %   This is the base class for the ParaMonte sampler DRAM specifications.
-    %
-    %   This is an abstract class that is not meant to be used by the user.
-    %
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       See the class constructor.
-    %
-    %       \note
-    %
-    %           All class attributes can be set after constructing an instance of this class.
-    %
-    %   Attributes
-    %   ----------
-    %
-    %       The DRAM simulation specifications are all described on this page:
-    %
-    %           https://www.cdslab.org/paramonte/notes/usage/paradram/specifications/
-    %
-    %   Methods
-    %   -------
-    %
-    %       See below for information on the methods.
-    %
-    %   Returns
-    %   -------
-    %
-    %       An object of class ``pm.sampling.SpecDRAM``.
-    %
-    %   Interface
-    %   ---------
-    %
-    %       spec = pm.sampling.SpecDRAM()
-    %       spec = pm.sampling.SpecDRAM([])
-    %       spec = pm.sampling.SpecDRAM([], [])
-    %       spec = pm.sampling.SpecDRAM(method)
-    %       spec = pm.sampling.SpecDRAM(method, [])
-    %       spec = pm.sampling.SpecDRAM([], silent)
-    %       spec = pm.sampling.SpecDRAM(method, silent)
-    %
-    %   LICENSE
-    %   -------
-    %
-    %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-    %
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     properties
         proposalAdaptationBurnin        = [];
         proposalAdaptationCount         = [];
@@ -60,48 +51,41 @@ classdef SpecDRAM < pm.sampling.SpecMCMC
 
     methods(Access = public)
 
+        %>  \brief
+        %>  Construct and return an object of class ``pm.sampling.SpecDRAM``.
+        %>
+        %>  \param[in]  method  :   The input scalar MATLAB string containing
+        %>                          the name of the specific ParaMonte sampler
+        %>                          whose simulation specifications are to be
+        %>                          stored in the output of this constructor.
+        %>  
+        %>  \param[in]  silent  :   The input scalar MATLAB logical.
+        %>                          If ``true``, all descriptive messages on
+        %>                          the MATLAB command line will be suppressed.
+        %>                          (**optional**, default = ``false``)
+        %>
+        %>  \return
+        %>  The output scalar object of class ``pm.sampling.SpecDRAM``.
+        %>
+        %>  \interface{SpecDRAM}
+        %>  \code{.m}
+        %>
+        %>      spec = pm.sampling.SpecDRAM()
+        %>      spec = pm.sampling.SpecDRAM([])
+        %>      spec = pm.sampling.SpecDRAM([], [])
+        %>      spec = pm.sampling.SpecDRAM(method)
+        %>      spec = pm.sampling.SpecDRAM(method, [])
+        %>      spec = pm.sampling.SpecDRAM([], silent)
+        %>      spec = pm.sampling.SpecDRAM(method, silent)
+        %>
+        %>  \endcode
+        %>  \final{SpecDRAM}
+        %>
+        %>  \author
+        %>  \JoshuaOsborne, May 21 2024, 3:46 AM, University of Texas at Arlington<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+        %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
         function self = SpecDRAM(method, silent)
-            %
-            %   Construct and return an object of class ``pm.sampling.SpecDRAM``.
-            %
-            %   Parameters
-            %   ----------
-            %
-            %       method
-            %
-            %           The input scalar MATLAB string containing
-            %           the name of the specific ParaMonte sampler
-            %           whose simulation specifications are to be
-            %           stored in the output of this constructor.
-            %
-            %       silent
-            %
-            %           The input scalar MATLAB logical.
-            %           If ``true``, all descriptive messages on
-            %           the MATLAB command line will be suppressed.
-            %           (**optional**, default = ``false``)
-            %
-            %   Returns
-            %   -------
-            %
-            %       The output scalar object of class ``pm.sampling.SpecDRAM``.
-            %
-            %   Interface
-            %   ---------
-            %
-            %       spec = pm.sampling.SpecDRAM()
-            %       spec = pm.sampling.SpecDRAM([])
-            %       spec = pm.sampling.SpecDRAM([], [])
-            %       spec = pm.sampling.SpecDRAM(method)
-            %       spec = pm.sampling.SpecDRAM(method, [])
-            %       spec = pm.sampling.SpecDRAM([], silent)
-            %       spec = pm.sampling.SpecDRAM(method, silent)
-            %
-            %   LICENSE
-            %   -------
-            %
-            %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-            %
             if  nargin < 2
                 silent = [];
             end
@@ -116,40 +100,32 @@ classdef SpecDRAM < pm.sampling.SpecMCMC
 
     methods(Hidden)
 
+        %>  \brief
+        %>  Ensure all specification properties of the parent object are sensible.<br>
+        %>  This is a dynamic method of the class ``pm.sampling.SpecMCMC``.
+        %>
+        %>  \param[in]  ndim    :   The input scalar MATLAB integer containing the
+        %>                          number of dimensions of the domain of the
+        %>                          object function that is to be explored.
+        %>  
+        %>  \return
+        %>  `entries`   :   The output scalar MATLAB string containing
+        %>                  the simulation specifications converted to
+        %>                  a Fortran-namelist-compatible entry.
+        %>
+        %>  \interface{getEntriesNML}
+        %>  \code{.m}
+        %>
+        %>      entries = self.getEntriesNML(ndim)
+        %>
+        %>  \endcode
+        %>  \final{getEntriesNML}
+        %>
+        %>  \author
+        %>  \JoshuaOsborne, May 21 2024, 3:48 AM, University of Texas at Arlington<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+        %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
         function entries = getEntriesNML(self, ndim)
-            %
-            %   Ensure all specification properties of the parent object are sensible.
-            %
-            %   This is a dynamic method of the class ``pm.sampling.SpecMCMC``.
-            %
-            %   Parameters
-            %   ----------
-            %
-            %       ndim
-            %
-            %           The input scalar MATLAB integer containing the
-            %           number of dimensions of the domain of the
-            %           object function that is to be explored.
-            %
-            %   Returns
-            %   -------
-            %
-            %       entries
-            %
-            %           The output scalar MATLAB string containing
-            %           the simulation specifications converted to
-            %           a Fortran-namelist-compatible entry.
-            %
-            %   Interface
-            %   ---------
-            %
-            %       entries = self.getEntriesNML(ndim)
-            %
-            %   LICENSE
-            %   -------
-            %
-            %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-            %
             entries = getEntriesNML@pm.sampling.SpecMCMC(self, ndim);
             if  ~isempty(self.proposalAdaptationBurnin      ); entries = entries + self.nmlsep + pm.introspection.getEntryNML("proposalAdaptationBurnin     ", self.proposalAdaptationBurnin        , "real"   , 1); end
             if  ~isempty(self.proposalAdaptationCount       ); entries = entries + self.nmlsep + pm.introspection.getEntryNML("proposalAdaptationCount      ", self.proposalAdaptationCount         , "integer", 1); end

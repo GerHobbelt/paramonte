@@ -1,44 +1,40 @@
+%>  \brief
+%>  This is the Heatmap class for generating
+%>  instances of 2-dimensional Heatmap plots
+%>  based on the relevant MATLAB
+%>  intrinsic functions.
 classdef Heatmap < pm.vis.subplot.Subplot
-    %
-    %   This is the Heatmap class for generating
-    %   instances of 2-dimensional Heatmap plots
-    %   based on the relevant MATLAB
-    %   intrinsic functions.
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       dfref
-    %
-    %           See the documentation of the corresponding input
-    %           argument of the superclass ``pm.vis.subplot.Subplot``.
-    %
-    %   Attributes
-    %   ----------
-    %
-    %       See the documentation of the attributes
-    %       of the superclass ``pm.vis.subplot.Subplot``.
-    %
-    %   Returns
-    %   -------
-    %
-    %       An object of ``pm.vis.subplot.Heatmap`` class.
-    %
-    %   Interface
-    %   ---------
-    %
-    %       s = pm.vis.subplot.Heatmap(dfref);
-    %       s = pm.vis.subplot.Heatmap(dfref, varargin);
-    %
-    %   LICENSE
-    %   -------
-    %
-    %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-    %
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     methods(Access = public)
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+        %>
+        %>  \param[in]  dfref   :   See the documentation of the corresponding input
+        %>                          argument of the superclass ``pm.vis.subplot.Subplot``.
+        %>
+        %>  \note
+        %>  See the documentation of the attributes
+        %>  of the superclass ``pm.vis.subplot.Subplot``.
+        %>
+        %>  \return
+        %>  An object of ``pm.vis.subplot.Heatmap`` class.
+        %>
+        %>  \interface{Heatmap}
+        %>  \code{.m}
+        %>      s = pm.vis.subplot.Heatmap(dfref);
+        %>      s = pm.vis.subplot.Heatmap(dfref, varargin);
+        %>
+        %>  \endcode
+        %>
+        %>  \final{Heatmap}
+        %>
+        %>  \author
+        %>  \JoshuaOsborne, May 22 2024, 5:49 PM, University of Texas at Arlington<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+        %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
         function self = Heatmap(dfref, varargin)
             if nargin < 1
                 dfref = [];
@@ -48,73 +44,64 @@ classdef Heatmap < pm.vis.subplot.Subplot
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+        %>  \brief
+        %>  Reset the heatmap colormap limits to the user-specified limits ``lb, ub``.
+        %>  If either is empty or missing, keep the existing limit for the corresponding empty limit.
+        %>  If both are empty or missing, symmetrize the existing limits.<br>
+        %>  The specified input values will be used to set the ``ColorLimits``
+        %>  component of the Heatmap object as ``ColorLimits = [lb, ub]``.<br>
+        %>  If both input values are missing, the current colormap
+        %>  range of the Heatmap plots will be symmetrized.
+        %>
+        %>  \warning
+        %>  This method has side-effects by manipulating
+        %>  the existing attributes of the parent object.
+        %>
+        %>  \param[in]  lb  :   The input MATLAB object that can be either:
+        %>          <ol>  
+        %>              <li>    a scalar of type double representing the lower bound of the Heatmap colormap range.
+        %>              <li>    a vector of type double of size ``2`` representing the
+        %>                      lower and upper bounds of the Heatmap colormap range.
+        %>          </ol>
+        %>                      (**optional**. If missing, the current value will remain intact.)
+        %>  
+        %>  \param[in]  ub  :   The input MATLAB scalar double representing the upper bound of the Heatmap colormap limits.
+        %>                      Its value is completely ignored if the input ``lb`` argument is a vector of size ``2``.
+        %>                      (**optional**. If missing, the current value will remain intact.)
+        %>
+        %>  \return
+        %>  `None`
+        %>
+        %>  \interface{setcl}
+        %>  \code{.m}
+        %>
+        %>      h = pm.vis.subplot.Subplot.make();
+        %>      h = pm.vis.subplot.Subplot.make([]);
+        %>      h = pm.vis.subplot.Subplot.make([], []);
+        %>      h = pm.vis.subplot.Subplot.make(lb, []);
+        %>      h = pm.vis.subplot.Subplot.make([], ub);
+        %>      h = pm.vis.subplot.Subplot.make(lb, ub);
+        %>
+        %>  \endcode
+        %>
+        %>  \example{setcl}
+        %>
+        %>      h = pm.vis.subplot.Heatmap(dfref);
+        %>      h.make()
+        %>      h.setcl() % symmetrize the current range.
+        %>      h.setcl(1) % set the lower bound to 1.
+        %>      h.setcl([], 1) % set the upper bound to 1.
+        %>      h.setcl(1, 2) % set the lower and upper bounds to 1 and 2.
+        %>      h.setcl([1, 2]) % set the lower and upper bounds to 1 and 2.
+        %>
+        %>  \final{setcl}
+        %>
+        %>  \author
+        %>  \JoshuaOsborne, May 21 2024, 5:54 PM, University of Texas at Arlington<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+        %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
         function setcl(self, lb, ub)
-            %
-            %   Reset the heatmap colormap limits to the user-specified limits ``lb, ub``.
-            %   If either is empty or missing, keep the existing limit for the corresponding empty limit.
-            %   If both are empty or missing, symmetrize the existing limits.
-            %
-            %   The specified input values will be used to set the ``ColorLimits``
-            %   component of the Heatmap object as ``ColorLimits = [lb, ub]``.
-            %
-            %   If both input values are missing, the current colormap
-            %   range of the Heatmap plots will be symmetrized.
-            %
-            %   \warning
-            %
-            %       This method has side-effects by manipulating
-            %       the existing attributes of the parent object.
-            %
-            %   Parameters
-            %   ----------
-            %
-            %       lb
-            %
-            %           The input MATLAB object that can be either:
-            %
-            %               1.  a scalar of type double representing the lower bound of the Heatmap colormap range.
-            %               1.  a vector of type double of size ``2`` representing the
-            %                   lower and upper bounds of the Heatmap colormap range.
-            %
-            %           (**optional**. If missing, the current value will remain intact.)
-            %
-            %       ub
-            %
-            %           The input MATLAB scalar double representing the upper bound of the Heatmap colormap limits.
-            %           Its value is completely ignored if the input ``lb`` argument is a vector of size ``2``.
-            %           (**optional**. If missing, the current value will remain intact.)
-            %
-            %   Returns
-            %   -------
-            %
-            %       None
-            %
-            %   Interface
-            %   ---------
-            %
-            %       h = pm.vis.subplot.Subplot.make();
-            %       h = pm.vis.subplot.Subplot.make([]);
-            %       h = pm.vis.subplot.Subplot.make([], []);
-            %       h = pm.vis.subplot.Subplot.make(lb, []);
-            %       h = pm.vis.subplot.Subplot.make([], ub);
-            %       h = pm.vis.subplot.Subplot.make(lb, ub);
-            %
-            %   Example
-            %   -------
-            %
-            %       h = pm.vis.subplot.Heatmap(dfref);
-            %       h.make()
-            %       h.setcl() % symmetrize the current range.
-            %       h.setcl(1) % set the lower bound to 1.
-            %       h.setcl([], 1) % set the upper bound to 1.
-            %       h.setcl(1, 2) % set the lower and upper bounds to 1 and 2.
-            %       h.setcl([1, 2]) % set the lower and upper bounds to 1 and 2.
-            %
-            %   LICENSE
-            %   -------
-            %
-            %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-            %
+
             if  isfield(self.fout, "heatmap") && isprop(self.fout.heatmap, "ColorLimits")
                 if  nargin < 3
                     ub = [];

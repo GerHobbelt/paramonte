@@ -1,56 +1,47 @@
+%>  \brief
+%>  Perform the basic runtime checks for the sampler and return nothing.
+%>
+%>  \param[in]  getLogFunc()    :   The input MATLAB function handle or anonymous (lambda) function
+%>                                  containing the implementation of the objective function to be sampled.
+%>                                  This user-specified function must have the following interface,<br>
+%>                                      function logFunc = getLogFunc(state)
+%>                                          ...
+%>                                      end<br>
+%>                                  where,<br>
+%>                                      1.  the input argument ``state`` is a vector of type MATLAB ``double``
+%>                                          of size ``ndim`` representing a single point from within the ``ndim``
+%>                                          dimensional domain of the mathematical object function to be explored.<br>
+%>                                      2.  the output argument `logFunc` is a scalar of the same type as the
+%>                                          input ``state`` containing the natural logarithm of the objective
+%>                                          function at the specified input ``state`` within its domain.
+%>  \param[in]  ndim            :   The input scalar positive-valued whole-number representing the number of dimensions
+%>                                  of the domain of the user-specified objective function in the input ``getLogFunc()``.
+%>
+%>  \return
+%>  `None`
+%>
 function run(self, getLogFunc, ndim)
-    %
-    %
-    %   Perform the basic runtime checks for the sampler and return nothing.
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       getLogFunc()
-    %
-    %           The input MATLAB function handle or anonymous (lambda) function
-    %           containing the implementation of the objective function to be sampled.
-    %           This user-specified function must have the following interface,
-    %
-    %               function logFunc = getLogFunc(state)
-    %                   ...
-    %               end
-    %
-    %           where,
-    %
-    %               1.  the input argument ``state`` is a vector of type MATLAB ``double``
-    %                   of size ``ndim`` representing a single point from within the ``ndim``
-    %                   dimensional domain of the mathematical object function to be explored.
-    %
-    %               2.  the output argument `logFunc` is a scalar of the same type as the
-    %                   input ``state`` containing the natural logarithm of the objective
-    %                   function at the specified input ``state`` within its domain.
-    %
-    %       ndim
-    %
-    %           The input scalar positive-valued whole-number representing the number of dimensions
-    %           of the domain of the user-specified objective function in the input ``getLogFunc()``.
-    %
-    %   Returns
-    %   -------
-    %
-    %       None
-    %
 
     % Sanitize ``sampler.silent``.
 
     if ~pm.introspection.istype(self.silent, "logical", 1)
         help("pm.sampling.Sampler.silent");
         disp("self.silent =");
-        disp(self.mpiname);
+        disp(self.silent);
         error   ( newline ...
-                + "The sampler attribute ``mpiname`` must be a scalar of type ``char`` or ``string``." + newline ...
+                + "The sampler attribute ``silent`` must be a scalar of type ``logical``." + newline ...
                 + "For more information, see the documentation displayed above." + newline ...
                 + newline ...
                 );
     end
 
     % Sanitize parallelism method to set reporting permission.
+
+    % global mpiname;
+    % ismember('mpiname', who('global'));
+    % if  pm.array.len(self.mpiname) == 0 && ~isempty(mpiname) && pm.introspection.istype(mpiname, "string", 1) % MPI enabled by a global definition of ``mpiname``.
+    %     self.mpiname = mpiname;
+    % end
 
     if ~pm.introspection.istype(self.mpiname, "string", 1) % Sanitize ``mpiname``.
         help("pm.sampling.Sampler.mpiname");
@@ -309,10 +300,21 @@ function run(self, getLogFunc, ndim)
         mexcall = string(self.mexname + "(convertStringsToChars(self.method), @getLogFuncConcurrent, ndim, convertStringsToChars(self.nml))");
         if ~self.silent
             delete(gcp("nocreate"));
-            pool = parpool("threads", abs(self.spec.parallelismNumThread));
+            % The following works only in MATLAB 2022b and beyond.
+            if  pm.matlab.release() < "2022b"
+                pool = parpool("threads");
+                maxNumCompThreads(abs(self.spec.parallelismNumThread));
+            else
+                pool = parpool("threads", abs(self.spec.parallelismNumThread));
+            end
         else
             evalc('delete(gcp("nocreate")');
-            evalc('pool = parpool("threads", abs(self.spec.parallelismNumThread))');
+            if  pm.matlab.release() < "2022b"
+                evalc('pool = parpool("threads")');
+                evalc('maxNumCompThreads(abs(self.spec.parallelismNumThread))');
+            else
+                evalc('pool = parpool("threads", abs(self.spec.parallelismNumThread))');
+            end
         end
     else
         mexcall = string(self.mexname + "(convertStringsToChars(self.method), @getLogFuncWrapped, ndim, convertStringsToChars(self.nml))");
@@ -394,14 +396,10 @@ function run(self, getLogFunc, ndim)
                 + newline ...
                 );
         end
-    catch ME
+    catch me
         self.finalize();
-        msg = newline ...
-            + "Error occurred: " + newline ...
-            + string(ME.message) + newline ...
-            + newline ...
-            ;
-        if ismac && strcmpi(ME.identifier, 'MATLAB:mex:ErrInvalidMEXFile')
+        msg = string(me.identifier) + " : " + string(me.message) + newline;
+        if ismac && strcmpi(me.identifier, 'MATLAB:mex:ErrInvalidMEXFile')
             msg = msg ...
                 + "This error is most likely due to the ""System Integrity Protection""" + newline ...
                 + "(SIP) of your macOS interfering with the ParaMonte MATLAB MEX files." + newline ...

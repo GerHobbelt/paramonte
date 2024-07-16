@@ -1,17 +1,15 @@
+%>  \brief
+%>  Finalize the ParaMonte MATLAB sampler simulation run.
+%>
+%>  \param[in]  `None`
+%>
+%>  \return
+%>  `None`
+%>  \final{getBorder}
+%>
+%>  \author
+%>  \JoshuaOsborne, May 21 2024, 12:10 AM, University of Texas at Arlington<br>
 function finalize(self)
-    %
-    %   Finalize the ParaMonte MATLAB sampler simulation run.
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       None
-    %
-    %   Returns
-    %   -------
-    %
-    %       None
-    %
     if  self.partype == "openmp"
         if ~self.silent
             delete(gcp("nocreate"));

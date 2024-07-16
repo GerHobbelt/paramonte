@@ -1,27 +1,23 @@
+%>  \brief
+%>  Return a scalar MATLAB string containing the ParaMonte MATLAB library banner.
+%>
+%>  \return
+%>  ``str`` :   The output scalar MATLAB string containing the ParaMonte MATLAB library banner.
+%>
+%>  \interface{banner}
+%>  \code{.m}
+%>
+%>      str = pm.lib.banner();
+%>
+%>  \endcode
+%>
+%>  \final{banner}
+%>
+%>  \author
+%>  \JoshuaOsborne, May 21 2024, 8:01 PM, University of Texas at Arlington<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 function str = banner()
-    %
-    %   Return a scalar MATLAB string containing the ParaMonte MATLAB library banner.
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       None
-    %
-    %   Returns
-    %   -------
-    %
-    %       A scalar MATLAB string containing the ParaMonte MATLAB library banner.
-    %
-    %   Interface
-    %   ---------
-    %
-    %       str = pm.lib.banner()
-    %
-    %   LICENSE
-    %   -------
-    %
-    %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-    %
     verlen = pm.lib.version();
     verlen = length(verlen{1});
     offset = fix((verlen - 4) / 2);
@@ -29,9 +25,10 @@ function str = banner()
     try
         str = strrep(fileread(bannerFile), string(repmat(' ', 1, offset)) + "Version 0.0.0", "Version " + pm.lib.version());
         str = newline + strrep(str, string(char(13)), "") + newline;
-    catch
+    catch me
         weblinks = pm.lib.weblinks;
         warning ( newline ...
+                + string(me.identifier) + " : " + string(me.message) + newline ...
                 + "Failed to read the ParaMonte banner file: " ...
                 + newline ...
                 + pm.io.tab + bannerFile ...

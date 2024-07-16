@@ -2,11 +2,11 @@
 
 1.  Clone the ParaMonte repository on your system.
     ```bash
-    git clone git@github.com:cdslaborg/paramonte.git
+    git clone https://github.com/cdslaborg/paramonte.git
     ```
     Alternatively, you can **optionally** download the **OpenBLAS** and **other ParaMonte submodules** via,
     ```bash
-    git clone --recurse-submodules git@github.com:cdslaborg/paramonte.git
+    git clone --recurse-submodules https://github.com/cdslaborg/paramonte.git
     ```
 
 2.  Navigate to the root directory of the repository either in a Windows `CMD` command prompt or Unix `Bash` terminal.
@@ -30,15 +30,19 @@
 5.  Using a Unix `Bash` terminal, type,
     +   For the ParaMonte C library build,
         ```bash
-        install.sh --lang c
+        ./install.sh --lang c
         ```
     +   For the ParaMonte C++ library build,
         ```bash
-        install.sh --lang cpp
+        ./install.sh --lang cpp
         ```
     +   For the ParaMonte Fortran library build,
         ```bash
         install.sh --lang fortran
+        ```
+    +   For the ParaMonte MATLAB library build,
+        ```bash
+        install.sh --lang matlab
         ```
     See more on the relevant installation instructions in [install.sh.md](./install.sh.md).    
 

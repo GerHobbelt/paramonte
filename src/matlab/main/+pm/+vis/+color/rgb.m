@@ -1,57 +1,47 @@
+%>  \brief
+%>  Return the RGB triplet corresponding to the input color name ``cname``.
+%>
+%>  \note
+%>  The RGB names and triplets are derived from:<br>
+%>  http://en.wikipedia.org/wiki/List_of_colors colormap matrix
+%>
+%>  \param[in]  cname   :   The input scalar MATLAB string or char vector
+%>                          containing the color name whose RGB triplet is to be returned.
+%>                          If ``cname`` is missing or set to an empty object then the an object
+%>                          of class ``containers.Map()`` will be returned containing all color
+%>                          names in the database and the corresponding RGB triplets.
+%>                          All input values are case-insensitive.
+%>                          (**optional**, default = ``[]``)
+%>
+%>  \return
+%>  `triplet`           :   The output vector of length ``3`` of MATLAB doubles
+%>                          containing the RGB triplet corresponding to the input color name.
+%>                          If ``cname`` is missing or set to an empty object then the an object
+%>                          of class ``containers.Map()`` will be returned containing all color
+%>                          names in the database and the corresponding RGB triplets.
+%>
+%>
+%>  \interface{rgb}
+%>  \code{.m}
+%>
+%>      triplet = pm.vis.color.rgb()
+%>      triplet = pm.vis.color.rgb([])
+%>      triplet = pm.vis.color.rgb(cname)
+%>
+%>  \endcode
+%>
+%>  \example{rgb}
+%>      pm.vis.color.rgb()
+%>      pm.vis.color.rgb([])
+%>      pm.vis.color.rgb("amber")
+%>
+%>  \final{rgb}
+%>
+%>  \author
+%>  \JoshuaOsborne, May 21 2024, 7:48 AM, University of Texas at Arlington<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 function triplet = rgb(cname)
-    %
-    %   Return the RGB triplet corresponding to the input color name ``cname``.
-    %
-    %   \note
-    %
-    %       The RGB names and triplets are derived from:
-    %
-    %           http://en.wikipedia.org/wiki/List_of_colors colormap matrix
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       cname
-    %
-    %           The input scalar MATLAB string or char vector
-    %           containing the color name whose RGB triplet is to be returned.
-    %           If ``cname`` is missing or set to an empty object then the an object
-    %           of class ``containers.Map()`` will be returned containing all color
-    %           names in the database and the corresponding RGB triplets.
-    %           All input values are case-insensitive.
-    %           (**optional**, default = ``[]``)
-    %
-    %   Returns
-    %   -------
-    %
-    %       triplet
-    %
-    %           The output vector of length ``3`` of MATLAB doubles
-    %           containing the RGB triplet corresponding to the input color name.
-    %           If ``cname`` is missing or set to an empty object then the an object
-    %           of class ``containers.Map()`` will be returned containing all color
-    %           names in the database and the corresponding RGB triplets.
-    %
-    %
-    %   Interface
-    %   ---------
-    %
-    %       triplet = pm.vis.color.rgb()
-    %       triplet = pm.vis.color.rgb([])
-    %       triplet = pm.vis.color.rgb(cname)
-    %
-    %   Example
-    %   -------
-    %
-    %       pm.vis.color.rgb()
-    %       pm.vis.color.rgb([])
-    %       pm.vis.color.rgb("amber")
-    %
-    %   LICENSE
-    %   -------
-    %
-    %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-    %
     persistent rgbmap;
     if  isempty(rgbmap)
         rgbmap = containers.Map();

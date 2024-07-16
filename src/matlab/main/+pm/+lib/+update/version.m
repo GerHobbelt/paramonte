@@ -1,40 +1,33 @@
+%>  \brief
+%>  Return a scalar MATLAB string containing the latest
+%>  available ParaMonte MATLAB version newer than the
+%>  existing version on the current system.
+%>
+%>  \param[in]  silent  :   The input scalar MATLAB logical.<br>
+%>                          If ``true``, all descriptive messages on
+%>                          the MATLAB command line will be suppressed.<br>
+%>                          (**optional**, default = ``false``)
+%>
+%>  \return
+%>  `str`               :   The output scalar MATLAB string containing the
+%>                          latest available ParaMonte MATLAB version newer
+%>                          than the existing version on the current system.<br>
+%>                          The output ``str`` will be set to empty string ``""``
+%>                          if there is no newer version or the function fails.
+%>
+%>  \interface{version}
+%>  \code{.m}
+%>
+%>      str = pm.lib.update.version()
+%>
+%>  \endcode
+%>  \final{version}
+%>
+%>  \author
+%>  \JoshuaOsborne, May 21 2024, 7:57 PM, University of Texas at Arlington<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 function str = version(silent)
-    %
-    %   Return a scalar MATLAB string containing the latest
-    %   available ParaMonte MATLAB version newer than the
-    %   existing version on the current system.
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       silent
-    %
-    %           The input scalar MATLAB logical.
-    %           If ``true``, all descriptive messages on
-    %           the MATLAB command line will be suppressed.
-    %           (**optional**, default = ``false``)
-    %
-    %   Returns
-    %   -------
-    %
-    %       str
-    %
-    %           The output scalar MATLAB string containing the
-    %           latest available ParaMonte MATLAB version newer
-    %           than the existing version on the current system.
-    %           The output ``str`` will be set to empty string ``""``
-    %           if there is no newer version or the function fails.
-    %
-    %   Interface
-    %   ---------
-    %
-    %       str = pm.lib.update.version()
-    %
-    %   LICENSE
-    %   -------
-    %
-    %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-    %
     if  nargin < 1
         silent = [];
     end
@@ -46,10 +39,11 @@ function str = version(silent)
     try
         versionFileLineList = strsplit(webread(versionLink), newline);
         str = string(versionFileLineList{1});
-    catch
+    catch me
         str = "";
         if ~silent
             warning ( newline ...
+                    + string(me.identifier) + " : " + string(me.message) + newline ...
                     + "Failed to fetch the latest version number from the weblink:" + newline ...
                     + newline ...
                     + pm.io.tab + pm.web.href(versionLink) + newline ...

@@ -1,31 +1,26 @@
+%>  \brief
+%>  Return a scalar MATLAB string containing the
+%>  root directory of the ParaMonte library package.
+%>
+%>  \param  `None`
+%>
+%>  \return
+%>  `path`  :   A scalar MATLAB string containing the root
+%>              directory of the ParaMonte library package.
+%>
+%>  \interface{root}
+%>  \code{.m}
+%>
+%>      path = pm.lib.path.root()
+%>
+%>  \endcode
+%>  \final{root}
+%>
+%>  \author
+%>  \JoshuaOsborne, May 21 2024, 7:51 PM, University of Texas at Arlington<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 function path = root()
-    %
-    %   Return a scalar MATLAB string containing the
-    %   root directory of the ParaMonte library package.
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       None
-    %
-    %   Returns
-    %   -------
-    %
-    %       path
-    %
-    %           A scalar MATLAB string containing the root
-    %           directory of the ParaMonte library package.
-    %
-    %   Interface
-    %   ---------
-    %
-    %       path = pm.lib.path.root()
-    %
-    %   LICENSE
-    %   -------
-    %
-    %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-    %
     persistent path_persistent
     if isempty(path_persistent)
         [path_persistent, ~, ~] = fileparts(mfilename('fullpath'));

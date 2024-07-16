@@ -1,40 +1,33 @@
+%>  \brief
+%>  Return a scalar MATLAB string containing the download
+%>  weblink to latest ParaMonte MATLAB library version
+%>  or return an empty string ``""`` is there is none.
+%>
+%>  \param[in]  silent  :   The input scalar MATLAB logical.<br>
+%>                          If ``true``, all descriptive messages on
+%>                          the MATLAB command line will be suppressed.<br>
+%>                          (**optional**, default = ``false``)
+%>
+%>  \return
+%>  `str`               :   The output scalar MATLAB string containing the weblink to the latest
+%>                          available version of the ParaMonte library that is newer than the
+%>                          existing ParaMonte library version on the current system.<br>
+%>                          The output ``str`` will be set to empty string ``""``
+%>                          if there is no newer version or the function fails.
+%>
+%>  \interface{weblink}
+%>  \code{.m}
+%>
+%>      str = pm.lib.update.weblink()
+%>
+%>  \endcode
+%>  \final{weblink}
+%>
+%>  \author
+%>  \JoshuaOsborne, May 21 2024, 7:54 PM, University of Texas at Arlington<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 function str = weblink(silent)
-    %
-    %   Return a scalar MATLAB string containing the download
-    %   weblink to latest ParaMonte MATLAB library version
-    %   or return an empty string ``""`` is there is none.
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       silent
-    %
-    %           The input scalar MATLAB logical.
-    %           If ``true``, all descriptive messages on
-    %           the MATLAB command line will be suppressed.
-    %           (**optional**, default = ``false``)
-    %
-    %   Returns
-    %   -------
-    %
-    %       str
-    %
-    %           The output scalar MATLAB string containing the weblink to the latest
-    %           available version of the ParaMonte library that is newer than the
-    %           existing ParaMonte library version on the current system.
-    %           The output ``str`` will be set to empty string ``""``
-    %           if there is no newer version or the function fails.
-    %
-    %   Interface
-    %   ---------
-    %
-    %       str = pm.lib.update.weblink()
-    %
-    %   LICENSE
-    %   -------
-    %
-    %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-    %
     if  nargin < 1
         silent = [];
     end

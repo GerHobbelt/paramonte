@@ -1,22 +1,21 @@
+%>  \brief
+%>  Check the requirements of the installed ParaMonte MATLAB library.
+%>
+%>  \details
+%>  This function takes no input arguments and returns nothing.
+%>
+%>  \interface{verify}
+%>  \code{.m}
+%>
+%>      pm.lib.verify();
+%>
+%>  \endcode
+%>
+%>  \final{verify}
+%>
+%>  \author
+%>  \JoshuaOsborne, May 21 2024, 8:11 PM, University of Texas at Arlington<br>
 function verify()
-    %
-    %   Check the requirements of the installed ParaMonte MATLAB library.
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       None
-    %
-    %   Returns
-    %   -------
-    %
-    %       None
-    %
-    %   Interface
-    %   ---------
-    %
-    %       pm.lib.verify()
-    %
 
     %if isunix
     %    setenv('PATH', ['/usr/local/bin:', getenv('PATH')]);
@@ -103,8 +102,9 @@ function verify()
     try
         fprintf('%s\n\n', fileread(msgfile1));
         fprintf('%s\n\n', fileread(msgfile2));
-    catch
+    catch me
         warning ( newline ...
+                + string(me.identifier) + " : " + string(me.message) + newline ...
                 + "Failed to read the contents of either or both of the following files:" + newline ...
                 + newline ...
                 + pm.io.tab + """" + msgfile1 + """" + newline ...

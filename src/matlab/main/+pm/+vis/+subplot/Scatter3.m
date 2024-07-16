@@ -1,41 +1,35 @@
+%>  \brief
+%>  This is the Scatter3 class for generating
+%>  instances of 3-dimensional Scatter3 plots
+%>  based on the relevant MATLAB
+%>  intrinsic functions.
 classdef Scatter3 < pm.vis.subplot.Subplot
-    %
-    %   This is the Scatter3 class for generating
-    %   instances of 3-dimensional Scatter3 plots
-    %   based on the relevant MATLAB
-    %   intrinsic functions.
-    %
-    %   Parameters
-    %   ----------
-    %
-    %       dfref
-    %
-    %           See the documentation of the corresponding input
-    %           argument of the superclass ``pm.vis.subplot.Subplot``.
-    %
-    %   Attributes
-    %   ----------
-    %
-    %       See the documentation of the attributes
-    %       of the superclass ``pm.vis.subplot.Subplot``.
-    %
-    %   Returns
-    %   -------
-    %
-    %       An object of ``pm.vis.subplot.Scatter3`` class.
-    %
-    %   Interface
-    %   ---------
-    %
-    %       s = pm.vis.subplot.Scatter3(dfref);
-    %       s = pm.vis.subplot.Scatter3(dfref, varargin);
-    %
-    %   LICENSE
-    %   -------
-    %
-    %       https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
-    %
     methods(Access = public)
+        %>
+        %>  \param[in]  dfref   :   See the documentation of the corresponding input
+        %>                          argument of the superclass ``pm.vis.subplot.Subplot``.
+        %>
+        %>  \note
+        %>  See the documentation of the attributes
+        %>  of the superclass ``pm.vis.subplot.Subplot``.
+        %>
+        %>  \return
+        %>  An object of ``pm.vis.subplot.Scatter3`` class.
+        %>
+        %>  \interface{Scatter3}
+        %>  \code{.m}
+        %>
+        %>      s = pm.vis.subplot.Scatter3(dfref);
+        %>      s = pm.vis.subplot.Scatter3(dfref, varargin);
+        %>
+        %>  \endcode
+        %>
+        %>  \final{Scatter3}
+        %>
+        %>  \author
+        %>  \JoshuaOsborne, May 21 2024, 6:05 PM, University of Texas at Arlington<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+        %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
         function self = Scatter3(dfref, varargin)
             if nargin < 1
                 dfref = [];

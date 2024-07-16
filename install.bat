@@ -564,7 +564,7 @@ if not "%1"=="" (
 
     if "!FLAG!"=="-G" (
         set FLAG_SUPPORTED=true
-        set "flag_G=-G !VALUE!"
+        set "flag_G=-G "!VALUE!""
         if "!VALUE!"=="" set "VALUE_SUPPORTED=false"
         if /i "!VALUE:~0,2!"=="--" set "VALUE_SUPPORTED=false"
         shift

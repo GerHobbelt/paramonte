@@ -1,5 +1,5 @@
-[submodule "OpenBLAS"]
-	path = OpenBLAS
+[submodule "external/OpenBLAS"]
+	path = external/OpenBLAS
 	url = git@github.com:xianyi/OpenBLAS.git
 [submodule "external/paramonted"]
 	path = external/paramonted

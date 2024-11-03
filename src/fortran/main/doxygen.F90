@@ -122,7 +122,7 @@
 !>  pm_bench                | This module contains abstract interfaces and types that facilitate benchmarking of different procedures.
 !>  pm_bit                  | This module contains constants and procedures that are relevant to bit manipulation.
 !>  pm_blas                 | This module contains a set of generic interfaces to the BLAS routines used within the ParaMonte library.
-!>  pm_clustering           | This module contains procedures and routines for the computing the Kmeans clustering of a given set of data.
+!>  pm_clusKmeans           | This module contains procedures and routines for the computing the Kmeans clustering of a given set of data.
 !>  pm_complexAbs           | This module contains procedures and generic interfaces for performing element-wise comparison of the real and imaginary components of scalars and arrays of arbitrary ranks of various types.
 !>  pm_complexCompareAll    | This module contains procedures and generic interfaces for checking if both of the corresponding real and imaginary components of two complex numbers satisfy a relational operator.
 !>  pm_complexCompareAny    | This module contains procedures and generic interfaces for checking if either of the corresponding real and imaginary components of two complex numbers satisfy a relational operator.
@@ -459,8 +459,8 @@
 !>          section</b>, designated by the <tt>\\example</tt>, otherwise, each empty line will start a new paragraph in the documentation.<br>
 !>          Example: See [below](#example-ParaMonteLangDocumentationGuidelines).<br>
 !>      +   The Doxygen `\test` tag, if any exists, must appear immediately after the example section designated by the <tt>\\example</tt> tag.<br>
-!>      +   The Doxygen `\todo` tag, if any exists, must appear immediately after the `\test` tag or any other tag immediately preceding it.<br>
-!>      +   The Doxygen `\bug` tag, if any exists, must appear immediately after the `\todo` tag or any other tag immediately preceding it.<br>
+!>      +   The Doxygen `\bug` tag, if any exists, must appear immediately after the `\test` tag or any other tag immediately preceding it.<br>
+!>      +   The Doxygen `\todo` tag, if any exists, must appear immediately after the `\todo` tag or any other tag immediately preceding it.<br>
 !>      +   The closing command of each documentation section must be the ParaMonte custom command <tt>\\final</tt> separated from the tags before and after by an empty line.<br>
 !>      +   The Doxygen `\author` tag is the last command to appear in any documentation section, and it must preferably have the format exemplified in the example below.<br>
 !>      <br>

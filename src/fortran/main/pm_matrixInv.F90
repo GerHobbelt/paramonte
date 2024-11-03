@@ -314,7 +314,7 @@ module pm_matrixInv
     !>  \interface{getMatInv}
     !>  \code{.F90}
     !>
-    !>      use pm_matrixInv, only: getMatInv
+    !>      use pm_matrixInv, only: getMatInv, choUpp, choLow, upperDiag, lowerDiag
     !>
     !>      inv(1:ndim, 1:ndim) = getMatInv(mat(1:ndim, 1:ndim))
     !>      inv(1:ndim, 1:ndim) = getMatInv(mat(1:ndim, 1:ndim), auxil)
@@ -1733,6 +1733,8 @@ module pm_matrixInv
     !>  \code{.F90}
     !>
     !>      use pm_matrixInv, only: setMatInv
+    !>      use pm_matrixInv, only: choLow, choUpp
+    !>      use pm_matrixInv, only: upperDiag, lowerDiag
     !>
     !>      call setMatInv(inv(1:ndim, 1:ndim), mat(1:ndim, 1:ndim), auxil)
     !>      call setMatInv(inv(1:ndim, 1:ndim), mat(1:ndim, 1:ndim), auxil, subset) ! only if subset = choLow, choUpp.

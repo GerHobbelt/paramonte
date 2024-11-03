@@ -25,6 +25,7 @@ set(sterile
     pm_array
     pm_bit
     pm_blas
+    #pm_clusPartition
     pm_control
     pm_lapack
     pm_mathConst
@@ -122,7 +123,8 @@ set(grandpa
     pm_arrayVerbose
     pm_batse
     pm_bench
-    pm_clustering
+    pm_clusTest
+    pm_clusKmeans
     pm_complexAbs
     pm_complexCompareAll
     pm_complexCompareAny
@@ -145,6 +147,7 @@ set(grandpa
     pm_distBeta
     pm_distBinom
     pm_distCosRaised
+    pm_distChol
     pm_distCov
     pm_distExp
     pm_distExpGamma
@@ -160,6 +163,7 @@ set(grandpa
     pm_distMultiNorm
     pm_distNormShell
     pm_distUnifEll
+    pm_distUnifElls
     pm_distUnifPar
     pm_distNegExp
     pm_distNorm
@@ -291,11 +295,6 @@ endforeach()
 #    ${paramonte_src_fortran_main_dir}/DistMultiNormGenExpGammaMix_pmod.F90
 #    ${paramonte_src_fortran_main_dir}/pm_distMultiSkewNorm.F90
 #    ${paramonte_src_fortran_main_dir}/ClusteredPoint_pmod.F90
-#    ${paramonte_src_fortran_main_dir}/pm_partition.F90
-#    ${paramonte_src_fortran_main_dir}/pm_partition@MaxDen_smod.F90
-#    ${paramonte_src_fortran_main_dir}/pm_partition@MinVol_smod.F90
-#    #${paramonte_src_fortran_main_dir}/PartitionKmeans_pmod.F90
-#    #${paramonte_src_fortran_main_dir}/PartitionVarDen_pmod.F90
 #    #${paramonte_src_fortran_main_dir}/pm_partitionRecursiveMaxDen.F90
 #    #${paramonte_src_fortran_main_dir}/pm_partitionRecursiveMinVol.F90
 #    #${paramonte_src_fortran_main_dir}/pm_partitionMaxDen.F90
@@ -740,7 +739,9 @@ if (DLL_ENABLED)
         set_target_properties("${libname}" PROPERTIES INSTALL_RPATH "${rpath_prop}")
     endif()
 
-    #### set up the library-specific compile link flags
+    ####
+    #### Set up the library-specific compile link flags.
+    ####
 
     if(${csid_is_gnu})
 

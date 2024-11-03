@@ -21,18 +21,18 @@
 %>  \JoshuaOsborne, May 21 2024, 4:45 PM, University of Texas at Arlington<br>
 %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
 %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
-classdef DataFrame < pm.data.DataRef
+classdef DataFrame < pm.container.DataRef
 
     methods(Access = public)
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         %>  \brief
-        %>  Generate an return an object of class [pm.data.DataFrame](@ref DataFrame)
+        %>  Generate an return an object of class [pm.container.DataFrame](@ref DataFrame)
         %>  from the input dataframe or its specified input reference.<br>
         %>
         %>  \details
-        %>  This is the constructor of the class [pm.data.DataFrame](@ref DataFrame).<br>
+        %>  This is the constructor of the class [pm.container.DataFrame](@ref DataFrame).<br>
         %>
         %>  \param[in]  dfref   :   The input MATLAB 2D matrix or table containing the target dataset
         %>                          or function handle that takes no arguments and returns the dataset.<br>
@@ -42,19 +42,19 @@ classdef DataFrame < pm.data.DataRef
         %>                          (**optional**. default = ``table(zeros(0, 0))``)
         %>
         %>  \return
-        %>  ``self``            :   The output scalar object of class [pm.data.DataFrame](@ref DataFrame).<br>
+        %>  ``self``            :   The output scalar object of class [pm.container.DataFrame](@ref DataFrame).<br>
         %>
         %>  \interface{DataFrame}
         %>  \code{.m}
         %>
-        %>      df = pm.data.DataFrame(dfref);
+        %>      df = pm.container.DataFrame(dfref);
         %>
         %>  \endcode
         %>
         %>  \example{DataFrame}
-        %>  \include{lineno} example/data/DataFrame/main.m
+        %>  \include{lineno} example/container/DataFrame/main.m
         %>  \output{DataFrame}
-        %>  \include{lineno} example/data/DataFrame/main.out.m
+        %>  \include{lineno} example/container/DataFrame/main.out.m
         %>
         %>  \final{DataFrame}
         %>
@@ -69,7 +69,7 @@ classdef DataFrame < pm.data.DataRef
             if  isempty(dfref)
                 dfref = table(zeros(0, 0));
             end
-            self = self@pm.data.DataRef(dfref);
+            self = self@pm.container.DataRef(dfref);
         end
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,16 +84,18 @@ classdef DataFrame < pm.data.DataRef
         %>  originates from the lack of the concept of references (pointers)
         %>  in the MATLAB computing language.<br>
         %>
+        %>  \param[inout]   self    :   The **implicitly-passed** input argument representing the parent object of the method.<br>
+        %>
         %>  \return
-        %>  ``df``  :   The output scalar MATLAB table a full copy of the dataframe
-        %>              contained in the user-specified input ``dfref`` passed
-        %>              to the constructor of the parent object.<br>
+        %>  ``df``                  :   The output scalar MATLAB table a full copy of the dataframe
+        %>                              contained in the user-specified input ``dfref`` passed
+        %>                              to the constructor of the parent object.<br>
         %>
         %>  \interface{copy}
         %>  \code{.m}
         %>
         %>
-        %>      df = pm.data.DataFrame.copy()
+        %>      df = pm.container.DataFrame.copy()
         %>
         %>  \endcode
         %>
@@ -107,7 +109,7 @@ classdef DataFrame < pm.data.DataRef
         %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
         %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
         function df = copy(self)
-            df = copy@pm.data.DataRef(self);
+            df = copy@pm.container.DataRef(self);
             if ~istable(df)
                 df = array2table(df);
             end
@@ -123,15 +125,17 @@ classdef DataFrame < pm.data.DataRef
         %>  This class method is a handy shorthand for ``size(self.dfref, 2)``, particularly
         %>  useful for specifying a range of indices of columns in visualization tasks.<br>
         %>
+        %>  \param[inout]   self    :   The **implicitly-passed** input argument representing the parent object of the method.<br>
+        %>
         %>  \return
-        %>  ``count``   :   The output scalar MATLAB whole-number representing the number
-        %>                  of columns in the ``dfref`` component of the parent object.
+        %>  ``count``               :   The output scalar MATLAB whole-number representing the number
+        %>                              of columns in the ``dfref`` component of the parent object.
         %>
         %>  \interface{ncol}
         %>  \code{.m}
         %>
         %>
-        %>      count = pm.data.DataFrame.ncol()
+        %>      count = pm.container.DataFrame.ncol()
         %>
         %>  \endcode
         %>
@@ -158,16 +162,16 @@ classdef DataFrame < pm.data.DataRef
         %>  This class method is a handy shorthand for ``size(self.dfref, 2)``,
         %>  particularly useful for specifying a range of indices of rows to visualize.<br>
         %>
-        %>  \param[in] `None`
+        %>  \param[inout]   self    :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %>
         %>  \return
-        %>  ``count``   :   The output scalar MATLAB whole-number representing the number
-        %>                  of rows in the ``dfref`` component of the parent object.<br>
+        %>  ``count``               :   The output scalar MATLAB whole-number representing the number
+        %>                              of rows in the ``dfref`` component of the parent object.<br>
         %>
         %>  \interface{nrow}
         %>  \code{.m}
         %>
-        %>      count = pm.data.DataFrame.nrow()
+        %>      count = pm.container.DataFrame.nrow()
         %>
         %>  \endcode
         %>
@@ -199,49 +203,50 @@ classdef DataFrame < pm.data.DataRef
         %>  Beware of the different order of the input arguments
         %>  between this method and [pm.array.logrange](@ref logrange).<br>
         %>
-        %>  \param[in]  count   :   The input scalar MATLAB whole-number (integer)
-        %>                          representing the maximum size of the output range.<br>
-        %>                          Due to rounding operation involved in creating the
-        %>                          output range, it is impossible to prespecify the
-        %>                          output range size, only the maximum.<br>
-        %>                          (**optional**, default = ``1000``)
+        %>  \param[inout]   self    :   The **implicitly-passed** input/output argument representing the parent object of the method.<br>
+        %>  \param[in]      count   :   The input scalar MATLAB whole-number (integer)
+        %>                              representing the maximum size of the output range.<br>
+        %>                              Due to rounding operation involved in creating the
+        %>                              output range, it is impossible to prespecify the
+        %>                              output range size, only the maximum.<br>
+        %>                              (**optional**, default = ``1000``)
         %>
-        %>  \param[in]  start   :   The input scalar MATLAB whole-number (integer)
-        %>                          representing the starting point of the output range.<br>
-        %>                          It must be a number in the range ``[1, size(self.dfref, 1)]``.
-        %>                          Otherwise, the value ``max(1, min(start, self.nrow()))`` will be used.<br>
-        %>                          (**optional**, default = ``1``)
+        %>  \param[in]      start   :   The input scalar MATLAB whole-number (integer)
+        %>                              representing the starting point of the output range.<br>
+        %>                              It must be a number in the range ``[1, size(self.dfref, 1)]``.
+        %>                              Otherwise, the value ``max(1, min(start, self.nrow()))`` will be used.<br>
+        %>                              (**optional**, default = ``1``)
         %>
-        %>  \param[in]  stop    :   The input scalar MATLAB whole-number (integer)
-        %>                          representing the stopping point of the output range.<br>
-        %>                          It must be a number in the range ``[1, size(self.dfref, 1)]``.
-        %>                          Otherwise, the value ``max(start, min(stop, self.nrow()))`` will be used.<br>
-        %>                          (**optional**, default = ``1``)
+        %>  \param[in]      stop    :   The input scalar MATLAB whole-number (integer)
+        %>                              representing the stopping point of the output range.<br>
+        %>                              It must be a number in the range ``[1, size(self.dfref, 1)]``.
+        %>                              Otherwise, the value ``max(start, min(stop, self.nrow()))`` will be used.<br>
+        %>                              (**optional**, default = ``1``)
         %>
         %>  \return
-        %>  ``indices``         :   The output vector of MATLAB real values containing
-        %>                          the set of naturally logarithmically-spaced integer
-        %>                          values in the specified input range.<br>
+        %>  ``indices``             :   The output vector of MATLAB real values containing
+        %>                              the set of naturally logarithmically-spaced integer
+        %>                              values in the specified input range.<br>
         %>
         %>  \interface{rowslog}
         %>  \code{.m}
         %>
-        %>      indices = pm.data.DataFrame()
-        %>      indices = pm.data.DataFrame([])
+        %>      indices = pm.container.DataFrame()
+        %>      indices = pm.container.DataFrame([])
         %>
-        %>      indices = pm.data.DataFrame([], [])
-        %>      indices = pm.data.DataFrame([], start)
-        %>      indices = pm.data.DataFrame(count, [])
-        %>      indices = pm.data.DataFrame(count, start)
+        %>      indices = pm.container.DataFrame([], [])
+        %>      indices = pm.container.DataFrame([], start)
+        %>      indices = pm.container.DataFrame(count, [])
+        %>      indices = pm.container.DataFrame(count, start)
         %>
-        %>      indices = pm.data.DataFrame([], [], [])
-        %>      indices = pm.data.DataFrame(count, [], [])
-        %>      indices = pm.data.DataFrame([], start, [])
-        %>      indices = pm.data.DataFrame([], [], stop)
-        %>      indices = pm.data.DataFrame([], start, stop)
-        %>      indices = pm.data.DataFrame(count, [], stop)
-        %>      indices = pm.data.DataFrame(count, start, [])
-        %>      indices = pm.data.DataFrame(count, start, stop)
+        %>      indices = pm.container.DataFrame([], [], [])
+        %>      indices = pm.container.DataFrame(count, [], [])
+        %>      indices = pm.container.DataFrame([], start, [])
+        %>      indices = pm.container.DataFrame([], [], stop)
+        %>      indices = pm.container.DataFrame([], start, stop)
+        %>      indices = pm.container.DataFrame(count, [], stop)
+        %>      indices = pm.container.DataFrame(count, start, [])
+        %>      indices = pm.container.DataFrame(count, start, stop)
         %>
         %>  \endcode
         %>

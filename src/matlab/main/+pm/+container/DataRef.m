@@ -33,7 +33,7 @@ classdef DataRef < pm.matlab.Handle
         %>  input data (or its handle) ``dfref`` to the class constructor.<br>
         %>  This is an exact copy of the user-specified function handle or data.<br>
         %>  Users are supposed to access this component only via the class
-        %>  method [pm.data.DataRef.copy()](@ref DataRef::copy).<br>
+        %>  method [pm.container.DataRef.copy()](@ref DataRef::copy).<br>
         %>
         dfref;
     end
@@ -45,7 +45,7 @@ classdef DataRef < pm.matlab.Handle
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         %>  \brief
-        %>  Generate an return an object of class [DataRef](pm.data.DataRef)
+        %>  Generate an return an object of class [DataRef](pm.container.DataRef)
         %>  from the input dataframe or its specified input reference.<br>
         %>
         %>  \param[in]  dfref   :   The input object containing the target dataset
@@ -56,19 +56,19 @@ classdef DataRef < pm.matlab.Handle
         %>                          (**optional**. default = ``[]``)
         %>
         %>  \return
-        %>  ``self``            :   The output scalar object of class [pm.data.DataRef](@ref DataRef).
+        %>  ``self``            :   The output scalar object of class [pm.container.DataRef](@ref DataRef).
         %>
         %>  \interface{DataRef}
         %>  \code{.m}
         %>
-        %>      df = pm.data.DataRef(dfref);
+        %>      df = pm.container.DataRef(dfref);
         %>
         %>  \endcode
         %>
         %>  \example{DataRef}
-        %>  \include{lineno} example/data/DataRef/main.m
+        %>  \include{lineno} example/container/DataRef/main.m
         %>  \output{DataRef}
-        %>  \include{lineno} example/data/DataRef/main.out.m
+        %>  \include{lineno} example/container/DataRef/main.out.m
         %>
         %>  \final{DataRef}
         %>
@@ -94,15 +94,17 @@ classdef DataRef < pm.matlab.Handle
         %>  originates from the lack of the concept of references (pointers)
         %>  in the MATLAB computing language.<br>
         %>
+        %>  \param[inout]   self    :   The **implicitly-passed** input argument representing the parent object of the method.<br>
+        %>
         %>  \return
-        %>  ``df``  :   The output scalar MATLAB table a full copy of the data (reference)
-        %>              contained in the user-specified input ``dfref`` passed
-        %>              to the constructor of the parent object.<br>
+        %>  ``df``                  :   The output scalar MATLAB table a full copy of the data (reference)
+        %>                              contained in the user-specified input ``dfref`` passed
+        %>                              to the constructor of the parent object.<br>
         %>
         %>  \interface{copy}
         %>  \code{.m}
         %>
-        %>      df = pm.data.DataRef(dfref);
+        %>      df = pm.container.DataRef(dfref);
         %>      dfcopy = df.copy();
         %>
         %>  \endcode

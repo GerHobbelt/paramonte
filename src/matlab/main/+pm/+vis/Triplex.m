@@ -185,6 +185,7 @@ classdef Triplex < pm.vis.figure.Figure
         %>  Use this method when you change many attributes of the plot and
         %>  you want to clean up and go back to the default settings.<br>
         %>
+        %>  \param[in]  self        :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
@@ -315,6 +316,7 @@ classdef Triplex < pm.vis.figure.Figure
         %>  This method causes side-effects by manipulating
         %>  the existing attributes of the object.<br>
         %>
+        %>  \param[in]  self        :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
@@ -408,6 +410,7 @@ classdef Triplex < pm.vis.figure.Figure
         %>  This method has side-effects by manipulating
         %>  the existing attributes of the parent object.<br>
         %>
+        %>  \param[in]  self        :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
@@ -467,7 +470,13 @@ classdef Triplex < pm.vis.figure.Figure
 
                     if ~isempty(comp)
 
-                        self.tile{irow, icol} = getArrayFromByteStream(getByteStreamFromArray(self.(comp)));
+                        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                        %%%% The byte stream approach leads to serious problems with
+                        %%%% figures when generated from within sampler components.
+                        %self.tile{irow, icol} = getArrayFromByteStream(getByteStreamFromArray(self.(comp)));
+                        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                        self.tile{irow, icol} = pm.matlab.copy(self.(comp), eval(string(class(self.(comp))) + "()"));
+                        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
                         %%%%
                         %%%% Set the data columns to plot in the current tile.
@@ -575,7 +584,13 @@ classdef Triplex < pm.vis.figure.Figure
                             dumaxes = axes("Parent", self.fout.figure, kws{:});
 
                             set(self.fout.figure, 'CurrentAxes', dumaxes);
-                            dumplot = getArrayFromByteStream(getByteStreamFromArray(self.tile{irow, icol}));
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                            %%%% The byte stream approach leads to serious problems with
+                            %%%% figures when generated from within sampler components.
+                            %dumplot = getArrayFromByteStream(getByteStreamFromArray(self.tile{irow, icol}));
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                            dumplot = pm.matlab.copy(self.tile{irow, icol}, eval(string(class(self.tile{irow, icol})) + "()"), [], "fout");
+                            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                             dumplot.colorbar.position = self.layout.(cbar).position;
                             dumplot.colorbar.location = location.(cbar);
                             dumplot.colorbar.enabled = true;
@@ -585,7 +600,7 @@ classdef Triplex < pm.vis.figure.Figure
                                 dumplot.make("axes")
                             end
                             dumaxes.Visible = "off";
-                            set([dumaxes;dumaxes.Children], 'Visible', 'off');
+                            set([dumaxes; dumaxes.Children], 'Visible', 'off');
 
                             %kws = self.tile{irow, icol}.comp2hash("colorbar");
                             %self.fout.(cbar) = colorbar(dumaxes, kws{:}, "position", self.layout.(cbar).position, "location", location.(cbar));
@@ -627,6 +642,7 @@ classdef Triplex < pm.vis.figure.Figure
         %>  All axes labels in the tiling will be impacted by this routine,
         %>  even though only a selected subset might be visible.<br>
         %>
+        %>  \param[in]  self    :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %>  \param[in]  degx    :   The input scalar MATLAB positive whole-number, representing the amount of
         %>                          rotation to be applied to the x-axis labels with respect to the horizontal line.<br>
         %>                          If it is set to empty ``[]``, the axis label orientation will remain intact.<br>
@@ -689,6 +705,7 @@ classdef Triplex < pm.vis.figure.Figure
         %%%>  \details
         %%%>  Note that the main axes colorbar associated with the specified component is also automatically hidden.<br>
         %%%>
+        %%%>  \param[in]  self        :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %%%>  \param[in]  complist    :   The input vector of MATLAB strings each of which can be any of the following:
         %%%>                              <ol>
         %%%>                                  <li>    ``"lower"``     :   corresponding to the lower triangle of the Triplex plot.
@@ -799,6 +816,7 @@ classdef Triplex < pm.vis.figure.Figure
         %%%>  This is an internal (hidden) method of the class and inaccessible to end users.<br>
         %%%>  Note that the main axes colorbar associated with the specified component is also automatically impacted.<br>
         %%%>
+        %%%>  \param[in]  self        :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %%%>  \param[in]  action      :   The input scalar MATLAB string that can be any of the following:<br>
         %%%>                              <ol>
         %%%>                                  <li>    ``"hide"``      :   hide the specified components of the Triplex plot in the input argument ``complist``.
@@ -913,6 +931,8 @@ classdef Triplex < pm.vis.figure.Figure
         %>  \details
         %>  This is an internal (hidden) method of the class and inaccessible to end users.<br>
         %>
+        %>  \param[in]  self    :   The **implicitly-passed** input argument representing the parent object of the method.<br>
+        %>
         %>  \interface{hideShowAxesLabels}
         %>  \code{.m}
         %>
@@ -1005,6 +1025,8 @@ classdef Triplex < pm.vis.figure.Figure
         %>
         %>  \details
         %>  This is an internal (hidden) method of the class and inaccessible to end users.<br>
+        %>
+        %>  \param[in]  self    :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %>
         %>  \interface{hideShowAxesLabels}
         %>  \code{.m}

@@ -14,8 +14,8 @@
 %>  \see
 %>  [pm.vis.Cascade](@ref Cascade)<br>
 %>  [pm.vis.Subplot](@ref Subplot)<br>
+%>  [pm.vis.Triplex](@ref Triplex)<br>
 %>  [pm.vis.Figure](@ref Figure)<br>
-%>  [pm.vis.Corner](@ref Corner)<br>
 %>  [pm.vis.Plot](@ref Plot)<br>
 %>  [pm.vis.Tile](@ref Tile)<br>
 %>
@@ -66,28 +66,28 @@ classdef SubplotEllipse3 < pm.vis.SubplotLineScatter3
         %>
         %>  ``gramian``
         %>
-        %>  A scalar object of class [pm.data.DataRef](@ref DataRef)
+        %>  A scalar object of class [pm.container.DataRef](@ref DataRef)
         %>  containing the user-specified Gramian data to visualize.<br>
         %>
         gramian = [];
         %>
         %>  ``center``
         %>
-        %>  A scalar object of class [pm.data.DataRef](@ref DataRef)
+        %>  A scalar object of class [pm.container.DataRef](@ref DataRef)
         %>  containing the user-specified center data to visualize.<br>
         %>
         center = [];
         %>
         %>  ``zval``
         %>
-        %>  A scalar object of class [pm.data.DataRef](@ref DataRef)
+        %>  A scalar object of class [pm.container.DataRef](@ref DataRef)
         %>  containing the user-specified z-axis data to visualize.<br>
         %>
         zval = [];
         %>
         %>  ``cval``
         %>
-        %>  A scalar object of class [pm.data.DataRef](@ref DataRef)
+        %>  A scalar object of class [pm.container.DataRef](@ref DataRef)
         %>  containing the user-specified color data in colormap.<br>
         %>  If empty or unspecified, it will be set to ``zval`` component.<br>
         %>
@@ -313,10 +313,10 @@ classdef SubplotEllipse3 < pm.vis.SubplotLineScatter3
                 gramian = zeros(0, 0, 0);
             end
 
-            varargin =  { "gramian", pm.data.DataRef(gramian) ...
-                        , "center", pm.data.DataRef(center) ...
-                        , "zval", pm.data.DataRef(zval) ...
-                        , "cval", pm.data.DataRef(cval) ...
+            varargin =  { "gramian", pm.container.DataRef(gramian) ...
+                        , "center", pm.container.DataRef(center) ...
+                        , "zval", pm.container.DataRef(zval) ...
+                        , "cval", pm.container.DataRef(cval) ...
                         , varargin{:} ...
                         };
             self = self@pm.vis.SubplotLineScatter3([], varargin{:})
@@ -335,8 +335,7 @@ classdef SubplotEllipse3 < pm.vis.SubplotLineScatter3
         %>  Use this method when you change many attributes of the plot and
         %>  you want to clean up and go back to the default settings.<br>
         %>
-        %>  \param[inout]   self        :   The input/output parent object of class [pm.vis.SubplotEllipse3](@ref SubplotEllipse3)
-        %>                                  which is **implicitly** passed to this dynamic method (not by the user).<br>
+        %>  \param[inout]   self        :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %>  \param[in]      varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                                  If the property is a ``struct()``, then its value must be given as a cell array,
         %>                                  with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
@@ -849,7 +848,7 @@ classdef SubplotEllipse3 < pm.vis.SubplotLineScatter3
             %%%% Generate the dataframe.
             %%%%
 
-            self.df = pm.data.DataFrame(bcrd);
+            self.df = pm.container.DataFrame(bcrd);
 
         end
 

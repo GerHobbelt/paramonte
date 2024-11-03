@@ -1,13 +1,13 @@
 %>  \brief
 %>  Return the input scalar MATLAB string as doubly quoted string
 %>  such that the first and last character of the output string are double-quotation
-%>  marks while escaping any instances of double quote in the Fortran/MATLAB style,
-%>  by duplicating every quotation mark within the string.
+%>  marks while escaping any instances of **double quote** in the Fortran/MATLAB style,
+%>  by duplicating every quotation mark within the string.<br>
 %>
-%>  \param[in]  str :   The input scalar MATLAB string to be doubly quoted.
+%>  \param[in]  str :   The input scalar MATLAB string to be doubly quoted.<br>
 %>
 %>  \return
-%>  `strQuoted`     :   The output scalar MATLAB string containing the doubly-quoted escaped input string.
+%>  ``strQuoted``   :   The output scalar MATLAB string containing the doubly-quoted escaped input string.<br>
 %>
 %>  \interface{quote}
 %>  \code{.m}
@@ -15,6 +15,12 @@
 %>      strQuoted = pm.str.quote(str)
 %>
 %>  \endcode
+%>
+%>  \example{quote}
+%>  \include{lineno} example/str/quote/main.m
+%>  \output{quote}
+%>  \include{lineno} example/str/quote/main.out.m
+%>
 %>  \final{quote}
 %>
 %>  \author

@@ -1,11 +1,9 @@
 %>  \brief
 %>  Return ``true`` if the current OS is Linux.
 %>
-%>  \param[in]  `None`
-%>
 %>  \return
-%>  `itis`  :   The output MATLAB logical scalar value that is ``true``
-%>              if and only if the OS is Linux, otherwise ``false``.
+%>  ``itis``    :   The output MATLAB logical scalar value that is ``true``
+%>                  if and only if the OS is Linux, otherwise ``false``.
 %>
 %>  \interface{lin}
 %>  \code{.m}
@@ -13,6 +11,12 @@
 %>      itis = pm.os.is.lin()
 %>
 %>  \endcode
+%>
+%>  \example{lin}
+%>  \include{lineno} example/os/is/main.m
+%>  \output{lin}
+%>  \include{lineno} example/os/is/main.out.m
+%>
 %>  \final{lin}
 %>
 %>  \author

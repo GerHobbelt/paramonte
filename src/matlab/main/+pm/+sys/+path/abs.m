@@ -1,50 +1,59 @@
 %>  \brief
-%>  Return the Get absolute canonical path of a file or folder.
-%>  Absolute path names are safer than relative paths, e.g. when
-%>  a GUI or TIMER callback changes the current directory.
+%>  Return the Get absolute canonical path of a file or folder.<br>
+%>
+%>  \details
+%>  Absolute path names are safer than relative paths, e.g., when
+%>  a GUI or TIMER callback changes the current directory.<br>
 %>  Only canonical paths without ``"."`` and ``".."``
 %>  can be recognized uniquely.<br>
-%>  Long path names (>259 characters) require a magic initial
-%>  key ``"\\?\"`` to be handled by Windows API functions, e.g. for
-%>  MATLAB intrinsic routines ``fopen()``, ``dir()`` and ``exist()``.
 %>
 %>  \note
-%>  Some functions of the Windows-API still do not support long file names.
-%>  E.g. the Recycler and the Windows Explorer fail even with the magic ``'\\?\'`` prefix.
-%>  Some functions of MATLAB accept 260 characters (value of MAX_PATH), some at 259 already.
+%>  Long path names (>259 characters) require a magic initial
+%>  key ``"\\?\"`` to be handled by Windows API functions, e.g. for
+%>  MATLAB intrinsic routines ``fopen()``, ``dir()`` and ``exist()``.<br>
+%>
+%>  \note
+%>  Some functions of the Windows-API still do not support long file names.<br>
+%>  For example, the Recycler and the Windows Explorer fail even with the magic ``'\\?\'`` prefix.<br>
+%>  Some functions of MATLAB accept 260 characters (value of MAX_PATH), some at 259 already.<br>
 %>  The ``'fat'`` style is useful e.g., when MATLAB ``dir()`` command is called for a folder
-%>  with less than ``260`` characters, but together with the file name this limit is exceeded.
-%>  Then, ``"dir(pm.sys.path.abs([folder, '\*.*'], 'fat'))"`` helps.
+%>  with less than ``260`` characters, but together with the file name this limit is exceeded.<br>
+%>  Then, ``"dir(pm.sys.path.abs([folder, '\*.*'], 'fat'))"`` helps.<br>
 %>
 %>  \devnote
-%>  A MEX version of this function developed by Jan Simon performs much faster on Windows.
+%>  A MEX version of this function developed by Jan Simon performs much faster on Windows.<br>
 %>  Difference between M- and Mex-version:<br>
-%>      - Mex does not work under MacOS/Unix.
-%>      - Mex calls Windows API function pm.sys.path.abs.
-%>      - Mex is much faster.
+%>  <ol>
+%>      <li>    Mex does not work under MacOS/Unix.
+%>      <li>    Mex calls Windows API function pm.sys.path.abs.
+%>      <li>    Mex is much faster.
+%>  </ol>
 %>
 %>  \param[in]  path    :   The input argument that can be either,<br>
-%>                              -   a scalar MATLAB string or character, or,
-%>                              -   a MATLAB cell array of strings or character values,
-%>                          containing the absolute or relative name(s) of a file(s) or folder(s).
+%>                          <ol>
+%>                              <li>    a scalar MATLAB string or character, or,
+%>                              <li>    a MATLAB string or cell array of strings or character values,
+%>                          </ol>
+%>                          containing the absolute or relative name(s) of a file(s) or folder(s).<br>
 %>                          The path need not exist. Unicode strings, UNC paths and long
-%>                          names are supported.
-%>  
+%>                          names are supported.<br>
 %>  \param[in]  style   :   The optional input scalar MATLAB string or character,
-%>                          containing the style of the output as string.
+%>                          containing the style of the output as string.<br>
 %>                          The following values are possible:<br>
-%>                              -   'auto'  :   Add '\\?\' or '\\?\UNC\' for long names on demand.
-%>                              -   'lean'  :   Magic string is not added.
-%>                              -   'fat'   :   Magic string is added for short names also.
-%>                          The input ``style`` is ignored when not running under Windows.
+%>                          <ol>
+%>                              <li>    ``'auto'``  :   Add ``'\\?\'`` or ``'\\?\UNC\'`` for long names on demand.
+%>                              <li>    ``'lean'``  :   Magic string is not added.
+%>                              <li>    ``'fat'``   :   Magic string is added for short names also.
+%>                          </ol>
+%>                          The input ``style`` is ignored when not running under Windows.<br>
 %>                          (**optional**, default = 'auto')
 %>
 %>  \return
-%>  `path`              :   The output scalar MATLAB character string
-%>                          containing the absolute path corresponding to the input path.
-%>                          If the input ``path`` is empty, ``pathAbs`` is the current directory.
+%>  ``path``            :   The output scalar MATLAB character string
+%>                          containing the absolute path corresponding to the input path.<br>
+%>                          If the input ``path`` is empty, ``pathAbs`` is the current directory.<br>
 %>                          The optional prefixes ``'\\?\'`` or ``'\\?\UNC'`` are added on demand
-%>                          as requested by the optional input argument ``style``.
+%>                          as requested by the optional input argument ``style``.<br>
 %>
 %>  \interface{abs}
 %>  \code{.m}
@@ -54,7 +63,11 @@
 %>
 %>  \endcode
 %>
-%>  \example{abs}
+%>  \see
+%>  [A collection of MATLAB mex files for system path manipulation](http://www.n-simon.de/mex)<br>
+%>
+%>  \example{abs-raw}
+%>  \code{.m}
 %>
 %>      cd(tempdir);                                        % Assumed as 'C:\Temp' here
 %>      pm.sys.path.abs('File.Ext')                         % 'C:\Temp\File.Ext'
@@ -68,17 +81,21 @@
 %>      pm.sys.path.abs('D:\A\..\B')                        % 'D:\B'
 %>      pm.sys.path.abs('\\Server\Folder\Sub\..\File.ext')  % '\\Server\Folder\File.ext'
 %>      pm.sys.path.abs({'..', 'new'})                      % {'C:\', 'C:\Temp\new'}
+%>      pm.sys.path.abs(["..", "new"])                      % ["C:\", "C:\Temp\new"]
 %>      pm.sys.path.abs('.', 'fat')                         % '\\?\C:\Temp\File.Ext'
-%>  See also: http://www.n-simon.de/mex - A collection of MATLAB mex files for system path manipulation.
+%>
+%>  \endcode
+%>
+%>  \example{abs}
+%>  \include{lineno} example/sys/path/abs/main.m
+%>  \output{abs}
+%>  \include{lineno} example/sys/path/abs/main.out.m
 %>
 %>  \final{abs}
 %>
-%>  \author
-%>  \JoshuaOsborne, May 21 2024, 5:15 AM, University of Texas at Arlington<br>
-%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
-%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
-%>      This file is based on a functionality originally developed by Jan Simon.
+%>  This file is based on a functionality originally developed by Jan Simon.
 %>
+%>  \verbatim
 %>      Copyright (c) 2016, Jan Simon
 %>      All rights reserved.
 %>
@@ -131,39 +148,53 @@
 %>           replied "\\?\UNC\?\C:\<longpath>\file".
 %>      032: 12-Jan-2013 21:16, 'auto', 'lean' and 'fat' style.
 %>      038: 19-May-2019 17:25, BUGFIX, Thanks HHang Li, "File(7:..." -> "File(8:..."
+%>  \endverbatim
+%>  <br>
+%>
+%>  \author
+%>  \JoshuaOsborne, May 21 2024, 5:15 AM, University of Texas at Arlington<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 function path = abs(path, style)
 
-    % Set the magic prefix for long Windows names.
+    %%%%
+    %%%% Set the magic prefix for long Windows names.
+    %%%%
 
-    if nargin < 2
+    if  nargin < 2
         style = 'auto';
-    elseif isstring(style)
-        style = convertStringsToChars(style);
     else
-        error   ( newline ...
-                + "The input argument `style` must be a string. See the function documentation for possible string values." + newline ...
-                + newline ...
-                );
+        style = convertStringsToChars(string(style));
     end
 
-    if isstring(path)
-        path = convertStringsToChars(path);
-    elseif isa(path, 'cell')
-        for icell = 1 : numel(path)
-            path{icell} = pm.sys.path.abs(path{icell}, style);
+    if  1 < pm.array.len(path)
+        if  iscell(path)
+            for iell = 1 : numel(path)
+                path{iell} = string(pm.sys.path.abs(path{iell}, style));
+            end
+        else
+            for iell = 1 : numel(path)
+                path(iell) = string(pm.sys.path.abs(path(iell), style));
+            end
         end
         return;
+    else
+        path = convertStringsToChars(string(path));
     end
 
-    % Check this once only.
+    %%%%
+    %%%% Check this once only.
+    %%%%
 
     isWindows = strncmpi(computer, 'PC', 2);
     MAX_PATH = 260;
 
-    % Warn once per session (disable this under Linux/MacOS).
+    %%%%
+    %%%% Warn once per session (disable this under Linux/MacOS).
+    %%%%
 
     persistent hasDataRead
-    if isempty(hasDataRead)
+    if  isempty(hasDataRead)
         % Test this once only - there is no relation to the existence of DATAREAD!
         %if isWindows
         %   Show a warning, if the slower MATLAB version is used - commented, because
@@ -181,13 +212,13 @@ function path = abs(path, style)
         hasDataRead = ~isempty(which('dataread'));
     end
 
-    if isempty(path) % Accept empty matrix as input.
-        if ischar(path) || isnumeric(path)
+    if  isempty(path) % Accept empty matrix as input.
+        if  ischar(path) || isnumeric(path)
             path = cd;
             return;
         else
             error   ( newline ...
-                    + "A non-empty input argument `path` must be a string, character, or cell array of such values." + newline ...
+                    + "A non-empty input argument `path` must be a string, character, or array of such values." + newline ...
                     + newline ...
                     );
         end
@@ -196,7 +227,7 @@ function path = abs(path, style)
     if ~ischar(path)
         % Non-empty inputs must be strings
         error   ( newline ...
-                + "A non-empty input argument `path` must be a string, character, or cell array of such values." + newline ...
+                + "A non-empty input argument `path` must be a string, character, or array of such values." + newline ...
                 + newline ...
                 );
     end
@@ -206,7 +237,9 @@ function path = abs(path, style)
         dirsep = '\';
         path = strrep(path, '/', dirsep);
 
-        % Remove the magic key on demand, it is appended finally again.
+        %%%%
+        %%%% Remove the magic key on demand, it is appended finally again.
+        %%%%
 
         if strncmp(path, '\\?\', 4)
             if strncmpi(path, '\\?\UNC\', 8)
@@ -221,7 +254,9 @@ function path = abs(path, style)
         FileLen = length(path);
         if isUNC == 0 % path is not a UNC path
 
-            % Leading file separator means relative to current drive or base folder.
+            %%%%
+            %%%% Leading file separator means relative to current drive or base folder.
+            %%%%
 
             ThePath = cd;
             if path(1) == dirsep
@@ -303,7 +338,9 @@ function path = abs(path, style)
 
     end
 
-    % Care for "\." and "\.." - no efficient algorithm, but the fast Mex is recommended at all!
+    %%%%
+    %%%% Care for "\." and "\.." - no efficient algorithm, but the fast Mex is recommended at all!
+    %%%%
 
     if ~isempty(strfind(path, [dirsep, '.']))
 
@@ -382,7 +419,9 @@ function path = abs(path, style)
 
     end
 
-    % "Very" long names under Windows.
+    %%%%
+    %%%% "Very" long names under Windows.
+    %%%%
 
     if isWindows
         if ~ischar(style)

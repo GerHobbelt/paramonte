@@ -2,11 +2,9 @@
 %>  Return a list of MATLAB strings containing the lower-case names
 %>  of all OS platforms supported by the ParaMonte MATLAB library.
 %>
-%>  \param[in]  `None`
-%>
 %>  \return
-%>  `names` :   The output MATLAB string list containing:
-%>              ``["windows", "linux", "darwin"]``
+%>  ``names``   :   The output MATLAB string list containing:
+%>                  ``["windows", "linux", "darwin"]``.
 %>
 %>  \interface{listl}
 %>  \code{.m}
@@ -14,6 +12,12 @@
 %>      names = pm.os.listl()
 %>
 %>  \endcode
+%>
+%>  \example{listl}
+%>  \include{lineno} example/os/listl/main.m
+%>  \output{listl}
+%>  \include{lineno} example/os/listl/main.out.m
+%>
 %>  \final{listl}
 %>
 %>  \author

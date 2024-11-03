@@ -9,7 +9,7 @@ classdef Tile < pm.vis.figure.Tiling
 
     properties(Access = public)
         %>
-        %>  \param  template    :   The scalar object of superclass ``pm.vis.subplot.Subplot``
+        %>  \param  template    :   The scalar object of superclass [pm.vis.subplot.Subplot](@ref Subplot)
         %>                          representing the template of the set of subplots to display.
         %>
         template = [];
@@ -39,7 +39,7 @@ classdef Tile < pm.vis.figure.Tiling
         %>  This class is not meant to be used directly by the end users.
         %>  Instead, use the subclasses of this abstract class for visualizations.
         %>
-        %>  \param[in]  template    :   The input scalar object of superclass ``pm.vis.subplot.Subplot``.
+        %>  \param[in]  template    :   The input scalar object of superclass [pm.vis.subplot.Subplot](@ref Subplot).
         %>                              It serves as the template based upon which all subplots are constructed.
         %>
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.
@@ -53,7 +53,7 @@ classdef Tile < pm.vis.figure.Tiling
         %>  of the ``template`` component of the parent object.
         %>
         %>  \return
-        %>  `self`                  :   The output scalar object of class ``pm.vis.tile.Tile``.
+        %>  ``self``                :   The output scalar object of class ``pm.vis.tile.Tile``.
         %>
         %>  \interface{Tile}
         %>  \code{.m}
@@ -96,13 +96,10 @@ classdef Tile < pm.vis.figure.Tiling
         %>  The input ``varargin`` can also contain the components
         %>  of the ``subplot`` component of the parent object.
         %>
-        %>  \return
-        %>  `None`
-        %>
         %>  \interface{reset}
         %>  \code{.m}
         %>
-        %>      pm.vis.tile.Tile.reset() # reset the tile to the default settings.
+        %>      pm.vis.tile.Tile.reset() % reset the tile to the default settings.
         %>
         %>  \endcode
         %>
@@ -152,9 +149,6 @@ classdef Tile < pm.vis.figure.Tiling
         %>  \note
         %>  The input ``varargin`` can also contain the components
         %>  of the ``subplot`` component of the parent object.
-        %>
-        %>  \return
-        %>  `None`
         %>
         %>  \interface{make}
         %>  \code{.m}
@@ -378,9 +372,6 @@ classdef Tile < pm.vis.figure.Tiling
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.
         %>                              Note that all of these property-value pairs can be also directly set via the
         %>                              parent object attributes, before calling the ``premake()`` method.
-        %>
-        %>  \return
-        %>  `None`
         %>
         %>  \interface{premake}
         %>  \code{.m}

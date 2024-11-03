@@ -1,14 +1,16 @@
 %>  \brief
 %>  Return the contents of the ``.bash_profile`` file
 %>  in the system home folder as a scalar MATLAB string.<br>
-%>  If the file does not exist, create it. and add to it
-%>  If the file does not contain the Bash to source the
-%>  contents of the ``.bashrc`` file, then add it to
-%>  the ``.bash_profile`` and return its contents.
+%>
+%>  \details
+%>  If the file does not exist, create it.<br>
+%>  If the file does not contain the Bash command to
+%>  source the contents of the ``.bashrc`` file, then add
+%>  it to the ``.bash_profile`` and return its contents.<br>
 %>
 %>  \return
-%>  `str`   :   The output scalar MATLAB string containing
-%>              the contents of the ``.bash_profile``.
+%>  ``str`` :   The output scalar MATLAB string containing
+%>              the contents of the ``.bash_profile``.<br>
 %>
 %>  \interface{touch}
 %>  \code{.m}
@@ -16,6 +18,12 @@
 %>      str = pm.sys.bash_profile.touch()
 %>
 %>  \endcode
+%>
+%>  \example{touch}
+%>  \include{lineno} example/sys/bash_profile/touch/main.m
+%>  \output{touch}
+%>  \include{lineno} example/sys/bash_profile/touch/main.out.m
+%>
 %>  \final{touch}
 %>
 %>  \author

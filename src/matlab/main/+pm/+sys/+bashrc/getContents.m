@@ -1,12 +1,10 @@
 %>  \brief
 %>  Return the contents of the ``.bashrc`` file in the
-%>  system home folder as a scalar MATLAB string.
-%>
-%>  \param[in]  None
+%>  system home folder as a scalar MATLAB string.<br>
 %>
 %>  \return
-%>  `str`   :   The output scalar MATLAB string containing the contents
-%>              of the ``.bashrc`` file if it exists or an empty string.
+%>  ``str`` :   The output scalar MATLAB string containing the contents
+%>              of the ``.bashrc`` file if it exists or an empty string.<br>
 %>
 %>  \interface{getContents}
 %>  \code{.m}
@@ -14,6 +12,12 @@
 %>      str = pm.sys.bashrc.getContents()
 %>
 %>  \endcode
+%>
+%>  \example{getContents}
+%>  \include{lineno} example/sys/bashrc/getContents/main.m
+%>  \output{getContents}
+%>  \include{lineno} example/sys/bashrc/getContents/main.out.m
+%>
 %>  \final{getContents}
 %>
 %>  \author

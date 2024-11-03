@@ -1,20 +1,19 @@
 %>  \brief
 %>  Return a scalar MATLAB logical that is ``true`` if and
 %>  only if the deletion of the input file fails,
-%>  otherwise, return ``false``.
+%>  otherwise, return ``false``.<br>
 %>
 %>  \details
-%>  This function is a simple wrapper around the MATLAB function ``delete()``
-%>  It is primarily meant to bring consistency to messaging file deletions
-%>  if they fail. Such consistency is particularly required on Windows
-%>  systems as the OS tends to lock file ownership to one application
-%>  causing deletions to fail frequently.
+%>  This function is a simple wrapper around the MATLAB function ``delete()``.<br>
+%>  It is primarily meant to bring consistency to messaging file deletions if they fail.<br>
+%>  Such consistency is particularly required on Windows systems
+%>  as the OS tends to lock file ownership to one application
+%>  causing deletions to fail frequently.<br>
 %>
 %>  \param[in]  file    :   The input scalar MATLAB string,
-%>                          containing the file path to be deleted.
-%>  
+%>                          containing the file path to be deleted.<br>
 %>  \param[in]  desc    :   The input scalar MATLAB string, containing a descriptive message
-%>                          to be printed on the MATLAB command line if the deletion task fails.
+%>                          to be printed on the MATLAB command line if the deletion task fails.<br>
 %>                          The input ``desc``, if not empty, will be added to the following template
 %>                          before being displayed:<br>
 %>                              "Failed to delete <desc> from the local disk. File may be protected."<br>
@@ -23,9 +22,9 @@
 %>                          (**optional**. If missing, no warning will be displayed upon failure.)
 %>
 %>  \return
-%>  `failed`            :   The output scalar MATLAB logical that is ``true`` if and
+%>  ``failed``          :   The output scalar MATLAB logical that is ``true`` if and
 %>                          only if the deletion of the input file fails,
-%>                          otherwise, return ``false``.
+%>                          otherwise, return ``false``.<br>
 %>
 %>  \interface{rmfile}
 %>  \code{.m}
@@ -34,6 +33,12 @@
 %>      failed = pm.sys.path.rmfile(file, desc)
 %>
 %>  \endcode
+%>
+%>  \example{rmfile}
+%>  \include{lineno} example/sys/path/rmfile/main.m
+%>  \output{rmfile}
+%>  \include{lineno} example/sys/path/rmfile/main.out.m
+%>
 %>  \final{rmfile}
 %>
 %>  \author
@@ -44,8 +49,8 @@ function failed = rmfile(file, desc)
     try
         delete(file);
     catch me
-        if nargin == 2
-            if isempty(desc) || desc == ""
+        if  nargin == 2
+            if  isempty(desc) || desc == ""
                 desc = "the requested file";
             end
             warning ( newline ...
@@ -59,4 +64,5 @@ function failed = rmfile(file, desc)
                     );
         end
     end
+    failed = isfile(file);
 end

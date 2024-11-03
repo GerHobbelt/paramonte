@@ -61,7 +61,7 @@ classdef Corner < pm.vis.figure.Tiling
         %>
         cols = [];
         %>
-        %>  \param[in]  diag    :   The scalar object of superclass ``pm.vis.subplot.Subplot``
+        %>  \param[in]  diag    :   The scalar object of superclass [pm.vis.subplot.Subplot](@ref Subplot)
         %>                          representing the template of the diagonal subplots to display.
         %>                          Note that only the visualization properties of the template are used.
         %>                          The data properties of the template are set by the ``make()`` method.
@@ -69,14 +69,14 @@ classdef Corner < pm.vis.figure.Tiling
         %>
         diag = [];
         %>
-        %>  \param[in]  lower   :   The scalar object of superclass ``pm.vis.subplot.Subplot``
+        %>  \param[in]  lower   :   The scalar object of superclass [pm.vis.subplot.Subplot](@ref Subplot)
         %>                          representing the template of the lower-triangle subplots to display.
         %>                          The data properties of the template are set by the ``make()`` method.
         %>                          (**optional**. The default value is ``pm.vis.subplot.Contour([])``.)
         %>
         lower = [];
         %>
-        %>  \param[in]  upper   :   The scalar object of superclass ``pm.vis.subplot.Subplot``
+        %>  \param[in]  upper   :   The scalar object of superclass [pm.vis.subplot.Subplot](@ref Subplot)
         %>                          representing the template of the upper-triangle subplots to display.
         %>                          The data properties of the template are set by the ``make()`` method.
         %>                          (**optional**. The default value is ``pm.vis.subplot.LineScatter([])``.)
@@ -98,7 +98,7 @@ classdef Corner < pm.vis.figure.Tiling
         %>                              parent object attributes, before calling the ``make()`` method.
         %>
         %>  \return
-        %>  `self`                  :   The output scalar object of class ``pm.vis.corner.Corner``.
+        %>  ``self``                :   The output scalar object of class ``pm.vis.corner.Corner``.
         %>
         %>  \interface{Corner}
         %>  \code{.m}
@@ -145,9 +145,6 @@ classdef Corner < pm.vis.figure.Tiling
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.
         %>                              Note that all of these property-value pairs can be also directly set via the
         %>                              parent object attributes, before calling the ``make()`` method.
-        %>
-        %>  \return
-        %>  `None`
         %>
         %>  \interface{make}
         %>  \code{.m}
@@ -291,13 +288,10 @@ classdef Corner < pm.vis.figure.Tiling
         %>                              Note that all of these property-value pairs can be also directly set via the
         %>                              parent object attributes, before calling the ``make()`` method.
         %>
-        %>  \return
-        %>  `None`
-        %>
         %>  \interface{reset}
         %>  \code{.m}
         %>
-        %>      pm.vis.corner.Corner.reset() # reset all object properties to the default settings.
+        %>      pm.vis.corner.Corner.reset() % reset all object properties to the default settings.
         %>
         %>  \endcode
         %>
@@ -346,9 +340,6 @@ classdef Corner < pm.vis.figure.Tiling
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.
         %>                              Note that all of these property-value pairs can be also directly set via the
         %>                              parent object attributes, before calling the ``make()`` method.
-        %>
-        %>  \return
-        %>  `None`
         %>
         %>  \example{premake}
         %>

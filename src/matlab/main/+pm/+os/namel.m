@@ -1,13 +1,13 @@
 %>  \brief
 %>  Return a MATLAB string containing the lower-case name of the current OS.
 %>
-%>  \param[in]  `None`
-%>
 %>  \return
-%>  `str`   :   The output MATLAB string containing either:
-%>              ``"linux"`` if the OS is Linux.
-%>              ``"windows"`` if the OS is Windows.
-%>              ``"darwin"`` if the OS is macOS (Darwin).
+%>  ``str`` :   The output MATLAB string that is either:<br>
+%>              <ol>
+%>                  <li>    ``"linux"`` if the OS is Linux.
+%>                  <li>    ``"windows"`` if the OS is Windows.
+%>                  <li>    ``"darwin"`` if the OS is macOS (Darwin).
+%>              </ol>
 %>
 %>  \interface{namel}
 %>  \code{.m}
@@ -15,6 +15,12 @@
 %>      str = pm.os.namel()
 %>
 %>  \endcode
+%>
+%>  \example{namel}
+%>  \include{lineno} example/os/namel/main.m
+%>  \output{namel}
+%>  \include{lineno} example/os/namel/main.out.m
+%>
 %>  \final{namel}
 %>
 %>  \author

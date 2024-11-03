@@ -1,33 +1,21 @@
 %>  \brief
 %>  This is the base class for the ParaMonte sampler basic specifications.<br>
-%>  This is an abstract class that is not meant to be used by the user.<br>
-%>  See the documentation of the class constructor.
+%>
+%>  \details
+%>  This is a low-level class that is not meant to be used by the user.<br>
 %>
 %>  \note
-%>  All class attributes can be set after constructing an instance of this class.
+%>  See the documentation of the class constructor.<br>
 %>
 %>  \note
-%>  The MCMC simulation specifications are all described on this page:
-%>  https://www.cdslab.org/paramonte/notes/usage/paradram/specifications/
+%>  All class attributes can be set after constructing an instance of this class.<br>
 %>
 %>  \note
-%>  See below for information on the methods.
+%>  See below for information on the methods.<br>
 %>
-%>  \return
-%>  An object of class ``pm.sampling.SpecBase``.
+%>  \see
+%>  [ParaDRAM simulation specifications listing](\pmdoc_usage_sampling/paradram/specifications/)<br>
 %>
-%>  \interface{SpecBase}
-%>  \code{.m}
-%>
-%>      spec = pm.sampling.SpecBase()
-%>      spec = pm.sampling.SpecBase([])
-%>      spec = pm.sampling.SpecBase([], [])
-%>      spec = pm.sampling.SpecBase(method)
-%>      spec = pm.sampling.SpecBase(method, [])
-%>      spec = pm.sampling.SpecBase([], silent)
-%>      spec = pm.sampling.SpecBase(method, silent)
-%>
-%>  \endcode
 %>  \final{SpecBase}
 %>
 %>  \author
@@ -70,7 +58,7 @@ classdef SpecBase < pm.matlab.Handle
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties(Hidden, Access = protected)
-        url = "https://www.cdslab.org/paramonte/notes/usage/paradram/specifications/";
+        url = "https://www.cdslab.org/paramonte/generic/" + pm.lib.version("generic", "major") + "/usage/sampling/paradram/specifications/";
         method = "sampler";
         silent = false;
         nmlsep = " ";
@@ -81,20 +69,22 @@ classdef SpecBase < pm.matlab.Handle
     methods(Access = public)
 
         %>  \brief
-        %>  Construct and return an object of class ``pm.sampling.SpecBase``.
+        %>  Construct and return an object of class [pm.sampling.SpecBase](@ref SpecBase).
         %>
         %>  \param[in]  method  :   The input scalar MATLAB string containing
         %>                          the name of the specific ParaMonte sampler
         %>                          whose simulation specifications are to be
-        %>                          stored in the output of this constructor.
-        %>  
-        %>  \param[in]  silent  :   The input scalar MATLAB logical.
+        %>                          stored in the output of this constructor.<br>
+        %>  \param[in]  silent  :   The input scalar MATLAB logical.<br>
         %>                          If ``true``, all descriptive messages on
-        %>                          the MATLAB command line will be suppressed.
+        %>                          the MATLAB command line will be suppressed.<br>
         %>                          (**optional**, default = ``false``)
         %>
         %>  \return
-        %>  The output scalar object of class ``pm.sampling.SpecBase``.
+        %>  The output scalar object of class [pm.sampling.SpecBase](@ref SpecBase).<br>
+        %>
+        %>  \see
+        %>  [ParaDRAM simulation specifications listing](\pmdoc_usage_sampling/paradram/specifications/)<br>
         %>
         %>  \interface{SpecBase}
         %>  \code{.m}
@@ -108,6 +98,7 @@ classdef SpecBase < pm.matlab.Handle
         %>      spec = pm.sampling.SpecBase(method, silent)
         %>
         %>  \endcode
+        %>
         %>  \final{SpecBase}
         %>
         %>  \author
@@ -148,23 +139,25 @@ classdef SpecBase < pm.matlab.Handle
         end
 
         %>  \brief
-        %>  Return documentation help for the input simulation specification name.
+        %>  Return documentation help for the input simulation specification name.<br>
+        %>
+        %>  \details
         %>  Otherwise, return documentation help for all simulation specifications
-        %>  if the input ``specification`` argument is missing.
+        %>  if the input ``specification`` argument is missing.<br>
         %>
         %>  \devnote
         %>  The underlying reason for unifying documentation of object attributes
         %>  within a single online page is to significantly reduce duplication and
         %>  work required for generating and maintaining such documentation across
-        %>  all supported programming language environments.
+        %>  all supported programming language environments.<br>
         %>
-        %>  specification   :   The input scalar MATLAB string containing the
-        %>                      name of a simulation specification corresponding
-        %>                      an attribute of the parent object.
+        %>  \param[in]  specification   :   The input scalar MATLAB string containing the
+        %>                                  name of a simulation specification corresponding
+        %>                                  an attribute of the parent object.<br>
         %>
         %>  \return
-        %>  `weblink`       :   The output scalar MATLAB string containing the web address
-        %>                      for the documentation of the requested simulation specification.
+        %>  ``weblink``                 :   The output scalar MATLAB string containing the web address
+        %>                                  for the documentation of the requested simulation specification.<br>
         %>
         %>  \interface{doc}
         %>  \code{.m}
@@ -173,10 +166,13 @@ classdef SpecBase < pm.matlab.Handle
         %>      weblink = self.doc(specification)
         %>
         %>  \endcode
-        %>  \example{getBorder}
+        %>  \example{doc}
+        %>  \code{.m}
         %>
         %>      pmpd.spec.doc()                 % return help for all specifications.
         %>      pmpd.spec.doc("outputFileName") % return help for the specification ``outputFileName``.
+        %>
+        %>  \endcode
         %>
         %>  \final{doc}
         %>
@@ -221,16 +217,16 @@ classdef SpecBase < pm.matlab.Handle
 
         %>  \brief
         %>  Ensure all specification properties of the parent object are sensible.<br>
-        %>  This is a dynamic method of the class ``pm.sampling.SpecBase``.
+        %>  This is a dynamic method of the class [pm.sampling.SpecBase](@ref SpecBase).<br>
         %>
-        %>  \param[in]  ndim    :   The input scalar MATLAB integer containing the
-        %>                          number of dimensions of the domain of the
-        %>                          object function that is to be explored.
+        %>  \param[in]  ndim    :   The input scalar MATLAB integer containing
+        %>                          the number of dimensions of the domain of the
+        %>                          object function that is to be explored.<br>
         %>
         %>  \return
-        %>  `entries `          :   The output scalar MATLAB string containing
+        %>  ``entries``         :   The output scalar MATLAB string containing
         %>                          the simulation specifications converted to
-        %>                          a Fortran-namelist-compatible entry.
+        %>                          a Fortran-namelist-compatible entry.<br>
         %>
         %>  \interface{getEntriesNML}
         %>  \code{.m}
@@ -238,6 +234,7 @@ classdef SpecBase < pm.matlab.Handle
         %>      entries = self.getEntriesNML(ndim)
         %>
         %>  \endcode
+        %>
         %>  \final{getEntriesNML}
         %>
         %>  \author

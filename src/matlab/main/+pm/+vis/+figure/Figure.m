@@ -75,7 +75,7 @@ classdef Figure < pm.matlab.Handle
         %>                              parent object attributes, before calling the ``make()`` method.
         %>
         %>  \return
-        %>  `self`                  :   The output scalar object of class ``pm.vis.figure.Figure``.
+        %>  ``self``                :   The output scalar object of class ``pm.vis.figure.Figure``.
         %>
         %>  \interface{Figure}
         %>  \code{.m}
@@ -111,9 +111,6 @@ classdef Figure < pm.matlab.Handle
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.
         %>                              Note that all of these property-value pairs can be also directly set via the
         %>                              parent object attributes, before calling the ``make()`` method.
-        %>
-        %>  \return
-        %>  `None`
         %>
         %>  \interface{make}
         %>  \code{.m}
@@ -154,7 +151,7 @@ classdef Figure < pm.matlab.Handle
             end
 
             self.fout.figure = figure(kws.figure{:});
-            hold on;
+            %hold on; This interferes with Heatmap plots.
 
             %%%%
             %%%% Resize the figure to allow good default visualization.
@@ -182,13 +179,10 @@ classdef Figure < pm.matlab.Handle
         %>                              Note that all of these property-value pairs can be also directly set via the
         %>                              parent object attributes, before calling the ``make()`` method.
         %>
-        %>  \return
-        %>  `None`
-        %>
         %>  \interface{reset}
         %>  \code{.m}
         %>
-        %>      pm.vis.figure.Figure.reset() # reset the plot to the default settings.
+        %>      pm.vis.figure.Figure.reset() % reset the plot to the default settings.
         %>
         %>  \endcode
         %>
@@ -245,9 +239,6 @@ classdef Figure < pm.matlab.Handle
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.
         %>                              Note that all of these property-value pairs can be also directly set via the
         %>                              parent object attributes, before calling the ``premake()`` method.
-        %>
-        %>  \return
-        %>  `None`
         %>
         %>  \interface{premake}
         %>  \code{.m}
@@ -591,14 +582,13 @@ classdef Figure < pm.matlab.Handle
         %>                                          The input name (title) of the figure to export (e.g. ``'Figure 1'`` or ``'My fig'``).<br>
         %>                                          Overridden by handle (if specified)<br>
         %>                                          The default is the current figure.<br>
-        %>
         %>                              </ol>
         %>
         %>  \return
-        %>  `imageData`         :   The output image cube of type ``uint8`` of
+        %>  ``imageData``       :   The output image cube of type ``uint8`` of
         %>                          shape ``[M, N, C]`` containing the exported figure data.<br>
-        %>  `alpha`             :   The output image matrix of shape ``[M, N]`` of alpha-matte
-        %>                          values in the range ``[0, 1]`` for the case of transparent background.
+        %>  ``alpha``           :   The output image matrix of shape ``[M, N]`` of alpha-matte
+        %>                          values in the range ``[0, 1]`` for the case of transparent background.<br>
         %>
         %>  \interface{savefig}
         %>  \code{.m}

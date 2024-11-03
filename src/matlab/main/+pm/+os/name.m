@@ -1,13 +1,13 @@
 %>  \brief
 %>  Return a MATLAB string containing the name of the current OS.
 %>
-%>  \param[in]  `None`
-%>
 %>  \return
-%>  `str`   :   The output MATLAB string that is either:
-%>              ``"Linux"`` if the OS is Linux.
-%>              ``"Windows"`` if the OS is Windows.
-%>              ``"Darwin"`` if the OS is macOS (Darwin).
+%>  ``str`` :   The output MATLAB string that is either:<br>
+%>              <ol>
+%>                  <li>    ``"Linux"`` if the OS is Linux.
+%>                  <li>    ``"Windows"`` if the OS is Windows.
+%>                  <li>    ``"Darwin"`` if the OS is macOS (Darwin).
+%>              </ol>
 %>
 %>  \interface{name}
 %>  \code{.m}
@@ -15,6 +15,12 @@
 %>      str = pm.os.name()
 %>
 %>  \endcode
+%>
+%>  \example{name}
+%>  \include{lineno} example/os/name/main.m
+%>  \output{name}
+%>  \include{lineno} example/os/name/main.out.m
+%>
 %>  \final{name}
 %>
 %>  \author

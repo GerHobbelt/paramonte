@@ -6,20 +6,18 @@
 %>
 %>  \param[in]  keys    :   The input MATLAB cell array of rank 1 containing
 %>                          the key(s) to search for in the input pair list.
-%>  
 %>  \param[in]  hashmap :   The input cell array of even number of elements
 %>                          containing the ``(key, val)`` pairs of the input
 %>                          ``hashmap`` in sequence as element of the cell array.
 %>  
 %>  \return
-%>  `keyval`            :   The output cell array of even number of elements
+%>  ``keyval``          :   The output cell array of even number of elements
 %>                          containing the ``(key, val)`` pairs of the keys
-%>                          in the input argument ``keys``.
-%>  
-%>  `hashout`           :   The output cell array of even number of elements
+%>                          in the input argument ``keys``.<br>
+%>  ``hashout``         :   The output cell array of even number of elements
 %>                          containing the ``(key, val)`` pairs of the input
 %>                          ``hashmap`` while all instances of keys matching
-%>                          the input ``keys`` along with their values are deleted.
+%>                          the input ``keys`` along with their values are deleted.<br>
 %>
 %>  \interface{popKeyVal}
 %>  \code{.m}
@@ -27,14 +25,11 @@
 %>      [keyval, hashout] = pm.matlab.hashmap.popKeyVal(keys, hashmap)
 %>
 %>  \endcode
-%>  \example{popKeyVal}
 %>
-%>      hashmap = {"key1", 1, "key2", "val2", "key3", false, "key2", "last"};
-%>      [keyval, hashout] = pm.matlab.hashmap.popKeyVal("key2", hashmap)
-%>      [keyval, hashout] = pm.matlab.hashmap.popKeyVal("key3", hashmap)
-%>      [keyval, hashout] = pm.matlab.hashmap.popKeyVal("key3", hashmap(1:4))
-%>      [keyval, hashout] = pm.matlab.hashmap.popKeyVal({"key2", "key1"}, hashmap(1:4))
-%>      [keyval, hashout] = pm.matlab.hashmap.popKeyVal("key2", hashmap(1:3)) % error: odd number of elements.
+%>  \example{popKeyVal}
+%>  \include{lineno} example/matlab/hashmap/popKeyVal/main.m
+%>  \output{popKeyVal}
+%>  \include{lineno} example/matlab/hashmap/popKeyVal/main.out.m
 %>
 %>  \final{popKeyVal}
 %>

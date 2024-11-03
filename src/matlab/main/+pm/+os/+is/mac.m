@@ -1,17 +1,21 @@
 %>  \brief
 %>  Return ``true`` if the current OS is MacOS (Darwin).
 %>
-%>  \param[in]  `None`
-%>
 %>  \return
-%>  `itis`  :   The output MATLAB logical scalar value that is ``true`` 
-%>              if and only if the OS is MacOS (Darwin), otherwise ``false``.
+%>  ``itis``    :   The output MATLAB logical scalar value that is ``true`` 
+%>                  if and only if the OS is MacOS (Darwin), otherwise ``false``.
 %>
 %>  \interface{mac}
 %>  \code{.m}
+%>
 %>      itis = pm.os.is.mac()
 %>
 %>  \endcode
+%>
+%>  \example{mac}
+%>  \include{lineno} example/os/is/main.m
+%>  \output{mac}
+%>  \include{lineno} example/os/is/main.out.m
 %>
 %>  \final{mac}
 %>

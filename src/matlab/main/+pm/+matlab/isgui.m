@@ -10,14 +10,12 @@
 %>
 %>  \warning
 %>  This function relies on functionalities
-%>  that are supported only in MATLAB > 2019a.
-%>
-%>  \param[in]  `None`
+%>  that are supported only in MATLAB ``> 2019a``.
 %>
 %>  \return
-%>  `itis`  :   The output scalar MATLAB logical that is ``true``
-%>              if and only if ParaMonte MATLAB library is being called
-%>              from MATLAB Graphical User Interface (GUI), otherwise, ``false``.
+%>  ``itis``    :   The output scalar MATLAB logical that is ``true``
+%>                  if and only if ParaMonte MATLAB library is being called
+%>                  from MATLAB Graphical User Interface (GUI), otherwise, ``false``.
 %>
 %>  \interface{isgui}
 %>  \code{.m}
@@ -25,6 +23,12 @@
 %>      itis = pm.matlab.isgui()
 %>
 %>  \endcode
+%>
+%>  \example{isgui}
+%>  \include{lineno} example/matlab/isgui/main.m
+%>  \output{isgui}
+%>  \include{lineno} example/matlab/isgui/main.out.m
+%>
 %>  \final{isgui}
 %>
 %>  \author

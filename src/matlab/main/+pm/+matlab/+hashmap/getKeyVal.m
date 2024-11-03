@@ -4,17 +4,18 @@
 %>
 %>  \param[in]  key     :   The input scalar MATLAB string
 %>                          containing the key to search for in the input pair list.
-%>  
+%>
 %>  \param[in]  hashmap :   The input cell array of even number of elements
 %>                          containing the ``(key, val)`` pairs of the hashmap
 %>                          in sequence as element of the cell array.
-%>  
+%>
 %>  \return
-%>  `val`               :   The output MATLAB object stored in the element of the
+%>  ``val``             :   The output MATLAB object stored in the element of the
 %>                          input cell array, whose ``key`` is given as the input.
-%>  `failed`            :   The output scalar MATLAB logical that is ``true``
+%>                          <br>
+%>  ``failed``          :   The output scalar MATLAB logical that is ``true``
 %>                          if and only if the input ``key`` exists in the input ``hashmap``,
-%>                          otherwise, it is ``false``.
+%>                          otherwise, it is ``false``.<br>
 %>                          (**optional**. If missing, ``val`` will remain an empty array ``[]`` on output.)
 %>
 %>  \interface{getKeyVal}
@@ -24,14 +25,15 @@
 %>      [val, failed] = pm.matlab.hashmap.getKeyVal(key, hashmap)
 %>
 %>  \endcode
-%>  \example{getKeyVal}
 %>
-%>      hashmap = {"key1", 1, "key2", "val2", "key3", false};
-%>      [val, failed] = pm.matlab.hashmap.getKeyVal("key2", hashmap) % = "val2"
-%>      [val, failed] = pm.matlab.hashmap.getKeyVal("key3", hashmap) % = false
-%>      [val, failed] = pm.matlab.hashmap.getKeyVal("key3", hashmap(1:4)) % = {}
-%>      [val, failed] = pm.matlab.hashmap.getKeyVal("key2", hashmap(1:4)) % = "val2"
-%>      [val, failed] = pm.matlab.hashmap.getKeyVal("key2", hashmap(1:3)) % error
+%>  \warning
+%>  The length of the input ``hashmap`` must be even.<br>
+%>  Ann odd length of the input cell array will lead to a runtime call to the MATLAB intrinsic ``error()``.<br>
+%>
+%>  \example{getKeyVal}
+%>  \include{lineno} example/matlab/hashmap/getKeyVal/main.m
+%>  \output{getKeyVal}
+%>  \include{lineno} example/matlab/hashmap/getKeyVal/main.out.m
 %>
 %>  \final{getKeyVal}
 %>
@@ -51,7 +53,7 @@ function [val, failed] = getKeyVal(key, hashmap)
                 );
     end
     val = [];
-    if 1 < nargout
+    if  1 < nargout
         failed = true;
     end
     for i = 1 : vararginLen - 1

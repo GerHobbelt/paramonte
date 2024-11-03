@@ -22,6 +22,7 @@
 %>      self = pm.timing.Spinner()
 %>
 %>  \endcode
+%>
 %>  \final{Spinner}
 %>
 %>  \author
@@ -67,7 +68,7 @@ classdef Spinner < pm.matlab.Handle
         %>                              (**optional**, default = ``'|/-\'``)
         %>
         %>  \return
-        %>  `self`  :   The output scalar object of class ``pm.timing.Spinner``.
+        %>  ``self``:   The output scalar object of class ``pm.timing.Spinner``.
         %>
         %>  \interface{Spinner}
         %>  \code{.m}
@@ -75,6 +76,7 @@ classdef Spinner < pm.matlab.Handle
         %>      self = pm.timing.Spinner()
         %>
         %>  \endcode
+        %>
         %>  \final{Spinner}
         %>
         %>  \author
@@ -96,9 +98,6 @@ classdef Spinner < pm.matlab.Handle
         %>  \param[in]  fraction    :   The input scalar MATLAB fractional real (``0 <= fraction <= 1``)
         %>                              representing the fraction of work so far accomplished.
         %>
-        %>  \return
-        %>  `None`
-        %>
         %>  \interface{spin}
         %>  \code{.m}
         %>
@@ -106,6 +105,7 @@ classdef Spinner < pm.matlab.Handle
         %>      spinner.spin(fraction)
         %>
         %>  \endcode
+        %>
         %>  \final{spin}
         %>
         %>  \author

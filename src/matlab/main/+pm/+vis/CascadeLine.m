@@ -29,7 +29,7 @@ classdef CascadeLine < pm.vis.Cascade
         %>  Construct and return an object of class [pm.vis.CascadeLine](@ref CascadeLine).<br>
         %>
         %>  \param[in]  dfref       :   See the documentation of the corresponding input
-        %>                              argument of the class [pm.vis.Plot](@ref Plot).<br>
+        %>                              argument of the class [pm.vis.Subplot](@ref Subplot).<br>
         %>  
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
@@ -40,6 +40,14 @@ classdef CascadeLine < pm.vis.Cascade
         %>  \return
         %>  ``self``                :   The output scalar object of class [pm.vis.CascadeLine](@ref CascadeLine).<br>
         %>
+        %>  \interface{CascadeLine}
+        %>  \code{.m}
+        %>
+        %>      p = pm.vis.CascadeLine(dfref);
+        %>      p = pm.vis.CascadeLine(dfref, varargin);
+        %>
+        %>  \endcode
+        %>
         %>  \note
         %>  The input ``varargin`` can also contain the components
         %>  of the ``template`` component of the parent object.<br>
@@ -48,13 +56,12 @@ classdef CascadeLine < pm.vis.Cascade
         %>  See the documentation of the attributes
         %>  of the superclass [pm.vis.Cascade](@ref Cascade).<br>
         %>
-        %>  \interface{CascadeLine}
-        %>  \code{.m}
-        %>
-        %>      p = pm.vis.CascadeLine(dfref);
-        %>      p = pm.vis.CascadeLine(dfref, varargin);
-        %>
-        %>  \endcode
+        %>  \example{CascadeLine}
+        %>  \include{lineno} example/vis/CascadeLine/main.m
+        %>  \vis{CascadeLine}
+        %>  \image html example/vis/CascadeLine/CascadeLine.window.1.png width=700
+        %>  \image html example/vis/CascadeLine/CascadeLine.window.2.png width=700
+        %>  \image html example/vis/CascadeLine/CascadeLine.window.3.png width=700
         %>
         %>  \final{CascadeLine}
         %>

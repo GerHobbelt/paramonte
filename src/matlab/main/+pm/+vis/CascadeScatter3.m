@@ -29,9 +29,9 @@ classdef CascadeScatter3 < pm.vis.Cascade
         %>  Construct and return an object of class [pm.vis.CascadeScatter3](@ref CascadeScatter3).<br>
         %>
         %>  \param[in]  dfref       :   See the documentation of the corresponding input
-        %>                              argument of the class [pm.vis.Plot](@ref Plot).<br>
+        %>                              argument of the class [pm.vis.Subplot](@ref Subplot).<br>
         %>  
-        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.
+        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
         %>                              Note that all of these property-value pairs can be also directly set via the
@@ -39,6 +39,14 @@ classdef CascadeScatter3 < pm.vis.Cascade
         %>
         %>  \return
         %>  ``self``                :   The output scalar object of class [pm.vis.CascadeScatter3](@ref CascadeScatter3).<br>
+        %>
+        %>  \interface{CascadeScatter3}
+        %>  \code{.m}
+        %>
+        %>      s = pm.vis.CascadeScatter3(dfref);
+        %>      s = pm.vis.CascadeScatter3(dfref, varargin);
+        %>
+        %>  \endcode
         %>
         %>  \note
         %>  The input ``varargin`` can also contain the components
@@ -48,13 +56,12 @@ classdef CascadeScatter3 < pm.vis.Cascade
         %>  See the documentation of the attributes
         %>  of the superclass [pm.vis.Cascade](@ref Cascade).<br>
         %>
-        %>  \interface{CascadeScatter3}
-        %>  \code{.m}
-        %>
-        %>      s = pm.vis.CascadeScatter3(dfref);
-        %>      s = pm.vis.CascadeScatter3(dfref, varargin);
-        %>
-        %>  \endcode
+        %>  \example{CascadeScatter3}
+        %>  \include{lineno} example/vis/CascadeScatter3/main.m
+        %>  \vis{CascadeScatter3}
+        %>  \image html example/vis/CascadeScatter3/CascadeScatter3.window.1.png width=700
+        %>  \image html example/vis/CascadeScatter3/CascadeScatter3.window.2.png width=700
+        %>  \image html example/vis/CascadeScatter3/CascadeScatter3.window.3.png width=700
         %>
         %>  \final{CascadeScatter3}
         %>

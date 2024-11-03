@@ -29,7 +29,7 @@ classdef CascadeHistfit < pm.vis.Cascade
         %>  Construct and return an object of class [pm.vis.CascadeHistfit](@ref CascadeHistfit).<br>
         %>
         %>  \param[in]  dfref       :   See the documentation of the corresponding input
-        %>                              argument of the class [pm.vis.Plot](@ref Plot).<br>
+        %>                              argument of the class [pm.vis.Subplot](@ref Subplot).<br>
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
@@ -54,6 +54,13 @@ classdef CascadeHistfit < pm.vis.Cascade
         %>  \note
         %>  The input ``varargin`` can also contain the components
         %>  of the ``template`` component of the parent object.<br>
+        %>
+        %>  \example{CascadeHistfit}
+        %>  \include{lineno} example/vis/CascadeHistfit/main.m
+        %>  \vis{CascadeHistfit}
+        %>  \image html example/vis/CascadeHistfit/CascadeHistfit.window.1.png width=700
+        %>  \image html example/vis/CascadeHistfit/CascadeHistfit.window.2.png width=700
+        %>  \image html example/vis/CascadeHistfit/CascadeHistfit.window.3.png width=700
         %>
         %>  \final{CascadeHistfit}
         %>

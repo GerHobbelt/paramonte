@@ -29,7 +29,7 @@ classdef CascadeLineScatter3 < pm.vis.Cascade
         %>  Construct and return an object of class [pm.vis.CascadeLineScatter3](@ref CascadeLineScatter3).<br>
         %>
         %>  \param[in]  dfref       :   See the documentation of the corresponding input
-        %>                              argument of the class [pm.vis.Plot](@ref Plot).<br>
+        %>                              argument of the class [pm.vis.Subplot](@ref Subplot).<br>
         %>  
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
@@ -40,6 +40,14 @@ classdef CascadeLineScatter3 < pm.vis.Cascade
         %>  \return
         %>  ``self``                :   The output scalar object of class [pm.vis.CascadeLineScatter3](@ref CascadeLineScatter3).<br>
         %>
+        %>  \interface{CascadeLineScatter3}
+        %>  \code{.m}
+        %>
+        %>      p = pm.vis.CascadeLineScatter3(dfref);
+        %>      p = pm.vis.CascadeLineScatter3(dfref, varargin);
+        %>
+        %>  \endcode
+        %>
         %>  \note
         %>  The input ``varargin`` can also contain the components
         %>  of the ``template`` component of the parent object.<br>
@@ -48,13 +56,12 @@ classdef CascadeLineScatter3 < pm.vis.Cascade
         %>  See the documentation of the attributes
         %>  of the superclass [pm.vis.Cascade](@ref Cascade).<br>
         %>
-        %>  \interface{CascadeLineScatter3}
-        %>  \code{.m}
-        %>
-        %>      p = pm.vis.CascadeLineScatter3(dfref);
-        %>      p = pm.vis.CascadeLineScatter3(dfref, varargin);
-        %>
-        %>  \endcode
+        %>  \example{CascadeLineScatter3}
+        %>  \include{lineno} example/vis/CascadeLineScatter3/main.m
+        %>  \vis{CascadeLineScatter3}
+        %>  \image html example/vis/CascadeLineScatter3/CascadeLineScatter3.window.1.png width=700
+        %>  \image html example/vis/CascadeLineScatter3/CascadeLineScatter3.window.2.png width=700
+        %>  \image html example/vis/CascadeLineScatter3/CascadeLineScatter3.window.3.png width=700
         %>
         %>  \final{CascadeLineScatter3}
         %>

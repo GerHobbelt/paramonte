@@ -29,16 +29,24 @@ classdef CascadeHistogram < pm.vis.Cascade
         %>  Construct and return an object of class [pm.vis.CascadeHistogram](@ref CascadeHistogram).<br>
         %>
         %>  \param[in]  dfref       :   See the documentation of the corresponding input
-        %>                              argument of the class [pm.vis.Plot](@ref Plot).<br>
+        %>                              argument of the class [pm.vis.Subplot](@ref Subplot).<br>
         %>
-        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.
+        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
         %>                              Note that all of these property-value pairs can be also directly set via the
         %>                              parent object attributes, before calling the ``make()`` method.<br>
-        %><br>
+        %>
         %>  \return
         %>  ``self``                :   The output scalar object of class [pm.vis.CascadeHistogram](@ref CascadeHistogram).<br>
+        %>
+        %>  \interface{CascadeHistogram}
+        %>  \code{.m}
+        %>
+        %>      p = pm.vis.CascadeHistogram(dfref);
+        %>      p = pm.vis.CascadeHistogram(dfref, varargin);
+        %>
+        %>  \endcode
         %>
         %>  \note
         %>  The input ``varargin`` can also contain the components
@@ -48,13 +56,12 @@ classdef CascadeHistogram < pm.vis.Cascade
         %>  See the documentation of the attributes
         %>  of the superclass [pm.vis.Cascade](@ref Cascade).<br>
         %>
-        %>  \interface{CascadeHistogram}
-        %>  \code{.m}
-        %>
-        %>      p = pm.vis.CascadeHistogram(dfref);
-        %>      p = pm.vis.CascadeHistogram(dfref, varargin);
-        %>
-        %>  \endcode
+        %>  \example{CascadeHistogram}
+        %>  \include{lineno} example/vis/CascadeHistogram/main.m
+        %>  \vis{CascadeHistogram}
+        %>  \image html example/vis/CascadeHistogram/CascadeHistogram.window.1.png width=700
+        %>  \image html example/vis/CascadeHistogram/CascadeHistogram.window.2.png width=700
+        %>  \image html example/vis/CascadeHistogram/CascadeHistogram.window.3.png width=700
         %>
         %>  \final{CascadeHistogram}
         %>

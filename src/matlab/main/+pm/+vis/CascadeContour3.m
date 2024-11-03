@@ -29,7 +29,7 @@ classdef CascadeContour3 < pm.vis.Cascade
         %>  Construct and return an object of class [pm.vis.CascadeContour3](@ref CascadeContour3).<br>
         %>
         %>  \param[in]  dfref       :   See the documentation of the corresponding input
-        %>                              argument of the class [pm.vis.Plot](@ref Plot).<br>
+        %>                              argument of the class [pm.vis.Subplot](@ref Subplot).<br>
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
         %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
@@ -61,7 +61,6 @@ classdef CascadeContour3 < pm.vis.Cascade
         %>  \image html example/vis/CascadeContour3/CascadeContour3.window.1.png width=700
         %>  \image html example/vis/CascadeContour3/CascadeContour3.window.2.png width=700
         %>  \image html example/vis/CascadeContour3/CascadeContour3.window.3.png width=700
-        %>  \image html example/vis/CascadeContour3/CascadeContour3.window.4.png width=700
         %>
         %>  \final{CascadeContour3}
         %>

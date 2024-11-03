@@ -1,15 +1,12 @@
-%>  \brief
-%>  pm.matlab - This ParaMonte MATLAB module contains
-%>  routines and data related to the MATLAB language.
+%>  \dir
 %>
-%>  \details
-%>  pm.matlab.has - module.
-%>  pm.matlab.hashmap - module.
-%>  pm.matlab.struct - module.
-%>  pm.matlab.iscmd - function.
-%>  pm.matlab.isgui - function.
-%>  pm.matlab.Handle - class.
-%>  pm.matlab.release - function.
+%>  \brief
+%>  The ParaMonte MATLAB package ``pm.matlab`` contains
+%>  a set of routines related to the MATLAB programming language.
+%>
+%>  \note
+%>  For more information on the existing functionalities,
+%>  see the documentations of the package members.
 %>
 %>  \final{pm.matlab}
 %>

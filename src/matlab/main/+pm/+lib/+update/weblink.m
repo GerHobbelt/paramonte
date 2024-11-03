@@ -21,6 +21,12 @@
 %>      str = pm.lib.update.weblink()
 %>
 %>  \endcode
+%>
+%>  \example{weblink}
+%>  \include{lineno} example/lib/update/weblink/main.m
+%>  \output{weblink}
+%>  \include{lineno} example/lib/update/weblink/main.out.m
+%>
 %>  \final{weblink}
 %>
 %>  \author

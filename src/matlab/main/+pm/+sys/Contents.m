@@ -1,15 +1,12 @@
+%>  \dir
+%>
 %>  \brief
-%>  pm.sys - This ParaMonte MATLAB module contains
-%>  routines and data related to string manipulation.
+%>  The ParaMonte MATLAB package ``pm.sys`` contains
+%>  a set of routines and data related to system tasks.
 %>
-%>  Contents
-%>  --------
-%>
-%>      pm.sys.bash_profile - module.
-%>      pm.sys.bashrc - module.
-%>      pm.sys.path - module.
-%>      pm.sys.arch - function.
-%>      pm.sys.info - function.
+%>  \note
+%>  For more information on the existing functionalities,
+%>  see the documentations of the package members.
 %>
 %>  \final{pm.sys}
 %>

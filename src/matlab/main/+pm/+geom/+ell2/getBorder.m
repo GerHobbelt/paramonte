@@ -39,7 +39,6 @@
 %>
 %>  \example{getBorder}
 %>  \include{lineno} example/geom/ell2/getBorder/main.m
-%>  \matlabrun{getBorder}
 %>  \vis{getBorder}
 %>  \image html example/geom/ell2/getBorder/getBorder.2d.png width=700
 %>  \image html example/geom/ell2/getBorder/getBorder.3d.png width=700
@@ -48,7 +47,7 @@
 %>  \final{getBorder}
 %>
 %>  \author
-%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin
+%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 function bcrd = getBorder(gramian, center, npnt)
     if  nargin < 3
         npnt = [];

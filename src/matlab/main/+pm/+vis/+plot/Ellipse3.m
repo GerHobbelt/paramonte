@@ -6,13 +6,13 @@
 classdef Ellipse3 < pm.vis.plot.Plot
     methods(Access = public)
         %>
-        %>  \param[in]  gramian     :   See the corresponding input argument to the class ``pm.vis.subplot.Ellipse3``.
+        %>  \param[in]  gramian     :   See the corresponding input argument to the class [pm.vis.subplot.Ellipse3](@ref Ellipse3).
         %>  
-        %>  \param[in]  center      :   See the corresponding input argument to the class ``pm.vis.subplot.Ellipse3``.
+        %>  \param[in]  center      :   See the corresponding input argument to the class [pm.vis.subplot.Ellipse3](@ref Ellipse3).
         %>  
-        %>  \param[in]  zval        :   See the corresponding input argument to the class ``pm.vis.subplot.Ellipse3``.
+        %>  \param[in]  zval        :   See the corresponding input argument to the class [pm.vis.subplot.Ellipse3](@ref Ellipse3).
         %>  
-        %>  \param[in]  cval        :   See the corresponding input argument to the class ``pm.vis.subplot.Ellipse3``.
+        %>  \param[in]  cval        :   See the corresponding input argument to the class [pm.vis.subplot.Ellipse3](@ref Ellipse3).
         %>  
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
@@ -26,10 +26,10 @@ classdef Ellipse3 < pm.vis.plot.Plot
         %>
         %>  \note
         %>  See below and also the documentation of the
-        %>  attributes of the superclass ``pm.vis.figure.Figure``.
+        %>  attributes of the superclass [pm.vis.figure.Figure](@ref Figure).
         %>
         %>  \return
-        %>  An object of class ``pm.vis.plot.Ellipse3``.
+        %>  An object of class [pm.vis.plot.Ellipse3](@ref Ellipse3).
         %>
         %>  \interface{Ellipse3}
         %>  \code{.m}

@@ -15,19 +15,19 @@ classdef Paradram < pm.sampling.Sampler
         %>  \brief
         %>  Generate and return an instance of the serial and parallel
         %>  Delayed-Rejection Adaptive Metropolis-Hastings Markov Chain Monte Carlo
-        %>  sampler of the ParaMonte MATLAB library.
+        %>  sampler of the ParaMonte MATLAB library.<br>
         %>
         %>  \details
         %>  This function is the constructor of the [pm.sampling.Paradram](@ref Paradram) sampler class.<br>
         %>  Once you assign the desired simulation specifications to the corresponding attributes within the
-        %>  component `spec` of an object of class ``pm.sampling.Paradram``, call the ParaDRAM sampler
-        %>  via the object method [pm.sampling.Paradram.run()](@ref Paradram::run).<br>
+        %>  component `spec` of an object of class [pm.sampling.Paradram](@ref Paradram), call the ParaDRAM
+        %>  sampler via the object method [pm.sampling.Paradram.run()](@ref Paradram::run).<br>
         %>
         %>  While the constructor of this class does not take any input arguments,
-        %>  all ParaDRAM simulation specifications can be set after creating the object.
+        %>  all ParaDRAM simulation specifications can be set after creating the object.<br>
         %>
         %>  \return
-        %>  ``sampler`` :   The output scalar object of class [pm.sampling.Paradram](@ref Paradram).
+        %>  ``sampler`` :   The output scalar object of class [pm.sampling.Paradram](@ref Paradram).<br>
         %>
         %>  \interface{Paradram}
         %>  \code{.m}
@@ -239,6 +239,7 @@ classdef Paradram < pm.sampling.Sampler
         %>
         %>  \example{himmelblau}
         %>  \include{lineno} example/sampling/Paradram/himmelblau/main.m
+        %>  \output{himmelblau}
         %>  \include{lineno} example/sampling/Paradram/himmelblau/main.out.m
         %>  \vis{himmelblau}
         %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.domain.png width=700

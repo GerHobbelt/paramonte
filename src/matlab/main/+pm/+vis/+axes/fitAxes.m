@@ -21,17 +21,11 @@
 %>
 %>  \endcode
 %>
-%>  \example{fitAxes}
-%>
-%>      pm.vis.fitAxes()
-%>
 %>  \final{fitAxes}
 %>
 %>  This function build upon the work of,
-%>
-%>  Richard Crozier (2024). tightfig (hfig)
-%>  (https://www.mathworks.com/matlabcentral/fileexchange/34055-tightfig-hfig),
-%>  MATLAB Central File Exchange. Retrieved May 12, 2024.
+%>  Richard Crozier (2024) [tightfig (hfig)](https://www.mathworks.com/matlabcentral/fileexchange/34055-tightfig-hfig),
+%>  MATLAB Central File Exchange. Retrieved May 12, 2024.<br>
 %>
 %>  \author
 %>  \JoshuaOsborne, May 21 2024, 6:12 AM, University of Texas at Arlington<br>
@@ -196,6 +190,8 @@ function fitAxes(fig)
     % set(fig, 'WindowStyle', origwindowstyle);
 end
 
+%>  \cond excluded
+
 function [pos, ti] = colorbarpos(hcbar)
     % 1 point is 0.3528 mm
     pos = hcbar.Position;
@@ -231,3 +227,5 @@ function [pos, ti] = colorbarpos(hcbar)
         end
     end
 end
+
+%>  \endcond

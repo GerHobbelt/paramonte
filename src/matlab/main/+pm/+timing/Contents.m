@@ -1,12 +1,12 @@
 %>  \dir
 %>
 %>  \brief
-%>  The ParaMonte MATLAB package ``pm.timing`` contains
-%>  a set of routines and data related to timing tasks.
+%>  The ParaMonte MATLAB package [pm.timing](@ref \psldir/main/+pm/+timing)
+%>  contains a set of routines and data related to timing tasks.<br>
 %>
 %>  \note
 %>  For more information on the existing functionalities,
-%>  see the documentations of the package members.
+%>  see the documentations of the package members.<br>
 %>
 %>  \final{pm.timing}
 %>

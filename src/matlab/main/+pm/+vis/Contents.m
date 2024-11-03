@@ -1,18 +1,18 @@
 %>  \dir
 %>
 %>  \brief
-%>  The ParaMonte MATLAB package ``pm.vis`` contains
-%>  a set of routines and data related to data visualization tasks.
+%>  The ParaMonte MATLAB package [pm.vis](@ref \psldir/main/+pm/+vis) contains
+%>  a set of routines and data related to data visualization tasks.<br>
 %>
 %>  \details
-%>  Specifically, the main goal of the routines and classes of
-%>  this package is to simplify and automate much of the
-%>  complexities of massive data visualization tasks,
-%>  such as those encountered in statistical sampling.
+%>  Specifically, the main goal of the routines and
+%>  classes of this package is to simplify and automate much
+%>  of the complexities of massive data visualization tasks,
+%>  such as those encountered in statistical sampling.<br>
 %>
 %>  \note
 %>  For more information on the existing functionalities,
-%>  see the documentations of the package members.
+%>  see the documentations of the package members.<br>
 %>
 %>  \final{pm.vis}
 %>

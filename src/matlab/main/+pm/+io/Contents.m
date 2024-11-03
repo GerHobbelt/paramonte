@@ -1,12 +1,12 @@
 %>  \dir
 %>
 %>  \brief
-%>  The ParaMonte MATLAB package ``pm.io`` contains
-%>  a set of routines and data related to file IO.
+%>  The ParaMonte MATLAB package [pm.io](@ref \psldir/main/+pm/+io)
+%>  contains a set of routines and data related to file IO.<br>
 %>
 %>  \note
 %>  For more information on the existing functionalities,
-%>  see the documentations of the package members.
+%>  see the documentations of the package members.<br>
 %>
 %>  \final{pm.io}
 %>

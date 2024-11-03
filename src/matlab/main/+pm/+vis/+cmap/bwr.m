@@ -8,7 +8,7 @@
 %>  with positive and negative values.<br>
 %>
 %>  \param[in]  nell    :   The input scalar MATLAB integer representing
-%>                          the number of rows of the output colormap matrix.<br>
+%>                          the number of elements (rows) of the output colormap matrix.<br>
 %>                          (**optional**, default = ``size(get(gcf, 'colormap'), 1)``)
 %>  \param[in]  clim    :   The input vector length ``2`` of MATLAB doubles
 %>                          representing the color limits of the output colormap.<br>
@@ -16,7 +16,7 @@
 %>
 %>  \return
 %>  ``cmap``            :   The output blue-white-red colormap matrix
-%>                          of shape ``[nell, 3]`` containing a **cold** colormap.
+%>                          of shape ``[nell, 3]`` containing a **cold** colormap.<br>
 %>
 %>  \interface{bwr}
 %>  \code{.m}
@@ -27,64 +27,48 @@
 %>
 %>  \endcode
 %>
+%>  \see
+%>  MATLAB intrinsic functions ``hsv()``, ``hot()``, ``cool()``, ``bone()``, ``copper()``, ``pink()``, ``flag()``, ``colormap()``, ``rgbplot()``.<br>
 %>
 %>  \example{bwr}
-%>
-%>      figure("color", "white");
-%>      imagesc(peaks(500));
-%>      colormap(pm.vis.cmap.bwr(256));
-%>      colorbar;
-%>
-%>      figure("color", "white");
-%>      imagesc(peaks(500), [0, 8]);
-%>      colormap(pm.vis.cmap.bwr());
-%>      colorbar;
-%>
-%>      figure("color", "white");
-%>      imagesc(peaks(250), [-6, 0]);
-%>      colormap(pm.vis.cmap.bwr());
-%>      colorbar;
-%>
-%>      figure("color", "white");
-%>      surf(peaks);
-%>      colormap(pm.vis.cmap.bwr());
-%>      axis("tight");
-%>
-%>  See also hsv, hot, cool, bone, copper, pink, flag, colormap, rgbplot.
+%>  \include{lineno} example/vis/cmap/bwr/main.m
+%>  \vis{bwr}
+%>  \image html example/vis/cmap/bwr/bwr.1.png width=700
+%>  \image html example/vis/cmap/bwr/bwr.2.png width=700
+%>  \image html example/vis/cmap/bwr/bwr.3.png width=700
+%>  \image html example/vis/cmap/bwr/bwr.4.png width=700
 %>
 %>  \final{bwr}
+%>
+%>  Copyright (c) 2009, Nathan Childress
+%>  All rights reserved.
+%>
+%>  Redistribution and use in source and binary forms, with or without
+%>  modification, are permitted provided that the following conditions are
+%>  met:
+%>
+%>  * Redistributions of source code must retain the above copyright
+%>    notice, this list of conditions and the following disclaimer.
+%>  * Redistributions in binary form must reproduce the above copyright
+%>    notice, this list of conditions and the following disclaimer in
+%>    the documentation and/or other materials provided with the distribution
+%>
+%>  This software is provided by the copyright holders and contributors "as is"
+%>  and any express or implied warranties, including, but not limited to, the
+%>  implied warranties of merchantability and fitness for a particular purpose
+%>  are disclaimed. in no event shall the copyright owner or contributors be
+%>  liable for any direct, indirect, incidental, special, exemplary, or
+%>  consequential damages (including, but not limited to, procurement of
+%>  substitute goods or services; loss of use, data, or profits; or business
+%>  interruption) however caused and on any theory of liability, whether in
+%>  contract, strict liability, or tort (including negligence or otherwise)
+%>  arising in any way out of the use of this software, even if advised of the
+%>  possibility of such damage.
 %>
 %>  \author
 %>  \JoshuaOsborne, May 21 2024, 7:40 AM, University of Texas at Arlington<br>
 %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
 %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
-%>      Originally by:
-%>
-%>          Copyright (c) 2009, Nathan Childress
-%>          All rights reserved.
-%>
-%>          Redistribution and use in source and binary forms, with or without
-%>          modification, are permitted provided that the following conditions are
-%>          met:
-%>
-%>              * Redistributions of source code must retain the above copyright
-%>                notice, this list of conditions and the following disclaimer.
-%>              * Redistributions in binary form must reproduce the above copyright
-%>                notice, this list of conditions and the following disclaimer in
-%>                the documentation and/or other materials provided with the distribution
-%>
-%>          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-%>          AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-%>          IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-%>          ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-%>          LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-%>          CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-%>          SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-%>          INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-%>          CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-%>          ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-%>          POSSIBILITY OF SUCH DAMAGE.
-%>
 function newmap = bwr(nell, clim)
 
     if nargin < 1 || isempty(nell)

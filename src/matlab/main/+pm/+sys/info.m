@@ -11,7 +11,7 @@
 %>                  \endcode
 %>                  where,<br>
 %>                  <ol>
-%>                      <li>    ``<DIR>`` is replaced by the directory containing the function [pm.sys.info.cache](@ref cache),
+%>                      <li>    ``<DIR>`` is replaced by the directory containing the function [pm.sys.info()](@ref info),
 %>                      <li>    ``<YEAR>`` is replaced by the current year,
 %>                      <li>    ``<MONTH>`` is replaced by the current month.
 %>                  </ol>
@@ -25,6 +25,11 @@
 %>      [str, cache] = pm.sys.info()
 %>
 %>  \endcode
+%>
+%>  \example{info}
+%>  \include{lineno} example/sys/info/main.m
+%>  \output{info}
+%>  \include{lineno} example/sys/info/main.out.m
 %>
 %>  \final{info}
 %>

@@ -7,11 +7,11 @@ classdef Histfit < pm.vis.plot.Plot
     methods(Access = public)
         %>
         %>  \param[in]  dfref       :   See the documentation of the corresponding input
-        %>                              argument of the superclass ``pm.vis.plot.Plot``.
+        %>                              argument of the superclass [pm.vis.plot.Plot](@ref Plot).
         %>
         %>  \note
         %>  See the documentation of the attributes
-        %>  of the superclass ``pm.vis.plot.Plot``.
+        %>  of the superclass [pm.vis.plot.Plot](@ref Plot).
         %>
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
@@ -24,7 +24,7 @@ classdef Histfit < pm.vis.plot.Plot
         %>  of the ``subplot`` component of the parent object.
         %>
         %>  \return
-        %>  An object of ``pm.vis.plot.Histfit`` class.
+        %>  An object of [pm.vis.plot.Histfit](@ref Histfit) class.
         %>
         %>  \interface{Histfit}
         %>  \code{.m}

@@ -44,7 +44,7 @@ classdef Plot < pm.vis.figure.Figure
         %>  of the ``subplot`` component of the parent object.<br>
         %>
         %>  \return
-        %>  ``self``                :   The output scalar object of class ``pm.vis.plot.Plot``.<br>
+        %>  ``self``                :   The output scalar object of class [pm.vis.plot.Plot](@ref Plot).<br>
         %>
         %>  \interface{Plot}
         %>  \code{.m}
@@ -55,7 +55,7 @@ classdef Plot < pm.vis.figure.Figure
         %>
         %>  \note
         %>  See the list of class attributes below,
-        %>  also those of the superclass ``pm.vis.figure.Figure``.<br>
+        %>  also those of the superclass [pm.vis.figure.Figure](@ref Figure).<br>
         %>
         %>  \final{Plot}
         %>

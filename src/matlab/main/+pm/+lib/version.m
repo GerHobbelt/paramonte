@@ -60,11 +60,9 @@
 %>
 %>  \author
 %>  \JoshuaOsborne, May 21 2024, 8:13 PM, University of Texas at Arlington<br>
-%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
 %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 function vernum = version(lang, type)
-
-    persistent vernum_persistent;
 
     if  nargin < 2
         type = [];
@@ -83,30 +81,39 @@ function vernum = version(lang, type)
         lang = "matlab";
     end
 
-    if  isempty(vernum_persistent)
-        vernum_persistent = struct();
-    end
+    % persistent vernum_persistent;
+    % if  isempty(vernum_persistent)
+    %     vernum_persistent = struct();
+    % end
+    %
+    % if ~isfield(vernum_persistent, lang)
+    %     try
+    %         fid = fopen(fullfile(pm.lib.path.auxil(), "VERSION." + lang + ".md"));
+    %         vernum_persistent.(lang) = string(strip(fgetl(fid)));
+    %         fclose(fid);
+    %     catch
+    %         vernum_persistent.(lang) = "UNKNOWN";
+    %     end
+    % end
+    %
+    % vernum = vernum_persistent.(lang);
 
-    if ~isfield(vernum_persistent, lang)
-        try
-            fid = fopen(fullfile(pm.lib.path.auxil(), "VERSION." + lang + ".md"));
-            vernum_persistent.(lang) = string(strip(fgetl(fid)));
-            fclose(fid);
-        catch
-            vernum_persistent.(lang) = "UNKNOWN";
-            return;
-        end
+    try
+        version_file = fullfile(pm.lib.path.auxil(), "VERSION." + lang + ".md");
+        fid = fopen(version_file);
+        vernum = string(strip(fgetl(fid)));
+        fclose(fid);
+    catch
+        vernum = "UNKNOWN";
     end
-
-    vernum = vernum_persistent.(lang);
 
     if ~strcmp(type, "all")
         triplet = strsplit(vernum, ".");
         if  strcmp(type, "major")
             vernum = string(triplet(1));
-        elseif strcmp(type, "minor")
+        elseif strcmp(type, "minor") && numel(triplet) > 1
             vernum = string(triplet(2));
-        elseif strcmp(type, "patch")
+        elseif strcmp(type, "patch") && numel(triplet) > 2
             vernum = string(triplet(3));
         end
     end

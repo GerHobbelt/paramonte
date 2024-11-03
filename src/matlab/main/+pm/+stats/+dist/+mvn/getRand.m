@@ -9,7 +9,6 @@
 %>                          representing the mean of a Multivariate Normal
 %>                          distribution in ``size(mean)`` dimensional space.<br>
 %>                          (**optional**. default = ``[]``. It must be present if ``cholow`` is missing.)
-%>
 %>  \param[in]  cholow  :   The input square matrix of MATLAB ``real``,
 %>                          representing the lower-triangle of the Cholesky
 %>                          factorization of the covariance matrix of the target
@@ -17,7 +16,6 @@
 %>                          This argument can be obtained by passing the covariance matrix ``covmat``
 %>                          of the distribution to the MATLAB intrinsic function ``chol(covmat, "lower")``.<br>
 %>                          (**optional**. default = ``[]``. It must be present if ``mean`` is missing.)
-%>
 %>  \param[in]  s1      :   The input vector of MATLAB ``real``,
 %>                          representing the mean of a Multivariate Normal
 %>                          distribution in ``size(mean)`` dimensional space.<br>
@@ -25,7 +23,7 @@
 %>
 %>  \return
 %>  ``rand``            :   The output vector of MATLAB ``real`` of
-%>                          size ``(size(mean), 1)`` containing a random vector
+%>                          shape ``(numel(mean), 1)`` containing a random vector
 %>                          from the specified Multivariate Normal distribution.<br>
 %>
 %>  \interface{getRand}
@@ -50,7 +48,7 @@
 %>
 %>  \author
 %>  \JoshuaOsborne, May 21 2024, 12:06 AM, University of Texas at Arlington<br>
-%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
 %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 function rand = getRand(mean, cholow, s1)
     if  nargin < 3

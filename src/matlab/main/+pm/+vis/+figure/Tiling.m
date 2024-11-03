@@ -1,66 +1,40 @@
 %>  \brief
-%>  This is the abstract class for generating instances
-%>  of figures containing a tile of subplots.
-%>
-%>  \param[in]  subplot     :   The input cell matrix of MATLAB objects of superclass [pm.vis.subplot.Subplot](@ref Subplot).
-%>  
-%>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.
-%>                              If the property is a ``struct()``, then its value must be given as a cell array,
-%>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.
-%>                              Note that all of these property-value pairs can be also directly set via the
-%>                              parent object attributes, before calling the ``make()`` method.
-%>
-%>  \return
-%>  ``self``                :   The output scalar object of class [pm.vis.figure.Tiling](@ref Tiling).
-%>
-%>  \interface{Tiling}
-%>  \code{.m}
-%>
-%>      plot = [pm.vis.figure.Tiling](@ref Tiling)(subplot);
-%>
-%>  \endcode
+%>  This is the base class for generating instances
+%>  of figures containing a tile of subplots.<br>
 %>
 %>  \note
 %>  See the list of class attributes below,
-%>  also those of the superclass [pm.vis.figure.Figure](@ref Figure).
+%>  also those of the superclass [pm.vis.figure.Figure](@ref Figure).<br>
 %>
-%>  \final{Tiling}
+%>  \note
+%>  See also the documentation of the constructor of the class [pm.vis.figure.Tiling::Tiling](@ref Tiling::Tiling).<br>
+%>
+%>  \final
 %>
 %>  \author
 %>  \JoshuaOsborne, May 21 2024, 9:20 AM, University of Texas at Arlington<br>
+%>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
+%>  \AmirShahmoradi, July 7 2024, 12:53 AM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
 classdef Tiling < pm.vis.figure.Figure
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties(Access = public)
         %>
-        %>  \param[in]  tiledlayout :   A MATLAB ``struct`` whose fields and values are passed
-        %>                              as keyword arguments to the MATLAB intrinsic ``tiledlayout()``.
+        %>  ``tiledlayout``
+        %>
+        %>  A MATLAB ``struct`` whose fields and values are passed
+        %>  as keyword arguments to the MATLAB intrinsic ``tiledlayout()``.<br>
         %>
         tiledlayout = [];
         %>
-        %>  \param[in]  subplot     :   The MATLAB cell matrix containing objects of superclass [pm.vis.subplot.Subplot](@ref Subplot)
-        %>                              each of which represents one subplot axes to display in the figure.
+        %>  ``subplot``
+        %>
+        %>  The MATLAB cell matrix containing objects of superclass [pm.vis.Subplot](@ref Subplot)
+        %>  each of which represents one subplot axes to display in the figure.<br>
         %>
         subplot = cell(0, 0);
     end
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    %properties(Access = public, Hidden)
-    %    %
-    %    %       ncol
-    %    %
-    %    %           The MATLAB scalar whole-number whose value represents ``size(self.subplot, 2)``.
-    %    %
-    %    ncol = [];
-    %    %
-    %    %       nrow
-    %    %
-    %    %           The MATLAB scalar whole-number whose value represents ``size(self.subplot, 1)``.
-    %    %
-    %    nrow = [];
-    %end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -68,6 +42,38 @@ classdef Tiling < pm.vis.figure.Figure
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+        %>  \brief
+        %>  Construct and return an object of class [pm.vis.figure.Tiling](@ref Tiling).<br>
+        %>
+        %>  \details
+        %>  This is the constructor of the class [pm.vis.figure.Tiling](@ref Tiling).<br>
+        %>
+        %>  \param[in]  subplot     :   The input cell matrix of MATLAB objects of superclass [pm.vis.Subplot](@ref Subplot).<br>
+        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
+        %>                              If the property is a ``struct()``, then its value must be given as a cell array,
+        %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
+        %>                              Note that all of these property-value pairs can be also directly set via the
+        %>                              parent object attributes, before calling the ``make()`` method.<br>
+        %>
+        %>  \return
+        %>  ``self``                :   The output scalar object of class [pm.vis.figure.Tiling](@ref Tiling).<br>
+        %>
+        %>  \interface{Tiling}
+        %>  \code{.m}
+        %>
+        %>      t = pm.vis.figure.Tiling(subplot);
+        %>      t = pm.vis.figure.Tiling(subplot, varargin);
+        %>
+        %>  \endcode
+        %>
+        %>  \note
+        %>  See the list of class attributes below,
+        %>  also those of the superclass [pm.vis.figure.Figure](@ref Figure).<br>
+        %>
+        %>  \final{Tiling}
+        %>
+        %>  \author
+        %>  \JoshuaOsborne, May 21 2024, 9:20 AM, University of Texas at Arlington<br>
         function self = Tiling(subplot, varargin)
             if  nargin < 1
                 subplot = cell(0, 0);
@@ -76,7 +82,7 @@ classdef Tiling < pm.vis.figure.Figure
             if ~failed
                 for irow = 1 : size(subplot, 1)
                     for icol = 1 : size(subplot, 2)
-                        failed = ~isempty(subplot{irow, icol}) && ~pm.introspection.istype(subplot{irow, icol}, "pm.vis.subplot.Subplot");
+                        failed = ~isempty(subplot{irow, icol}) && ~pm.introspection.istype(subplot{irow, icol}, "pm.vis.Subplot");
                         if  failed
                             break;
                         end
@@ -92,7 +98,7 @@ classdef Tiling < pm.vis.figure.Figure
                 help("[pm.vis.figure.Tiling](@ref Tiling)");
                 error   ( newline ...
                         + "The input argument ``subplot`` must be a MATLAB cell matrix of " + newline ...
-                        + "empty objects or objects of superclass [pm.vis.subplot.Subplot](@ref Subplot)." + newline ...
+                        + "empty objects or objects of superclass [pm.vis.Subplot](@ref Subplot)." + newline ...
                         + "For more information, see the class documentation displayed above." + newline ...
                         + newline ...
                         );
@@ -102,39 +108,37 @@ classdef Tiling < pm.vis.figure.Figure
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        %>  /brief
+        %>  \brief
         %>  Configure the figure settings and specifications,
-        %>  make the figure and the subplots, and return nothing.
-        %>  The subplots are made by calling their ``make()`` methods.
+        %>  make the figure and the subplots, and return nothing.<br>
+        %>
+        %>  \details
+        %>  The subplots are made by calling their ``make()`` methods.<br>
         %>
         %>  \warning
         %>  This method has side-effects by manipulating
-        %>  the existing attributes of the parent object.
+        %>  the existing attributes of the parent object.<br>
         %>
-        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.
+        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
-        %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.
+        %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
         %>                              Note that all of these property-value pairs can be also directly set via the
-        %>                              parent object attributes, before calling the ``make()`` method.
+        %>                              parent object attributes, before calling the ``make()`` method.<br>
         %>
         %>  \interface{make}
         %>  \code{.m}
         %>
-        %>      f = [pm.vis.figure.Tiling](@ref Tiling).make(varargin);
+        %>      t = pm.vis.figure.Tiling(subplot, varargin);
+        %>      t.make(varargin);
         %>
         %>  \endcode
-        %>
-        %>  \example{make}
-        %>
-        %>      f = [pm.vis.figure.Tiling](@ref Tiling)();
-        %>      f.make()
         %>
         %>  \final{make}
         %>
         %>  \author
         %>  \JoshuaOsborne, May 21 2024, 9:24 AM, University of Texas at Arlington<br>
-        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
-        %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
+        %>  \AmirShahmoradi, July 7 2024, 12:53 AM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
         function make(self, varargin)
 
             make@pm.vis.figure.Figure(self, varargin{:});
@@ -176,7 +180,7 @@ classdef Tiling < pm.vis.figure.Figure
                 for icol = 1 : size(self.subplot, 2)
                     iplt = iplt + 1;
                     spinner.spin(iplt / numel(self.subplot));
-                    if  pm.introspection.istype(self.subplot{irow, icol}, "pm.vis.subplot.Subplot")
+                    if  pm.introspection.istype(self.subplot{irow, icol}, "pm.vis.Subplot")
                         try
                             nexttile;
                         catch
@@ -195,20 +199,23 @@ classdef Tiling < pm.vis.figure.Figure
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         %>  \brief
-        %>  Reset the properties of the figure to the original default settings.
-        %>  Use this method when you change many attributes of the plot and
-        %>  you want to clean up and go back to the default settings.
+        %>  Reset the properties of the figure to the original default settings.<br>
         %>
-        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.
+        %>  \details
+        %>  Use this method when you change many attributes of the plot and
+        %>  you want to clean up and go back to the default settings.<br>
+        %>
+        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
-        %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.
+        %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
         %>                              Note that all of these property-value pairs can be also directly set via the
-        %>                              parent object attributes, before calling the ``make()`` method.
+        %>                              parent object attributes, before calling the ``make()`` method.<br>
         %>
         %>  \interface{reset}
         %>  \code{.m}
         %>
-        %>      [pm.vis.figure.Tiling](@ref Tiling).reset() % reset all object properties to the default settings.
+        %>      t = pm.vis.figure.Tiling(subplot, varargin) % reset all object properties to the default settings.
+        %>      t.reset(varargin);
         %>
         %>  \endcode
         %>
@@ -216,8 +223,8 @@ classdef Tiling < pm.vis.figure.Figure
         %>
         %>  \author
         %>  \JoshuaOsborne, May 21 2024, 9:25 AM, University of Texas at Arlington<br>
-        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center, Washington, D.C.<br>
-        %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
+        %>  \AmirShahmoradi, July 7 2024, 12:53 AM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
         function reset(self, varargin)
 
             self.tiledlayout.innerPosition = [];
@@ -241,29 +248,34 @@ classdef Tiling < pm.vis.figure.Figure
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         %>  \brief
-        %>  Update the layout of the tile with the new axes position changes.
+        %>  Preset the tiling settings before making it.<br>
         %>
         %>  \warning
         %>  This method causes side-effects by manipulating
-        %>  the existing attributes of the object.
+        %>  the existing attributes of the object.<br>
         %>
-        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.
+        %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
-        %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.
+        %>                              with consecutive elements representing the struct ``property-name, property-value`` pairs.<br>
         %>                              Note that all of these property-value pairs can be also directly set via the
-        %>                              parent object attributes, before calling the ``make()`` method.
+        %>                              parent object attributes, before calling the ``make()`` method.<br>
         %>
-        %>  %>  \interface{premake}
+        %>  \interface{premake}
+        %>  \code{.m}
+        %>
+        %>      t = pm.vis.figure.Tiling(subplot, varargin);
+        %>      t.premake(varargin);
+        %>
+        %>  \endcode
+        %>
         %>  \example{premake}
-        %>
-        %>      For example, change the left/bottom margin of the main
-        %>      axis of the figure to provide room for lengthy variable names.
-        %>      Then call the ``self.update()`` method to reflect the changes.
         %>
         %>  \final{premake}
         %>
         %>  \author
         %>  \JoshuaOsborne, May 21 2024, 9:28 AM, University of Texas at Arlington<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
+        %>  \AmirShahmoradi, July 7 2024, 12:53 AM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
         function premake(self, varargin)
 
             premake@pm.vis.figure.Figure(self, varargin{:});

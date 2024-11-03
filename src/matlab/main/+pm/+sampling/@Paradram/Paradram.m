@@ -243,10 +243,25 @@ classdef Paradram < pm.sampling.Sampler
         %>  \output{himmelblau}
         %>  \include{lineno} example/sampling/Paradram/himmelblau/main.out.m
         %>  \vis{himmelblau}
-        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.domain.png width=700
+        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.domain.2d.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.domain.3d.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.triplex.lshc2.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.triplex.lshc3.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.triplex.lshcf.png width=700
+        %>  <br><br>
         %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.traceplot.png width=700
+        %>  <br><br>
         %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.proposalCov.png width=700
+        %>  <br><br>
         %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.proposalAdaptation.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.parallelism.optimal.scaling.strong.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.parallelism.perfect.scaling.strong.png width=700
         %>
         %>  \final{Paradram}
         %>
@@ -256,6 +271,7 @@ classdef Paradram < pm.sampling.Sampler
             self = self@pm.sampling.Sampler("ParaDRAM")
         end
         failed = run(self, getLogFunc, ndim);
+        chainList = readChain(self, pattern, sep);
         chainMarkovList = readChainMarkov(self, pattern, sep);
     end
 end

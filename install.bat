@@ -1,5 +1,6 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::::                                                                                                                            ::::
 ::::    ParaMonte: Parallel Monte Carlo and Machine Learning Library.                                                           ::::
 ::::                                                                                                                            ::::
@@ -173,7 +174,7 @@ set flag_fresh=
 set flag_G=
 set flag_j=
 set flag_lapack=
-set flag_matlabdir=
+set flag_matlabroot=
 set flag_me=
 set flag_mod=
 set flag_nproc=
@@ -188,7 +189,25 @@ set flag_lki=
 set flag_cki=
 set flag_rki=
 
+REM
+REM The variable `ntry` is to bypass the need for duplicate build with CMake for development and testing times.
+REM The duplicate build with CMake is required to ensure the generation of FPP source files in the output package.
+REM This need for duplicate builds is an issue within the current CMake build scripts of the ParaMonte library that
+REM must be resolved in the future with a better solution.
+REM
+
+set "flag_dev=-Ddev_enabled=0"
 set ntry=2
+
+REM
+REM MATLAB MEX variables (must be removed once CMake FindMatlab.cmake module bug for Windows is resolved.)
+REM
+
+set "matlabroot="
+
+REM
+REM Echo the ParaMonte banner.
+REM
 
 echo.
 type "!paramonte_auxil_dir!\.paramonte.banner"
@@ -396,11 +415,12 @@ if not "%1"=="" (
         shift
     )
 
-    REM --matlabdir
+    REM --matlabroot
 
-    if "!FLAG!"=="--matlabdir" (
+    if "!FLAG!"=="--matlabroot" (
         set FLAG_SUPPORTED=true
-        set "flag_matlabdir=-Dmatlabdir="!VALUE!""
+        set "matlabroot=!VALUE!"
+        set "flag_matlabroot=-Dmatlabroot="!VALUE!""
         if "!VALUE!"=="" set "VALUE_SUPPORTED=false"
         if /i "!VALUE:~0,2!"=="--" set "VALUE_SUPPORTED=false"
         shift
@@ -569,6 +589,7 @@ if not "%1"=="" (
 
     if "!FLAG!"=="--dev" (
         set FLAG_SUPPORTED=true
+        set "flag_dev=-Ddev_enabled=1"
         set ntry=1
     )
 
@@ -700,6 +721,21 @@ if not defined flag_G (
     set "replacement="
     set "cmakeBuildGenerator="
 
+    REM Above all, search for the Ninja makefile generator: ninja
+    REM The ninja executable is installed either as part of Microsoft Visual Studio or Quickstart Fortran software.
+
+    if not defined cmakeBuildGenerator (
+        echo.!pmnote! Searching for the Ninja build generator in the command-line environment...
+        set "NINJA_FOUND="
+        for %%X in (ninja.exe) do (set NINJA_FOUND=%%~$PATH:X)
+        if defined NINJA_FOUND (
+            echo.!pmnote! !BoldYellow!Setting CMake makefile generator to Ninja...!ColorReset!
+            set "cmakeBuildGenerator=Ninja"
+        ) else (
+            echo.!pmnote! Failed to detect the Ninja build generator in the command-line environment. skipping...
+        )
+    )
+
     REM Firstly, search for the CMake makefile generator: make
 
     if not defined cmakeBuildGenerator (
@@ -709,7 +745,7 @@ if not defined flag_G (
         for /f "Tokens=* Delims=" %%i in ('make --version') do set make_version=!make_version!%%i
         for /f "delims=" %%S in (^""!substring!=!replacement!"^") do (set "make_version_modified=!make_version:%%~S!")
         if not "!make_version_modified!" == "!make_version!" (
-            echo.!pmnote! Setting CMake makefile generator to GNU MinGW Make application...
+            echo.!pmnote! !BoldYellow!Setting CMake makefile generator to GNU MinGW Make application...!ColorReset!
             set "cmakeBuildGenerator=MinGW Makefiles"
         ) else (
             echo.!pmnote! Failed to detect the GNU Make application in the command-line environment. skipping...
@@ -718,14 +754,14 @@ if not defined flag_G (
 
     REM Secondly, search for the CMake makefile generator: mingw32-make
 
-    if defined cmakeBuildGenerator (
+    if not defined cmakeBuildGenerator (
         echo.!pmnote! Searching for the GNU Make application in the command-line environment...
         set "make_version="
         set "substring=GNU Make"
         for /f "Tokens=* Delims=" %%i in ('mingw32-make --version') do set make_version=!make_version!%%i
         for /f "delims=" %%S in (^""!substring!=!replacement!"^") do (set "make_version_modified=!make_version:%%~S!")
         if not "!make_version_modified!" == "!make_version!" (
-            echo.!pmnote! Setting CMake makefile generator to GNU MinGW Make application...
+            echo.!pmnote! !BoldYellow!Setting CMake makefile generator to GNU MinGW Make application...!ColorReset!
             set "cmakeBuildGenerator=MinGW Makefiles"
         ) else (
             echo.!pmnote! Failed to detect the GNU MinGW Make application in the command-line environment. skipping...
@@ -741,7 +777,7 @@ if not defined flag_G (
         for /f "Tokens=* Delims=" %%i in ('nmake') do set make_version=!make_version!%%i
         for /f "delims=" %%S in (^""!substring!=!replacement!"^") do (set "make_version_modified=!make_version:%%~S!")
         if not "!make_version_modified!" == "!make_version!" (
-            echo.!pmnote! Setting CMake makefile generator to Microsoft NMake application...
+            echo.!pmnote! !BoldYellow!Setting CMake makefile generator to Microsoft NMake application...!ColorReset!
             set "cmakeBuildGenerator=NMake Makefiles"
         ) else (
             echo.!pmnote! Failed to detect the Microsoft NMake application in the command-line environment. skipping...
@@ -943,8 +979,8 @@ for %%C in ("!list_fc:;=" "!") do (
 
                             echo.cd "!paramonte_bld_dir!"
                             echo.cmake !paramonte_dir! !flag_G! -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON !flag_build! !flag_checking! !flag_lib! !flag_mem! !flag_par! !flag_fc!
-                            echo.!flag_ddir! !flag_bench! !flag_benchpp! !flag_blas! !flag_codecov! !flag_cfi! !flag_deps! !flag_exam! !flag_exampp! !flag_fpp! !flag_fresh! !flag_lapack! !flag_matlabdir!
-                            echo.!flag_lang! !flag_me! !flag_mod! !flag_nproc! !flag_perfprof! !flag_pdt! !flag_purity! !flag_test! !flag_ski! !flag_iki! !flag_lki! !flag_cki! !flag_rki!
+                            echo.!flag_ddir! !flag_bench! !flag_benchpp! !flag_blas! !flag_codecov! !flag_cfi! !flag_deps! !flag_exam! !flag_exampp! !flag_fpp! !flag_fresh! !flag_lapack! !flag_matlabroot!
+                            echo.!flag_lang! !flag_me! !flag_mod! !flag_nproc! !flag_perfprof! !flag_pdt! !flag_purity! !flag_test! !flag_ski! !flag_iki! !flag_lki! !flag_cki! !flag_rki! !flag_dev!
 
                             REM The following loop temporarily bypasses an existing bug where the first fresh installation
                             REM does not copy the FPP source files to the deployment and installation directories.
@@ -953,8 +989,8 @@ for %%C in ("!list_fc:;=" "!") do (
 
                                 cd "!paramonte_bld_dir!"
                                 cmake !paramonte_dir! !flag_G! -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON !flag_build! !flag_checking! !flag_lib! !flag_mem! !flag_par! !flag_fc! ^
-                                !flag_ddir! !flag_bench! !flag_benchpp! !flag_blas! !flag_codecov! !flag_cfi! !flag_deps! !flag_exam! !flag_exampp! !flag_fpp! !flag_fresh! !flag_lapack! !flag_matlabdir! ^
-                                !flag_lang! !flag_me! !flag_mod! !flag_nproc! !flag_perfprof! !flag_pdt! !flag_purity! !flag_test! !flag_ski! !flag_iki! !flag_lki! !flag_cki! !flag_rki! ^
+                                !flag_ddir! !flag_bench! !flag_benchpp! !flag_blas! !flag_codecov! !flag_cfi! !flag_deps! !flag_exam! !flag_exampp! !flag_fpp! !flag_fresh! !flag_lapack! !flag_matlabroot! ^
+                                !flag_lang! !flag_me! !flag_mod! !flag_nproc! !flag_perfprof! !flag_pdt! !flag_purity! !flag_test! !flag_ski! !flag_iki! !flag_lki! !flag_cki! !flag_rki! !flag_dev! ^
                                 && (
                                     echo.
                                     echo.!pmnote! !BoldGreen!ParaMonte configuration with CMake appears to have succeeded.!ColorReset!
@@ -1015,20 +1051,53 @@ for %%C in ("!list_fc:;=" "!") do (
                                     set MATLAB_VERSION_LIST=R2035b/R2035a/R2034b/R2034a/R2033b/R2033a/R2032b/R2032a/R2031b/R2031a/R2030b/R2030a/R2029b/R2029a/R2028b/R2028a/R2027b/R2027a/R2026b/R2026a
                                     set MATLAB_VERSION_LIST=!MATLAB_VERSION_LIST!/R2025b/R2025a/R2024b/R2024a/R2023b/R2023a/R2022b/R2022a/R2021b/R2021a/R2020b/R2020a/R2019b/R2019a/R2018b/R2018a/R2017b/R2017a
 
+                                    REM
+                                    REM Amir Shahmoradi Oct 25, 2024:
+                                    REM The following block is currently was added despite its functionality being already implemented within CMake.
+                                    REM The reason for its existence is to resolve the vicious bug that exists in CMake intrinsic module FindMatlab.cmake yielding the following runtime error:
+                                    REM
+                                    REM     Error using pm.sampling.Sampler/run MATLAB:mex:ErrInvalidMEXFile : Invalid MEX-file 'pm_sampling.mexw64': Gateway function is missing
+                                    REM
+                                    REM See also,
+                                    REM
+                                    REM     https://gitlab.kitware.com/cmake/cmake/-/issues/25068#note_1580985
+                                    REM
+                                    REM for a relevant discussion of this bug faced by others and the status of a resolution to fix it.
+                                    REM Note that this CMake bug is different from another vicious MATLAB-MEX-version related bug that causes the MEX files to fail at runtime
+                                    REM while the same MEX compilation and run for ParaMonte 1 succeeds with MATLAB R2022b and older.
+                                    REM See
+                                    REM
+                                    REM     https://www.mathworks.com/matlabcentral/answers/2157360-matlab-mex-errinvalidmexfile-invalid-mex-file-the-specified-procedure-could-not-be-found?s_tid=prof_contriblnk
+                                    REM
+                                    REM for more relevant discussion of this bug and possible causes.
+                                    REM
+                                    REM As of today, both CMake and MATLAB MEX compatibility bugs remain unresolved.
+                                    REM The following block can be commented out by setting the value of
+                                    REM `MATLAB_FOUND` to `none` in the following `set` command.
+                                    REM
+                                    REM \todo
+                                    REM \pvhigh
+                                    REM Once the CMake bug in FindMatlab.cmake intrinsic modules is resolved, the whole shenanigan above and below for MEX compilation must be removed.
+                                    REM
+
                                     set MATLAB_FOUND=false
                                     for %%D in ("!INSTALL_LOC_LIST:/=" "!") do (
                                         for %%V in ("!MATLAB_VERSION_LIST:/=" "!") do (
 
                                             if !MATLAB_FOUND!==false (
 
-                                                set "MATLAB_ROOT_DIR_TEMP=%%~D%%~V"
+                                                if defined matlabroot (
+                                                    set "MATLAB_ROOT_DIR_TEMP=!matlabroot!"
+                                                    echo.!pmnote! !BoldYellow!Searching for user-specified MATLAB installation at: !MATLAB_ROOT_DIR_TEMP! !ColorReset!
+                                                ) else (
+                                                    set "MATLAB_ROOT_DIR_TEMP=%%~D%%~V"
+                                                )
                                                 set "MATLAB_BIN_DIR_TEMP=!MATLAB_ROOT_DIR_TEMP!\bin"
                                                 set "MATLAB_EXE_PATH_TEMP=!MATLAB_BIN_DIR_TEMP!\matlab.exe"
 
                                                 if  exist !MATLAB_EXE_PATH_TEMP! (
 
                                                     set MATLAB_FOUND=true
-                                                    echo.!pmnote! !BoldYellow!MATLAB %%~V installation detected at: !MATLAB_EXE_PATH! !ColorReset!
                                                     set "MATLAB_ROOT_DIR=!MATLAB_ROOT_DIR_TEMP!"
                                                     set "MATLAB_EXE_PATH=!MATLAB_EXE_PATH_TEMP!"
                                                     set "MATLAB_BIN_DIR=!MATLAB_BIN_DIR_TEMP!"
@@ -1038,6 +1107,7 @@ for %%C in ("!list_fc:;=" "!") do (
                                                     set "MATLAB_LIBMEX_FILE=!MATLAB_LIB_DIR!\libmex.lib"
                                                     set "MATLAB_LIBMAT_FILE=!MATLAB_LIB_DIR!\libmat.lib"
                                                     set "MATLAB_VERSION_FILE=!MATLAB_ROOT_DIR!\extern\version\fortran_mexapi_version.F"
+                                                    echo.!pmnote! !BoldYellow!MATLAB installation detected at: !MATLAB_EXE_PATH! !ColorReset!
                                                     REM set "MATLAB_INC_DIR_FLAG=/I:!MATLAB_INC_DIR!"
                                                     REM set FPP_FLAGS=/define:MATLAB_MEX_FILE
 
@@ -1058,21 +1128,37 @@ for %%C in ("!list_fc:;=" "!") do (
                                                     REM if !BTYPE!==release set "MATLAB_BUILD_FLAGS=!MATLAB_BUILD_FLAGS!!INTEL_CPP_RELEASE_FLAGS!"
 
                                                     set "MEX_FLAGS=-v -nojvm"
-                                                    echo.!pmnote! Generating the ParaMonte MATLAB MEX files...
-                                                    echo.!pmnote! Compiler command: "!MATLAB_BIN_DIR!\mex.bat" !MEX_FLAGS! "!paramonte_src_dir!\matlab\xrc\pm_sampling.c" libparamonte.lib -output pm_sampling
+
+                                                    REM
+                                                    REM If openmp is enabled, define the macro OMP_ENABLED=1.
+                                                    REM \todo
+                                                    REM \pvhigh
+                                                    REM This is a weakness point as the input value for `--par` flag may not be completely lower case.
+                                                    REM
+
+                                                    set "ismatlabomp=false"
+                                                    if omp==%%~P set "ismatlabomp=true"
+                                                    if OMP==%%~P set "ismatlabomp=true"
+                                                    if openmp==%%~P set "ismatlabomp=true"
+                                                    if OPENMP==%%~P set "ismatlabomp=true"
+                                                    if !ismatlabomp!==true set "MEX_FLAGS=!MEX_FLAGS! -DOMP_ENABLED"
+                                                    echo.!pmnote!!BoldYellow!Generating the ParaMonte MATLAB MEX files...!ColorReset!
+                                                    echo.!pmnote!!BoldYellow!Compiler command: "!MATLAB_BIN_DIR!\mex.bat" !MEX_FLAGS! "!paramonte_src_dir!\matlab\xrc\pm_sampling.c" libparamonte.lib -output pm_sampling!ColorReset!
 
                                                     cd !paramonte_bld_dir!\lib
+                                                    REM we cannot use the version variable when MATLAB directory is user-specified.
                                                     REM if not exist "%%~V" (mkdir "%%~V")
                                                     REM cd %%~V
                                                     call "!MATLAB_BIN_DIR!\mex.bat" !MEX_FLAGS! "!paramonte_src_dir!\matlab\xrc\pm_sampling.c" libparamonte.lib -output pm_sampling && (
                                                         echo.!pmnote! !BoldGreen!The ParaMonte MATLAB shared library build appears to have succeeded.!ColorReset!
                                                     ) || (
+                                                        echo.
                                                         echo.!pmwarn! !BoldMagenta!The ParaMonte MATLAB library build failed.!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!Please make sure you have the following components installed!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!on your system before rerunning the installation script:!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
-                                                        echo.!pmwarn! !BoldMagenta!    -- MATLAB, including MATLAB compilers.!ColorReset!
-                                                        echo.!pmwarn! !BoldMagenta!    -- Intel Parallel Studio icl/ifort compilers 2018 or newer.!ColorReset!
+                                                        echo.!pmwarn! !BoldMagenta!    -- MATLAB, including MATLAB MEX compilers.!ColorReset!
+                                                        echo.!pmwarn! !BoldMagenta!    -- Intel OneAPI icx/icl and ifx/ifort compilers 2023 or newer.!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!Once you are sure of the existence of these components in your !ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!Windows command line environment, run the following command:!ColorReset!
@@ -1080,29 +1166,34 @@ for %%C in ("!list_fc:;=" "!") do (
                                                         echo.!pmwarn! !BoldMagenta!    "!MATLAB_BIN_DIR!\mex.bat" -setup C!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!Among the options displayed, you should see the command to setup!ColorReset!
-                                                        echo.!pmwarn! !BoldMagenta!the Intel OneAPI icl compiler on your system.!ColorReset!
+                                                        echo.!pmwarn! !BoldMagenta!the Intel OneAPI icl/icx or Microsoft cl compiler for C on your system.!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!This command should look similar to the following,!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!    "!MATLAB_BIN_DIR_TEMP!\mex.bat" -setup:"C:\Program Files\MATLAB\R2024a\bin\win64\mexopts\intel_c_24_vs2022.xml" C!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
-                                                        echo.!pmwarn! !BoldMagenta!with minor differences depending on your specific installations of !ColorReset!
+                                                        echo.!pmwarn! !BoldMagenta!with minor differences in the xml file name depending on your specific installations of !ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
-                                                        echo.!pmwarn! !BoldMagenta!    -- the Intel OneAPI version!ColorReset!
+                                                        echo.!pmwarn! !BoldMagenta!    -- the Intel OneAPI or Microsoft compiler version!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!    -- the Microsoft Visual Studio version!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!    -- the MATLAB version!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
-                                                        echo.!pmwarn! !BoldMagenta!Copy and paste this command in your terminal, run it, and then rerun the ParaMonte MATLAB installation script.!ColorReset!
+                                                        echo.!pmwarn! !BoldMagenta!Copy and paste this command into your terminal, run it, and then rerun the ParaMonte MATLAB installation script.!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
-                                                        echo.!pmwarn! !BoldMagenta!Please report this issue at:!ColorReset!
+                                                        echo.!pmwarn! !BoldMagenta!Please report this or any other issues at:!ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
-                                                        echo.!pmwarn! !BoldMagenta!    https://github.com/cdslaborg/paramonte/issues!ColorReset!
+                                                        echo.!pmwarn! !BoldMagenta!    https://github.com/cdslaborg/paramonte/issues !ColorReset!
                                                         echo.!pmwarn! !BoldMagenta!!ColorReset!
+                                                        echo.
                                                         REM set ERRORLEVEL=1
                                                         REM exit /B 1
                                                     )
                                                     cd %~dp0
 
                                                 )
+
+                                                set "MATLAB_ROOT_DIR_TEMP="
+                                                set "MATLAB_BIN_DIR_TEMP="
+                                                set "MATLAB_EXE_PATH_TEMP="
 
                                             )
                                         )

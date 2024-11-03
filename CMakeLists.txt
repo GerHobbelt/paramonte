@@ -796,7 +796,7 @@ if (TRUE)
         set(MATHEMATICA_ENABLED 1)
         set(lang_ext ".wls")
     elseif ("${lang}" MATCHES "[mM][aA][tT][lL][aA][bB]")
-        set(MATLAB_ENABLED 0)
+        set(MATLAB_ENABLED 1)
         set(lang_ext ".m")
     elseif ("${lang}" MATCHES "[pP][yY][tT][hH][oO][nN]")
         set(PYTHON_ENABLED 1)
@@ -1403,11 +1403,11 @@ endif()
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 if (MATLAB_ENABLED)
-    if ("${matlabdir}" STREQUAL "")
+    if ("${matlabroot}" STREQUAL "")
         message(NOTICE "${pmattn} ${BoldYellow}Searching for MATLAB...${ColorReset}")
     else()
-        set(Matlab_ROOT_DIR "${matlabdir}")
-        message(NOTICE "${pmattn} Searching for MATLAB in the specified installation root directory: ${matlabdir}")
+        set(Matlab_ROOT_DIR "${matlabroot}")
+        message(NOTICE "${pmattn} Searching for MATLAB in the specified installation root directory: ${matlabroot}")
     endif()
     message(NOTICE "${pmattn} ${BoldGreen}Sit back and relax...this search may take a few minutes...${ColorReset}")
     find_package(Matlab)
@@ -1419,12 +1419,12 @@ if (MATLAB_ENABLED)
                 "${pmwarn} If you believe MATLAB exists on your system, specify the MATLAB directory containing\n"
                 "${pmwarn} the target version of MATLAB to the ParaMonte build script via the command line argument:\n"
                 "${pmwarn} \n"
-                "${pmwarn}      install.sh --lang matlab --matlabdir path_to_matlab_root_directory\n"
+                "${pmwarn}      install.sh --lang matlab --matlabroot path_to_matlab_root_directory\n"
                 "${pmwarn} \n"
                 "${pmwarn} or if you are calling CMake command directly, specify the path to the directory\n"
-                "${pmwarn} by defining either `matlabdir` or `Matlab_ROOT_DIR` on the CMake command line:\n"
+                "${pmwarn} by defining either `matlabroot` or `Matlab_ROOT_DIR` on the CMake command line:\n"
                 "${pmwarn} \n"
-                "${pmwarn}      cmake -Dlang=matlab -Dmatlabdir=path_to_matlab_root_directory\n"
+                "${pmwarn}      cmake -Dlang=matlab -Dmatlabroot=path_to_matlab_root_directory\n"
                 "${pmwarn} \n"
                 "${pmwarn} The MATLAB root directory is the directory that is returned by the MATLAB command `matlabroot`.\n"
                 "${pmwarn} An example of the MATLAB root directory (on Windows) is 'C:\\Program Files\\MATLAB\\R2017b'.\n"
@@ -1591,7 +1591,14 @@ if (MATLAB_ENABLED)
     endif()
     set(paramonte_src_matlab_xrc_dir "${paramonte_src_matlab_dir}/xrc")
     message(NOTICE "${pmattn} paramonte_src_matlab_xrc_dir: ${paramonte_src_matlab_xrc_dir}")
-    add_subdirectory("${paramonte_src_matlab_xrc_dir}" "${paramonte_bld_xrc_dir}")
+    if (NOT WIN32)
+        #### \todo
+        #### \pvhigh
+        #### The above WIN32 fence must be removed as soon as the MEX compilation bug in the CMake intrinsic module FindMatlab.cmake is resolved.
+        #### Note that this bug does not prevent MEX compilation, but only shows up as a runtime error in MATLAB session like "missing gateway function...".
+        #### More information about this bug can be found here: https://gitlab.kitware.com/cmake/cmake/-/issues/25068#note_1453147
+        add_subdirectory("${paramonte_src_matlab_xrc_dir}" "${paramonte_bld_xrc_dir}")
+    endif()
 endif()
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1815,7 +1822,9 @@ foreach(fitem ${fresh})
     endif()
 endforeach()
 
+####
 #### Copy the package to the binary installation directory.
+####
 
 set(origin "${paramonte_bld_pkg_dir}/")
 set(destin "${paramonte_bin_dir}/${binname}")
@@ -1841,7 +1850,7 @@ if (NOT ${codecov_enabled} AND NOT ${dev_enabled})
         add_dependencies(deploy makeBinDir) # ensure the folder is created before deployment.
     endif()
 else()
-    message(NOTICE  "${pmattn} Skipping the rule for copying the paramonte::${lang} library package to the final binary installation directory...")
+    message(NOTICE "${pmattn} Skipping the rule for copying the paramonte::${lang} library package to the final binary installation directory...")
     add_custom_target(deploy)
 endif()
 add_dependencies(deploy package)

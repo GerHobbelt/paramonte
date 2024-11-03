@@ -72,7 +72,7 @@ if [ 0 -lt 1 ]; then # just to allow toggling in notepad++.
     unset flag_fresh
     unset flag_j
     unset flag_lapack
-    unset flag_matlabdir
+    unset flag_matlabroot
     unset flag_me
     unset flag_mod
     unset flag_nproc
@@ -87,11 +87,18 @@ if [ 0 -lt 1 ]; then # just to allow toggling in notepad++.
     unset flag_cki
     unset flag_rki
 
+    ####
     #### Flag to skip timely production steps in development and documentation modes.
     #### if `--dev` is specified  by the user, the macro `dev_enabled` will be set to `1`,
     #### preventing the package copy to the final binary installation directory.
+    ####
+    #### The variable `ntry` is to bypass the need for duplicate build with CMake for development and testing times.
+    #### The duplicate build with CMake is required to ensure the generation of FPP source files in the output package.
+    #### This need for duplicate builds is an issue within the current CMake build scripts of the ParaMonte library that
+    #### must be resolved in the future with a better solution.
+    ####
 
-    unset flag_dev
+    flag_dev="-Ddev_enabled=0"
     ntry=2
 
     while [ "$1" != "" ]; do
@@ -209,10 +216,10 @@ if [ 0 -lt 1 ]; then # just to allow toggling in notepad++.
                             flag_lapack="-Dlapack=$1"
                             ;;
 
-            --matlabdir )   shift
-                            verifyArgNotKey "$1" --matlabdir
-                            #verifyArgNotEmpty "$1" --matlabdir
-                            flag_matlabdir="-Dmatlabdir=\"$1\""
+            --matlabroot )  shift
+                            verifyArgNotKey "$1" --matlabroot
+                            #verifyArgNotEmpty "$1" --matlabroot
+                            flag_matlabroot="-Dmatlabroot=\"$1\""
                             ;;
 
             --me )          shift
@@ -346,7 +353,9 @@ fi
 
 if [ 0 -lt 1 ]; then # just to allow toggling in notepad++.
 
+    ####
     #### list args
+    ####
 
     if  [ "${list_build}" = "" ]; then
         list_build="release"
@@ -360,35 +369,45 @@ if [ 0 -lt 1 ]; then # just to allow toggling in notepad++.
         list_checking="$(getLowerCase "$list_checking")"
     fi
 
+    ####
+    #### Set the Fortran compiler.
+    ####
+
     if [ "${list_fc}" = "" ]; then
         #   On Windows OS, particularly with MinGW, CMake fails if the specified compiler name or path does not have the
         #   the file extension ".exe". Given that this extension is unlikely to change in the future, and that it is not used
         #   on Unix systems, try suffixing the extension to the compiler file path. If it fails, use the default specified path.
-        compilers=("ifort" "ifx" "gfortran-13" "gfortran-12" "gfortran-11" "gfortran-10" "gfortran")
+        #fccompilers=("ifort" "ifx" "gfortran" "gfortran-10" "gfortran-11" "gfortran-12" "gfortran-13" "gfortran-14" "gfortran-15" "gfortran-16" "gfortran-17" "gfortran-18" "gfortran-19" "gfortran-20")
+        fccompilers=("ifort" "ifx" "gfortran-20" "gfortran-19" "gfortran-18" "gfortran-17" "gfortran-16" "gfortran-15" "gfortran-14" "gfortran-13" "gfortran-12" "gfortran-11" "gfortran-10" "gfortran")
         if [ "${os}" = "mingw" ] || [ "${os}" = "msys" ] || [ "${os}" = "cygwin" ]; then
             extensions=(".exe" "")
         else
             extensions=("")
         fi
-        for compiler in "${compilers[@]}"; do
+        for fccompiler in "${fccompilers[@]}"; do
             for extension in "${extensions[@]}"; do
-                echo >&2 "${pmnote} Checking existence of compiler \"${compiler}\" executable with extension \"${extension}\""
+                echo >&2 "${pmnote} Checking for the existence of the Fortran compiler \"${fccompiler}\" executable with extension \"${extension}\""
                 # check if the specified compiler can be found in the environment.
-                if  command -v "${compiler}${extension}" >/dev/null 2>&1; then
-                    list_fc="$(command -v "${compiler}${extension}")"
+                if  command -v "${fccompiler}${extension}" >/dev/null 2>&1; then
+                    list_fc="$(command -v "${fccompiler}${extension}")"
                     break 2
                 fi
             done
         done
+
         if  [ "${list_fc}" = "" ]; then
             echo >&2 "${pmwarn} Failed to detect any compatible Fortran compiler in the environment."
-            echo >&2 "${pmwarn} You can manually specify the Fortran compiler or its path via the install script flag \"--fc\"."
+            echo >&2 "${pmwarn} You can manually specify the Fortran compiler or its path via the install.sh script flag \"--fc\"."
             echo >&2 "${pmwarn} The build will proceed with no guarantee of success."
             list_fc="default"
         else
             echo >&2 "${pmnote} The identified Fortran compiler path is: fc=\"${list_fc}\""
         fi
     fi
+
+    ####
+    #### Set the library language.
+    ####
 
     if  [ "${list_lang}" = "" ]; then
         list_lang="fortran"
@@ -643,6 +662,7 @@ for fc in ${list_fc//;/$'\n'}; do # replace `;` with newline character.
                                     "${flag_lib}" \
                                     "${flag_mem}" \
                                     "${flag_par}" \
+                                    "${flag_dev}" \
                                     ${flag_fc} \
                                     ${flag_bench} \
                                     ${flag_benchpp} \
@@ -655,7 +675,7 @@ for fc in ${list_fc//;/$'\n'}; do # replace `;` with newline character.
                                     ${flag_fpp} \
                                     ${flag_fresh} \
                                     ${flag_lapack} \
-                                    ${flag_matlabdir} \
+                                    ${flag_matlabroot} \
                                     ${flag_me} \
                                     ${flag_mod} \
                                     ${flag_nproc} \
@@ -668,7 +688,6 @@ for fc in ${list_fc//;/$'\n'}; do # replace `;` with newline character.
                                     ${flag_lki} \
                                     ${flag_cki} \
                                     ${flag_rki} \
-                                    ${flag_dev} \
                                     )
                                     verify $? "configuration with cmake"
 

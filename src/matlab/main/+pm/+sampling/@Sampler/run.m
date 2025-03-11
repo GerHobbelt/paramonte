@@ -64,7 +64,11 @@ function run(self, getLogFunc, ndim)
     %     self.mpiname = mpiname;
     % end
 
-    if ~pm.introspection.istype(self.mpiname, "string", 1) % Sanitize ``mpiname``.
+    if ~pm.introspection.istype(self.mpiname, "string", 1)
+
+        %%%%
+        %%%% Sanitize ``mpiname``.
+        %%%%
 
         help("pm.sampling.Sampler.mpiname");
         disp("mpiname =");
@@ -75,21 +79,33 @@ function run(self, getLogFunc, ndim)
                 + newline ...
                 );
 
-    elseif 0 < pm.array.len(self.mpiname) % MPI enabled.
+    elseif 0 == pm.array.len(self.mpiname)
+
+        %%%%
+        %%%% Detect potential MPI launcher.
+        %%%%
+
+        [mpiname, nproc, ~] = pm.lib.mpi.runtime.detect();
+        if  pm.array.len(mpiname) > 0 && nproc > 1
+            self.mpiname = mpiname;
+        end
+
+    end
+
+    %%%%
+    %%%% First detect potential use of MPI, then check for thread parallelism.
+    %%%%
+
+    if  0 < pm.array.len(self.mpiname) % MPI enabled.
 
         self.silent = true; % Otherwise, we keep the default value of self.silent.
         self.partype = string(pm.lib.mpi.name(self.mpiname));
-        %if  self.partype ~= pm.lib.mpi.choice()
-        %    warning ( newline ...
-        %            + "The specified mpi library name (mpiname = """ + self.mpiname + """) does not match" + newline ...
-        %            + "the ParaMonte-preferred MPI library name (""" + pm.lib.mpi.choice() + """) for the current operating system." + newline ...
-        %            + "The MPI-parallel simulations may fail depending on the availability" + newline ...
-        %            + "of the ParaMonte shared libraries for the requested MPI library." + newline ...
-        %            + newline ...
-        %            );
-        %end
 
-    elseif ~isempty(self.spec.parallelismNumThread) % Sanitize ``self.spec.parallelismNumThread``.
+    elseif ~isempty(self.spec.parallelismNumThread)
+
+        %%%%
+        %%%% Sanitize ``self.spec.parallelismNumThread``.
+        %%%%
 
         % The following separate conditions are crucial to remain separate.
         failed = ~pm.introspection.istype(self.spec.parallelismNumThread, "integer", 1);
@@ -293,12 +309,12 @@ function run(self, getLogFunc, ndim)
 
     if  failed
         help("pm.sampling.Sampler");
-        disp("libspecs =");
-        disp(libspecs);
-        disp("bldtypes =");
-        disp(bldtypes);
-        disp("clstypes =");
-        disp(clstypes);
+        disp("libspecs");
+        disp( libspecs );
+        disp("bldtypes");
+        disp( bldtypes );
+        disp("clstypes");
+        disp( clstypes );
         error   ( newline ...
                 + "There are no MEX libraries associated with the configurations displayed above:" + newline ...
                 + "Either the user has compromised internal structure of the ParaMonte library" + newline ...
@@ -441,7 +457,7 @@ function run(self, getLogFunc, ndim)
                 + self.getppm() + newline ...
                 + "For more information and examples on the usage, visit:" + newline ...
                 + newline ...
-                + pm.io.tab + pm.web.href(self.weblinks.home.url) + newline ...
+                + pm.io.tab + pm.web.href(self.weblinks.docs.url) + newline ...
                 + newline ...
                 );
         end
@@ -454,12 +470,12 @@ function run(self, getLogFunc, ndim)
                 + "(SIP) of your macOS interfering with the ParaMonte MATLAB MEX files." + newline ...
                 + "You can follow the guidelines in the documentation to resolve this error:" + newline ...
                 + newline ...
-                + pm.io.tab + pm.web.href(pm.lib.weblinks.home.url + "/notes/troubleshooting/macos-developer-cannot-be-verified/") + newline ...
+                + pm.io.tab + pm.web.href(self.weblinks.docs.url + "/notes/troubleshooting/macos-developer-cannot-be-verified/") + newline ...
                 + newline ...
                 + "If the problem persists even after following the guidelines" + newline ...
                 + "in the above page, please report this issue to the developers at:" + newline ...
                 + newline ...
-                + pm.io.tab + pm.web.href(pm.lib.weblinks.github.issues.url) ...
+                + pm.io.tab + pm.web.href(self.weblinks.github.issues.url) ...
                 + newline ...
                 ;
         else

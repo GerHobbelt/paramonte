@@ -764,7 +764,7 @@ if (TRUE)
     set(R_ENABLED 0)
     set(lang_is_dynamic 1)
     string(TOLOWER "${lang}" lang)
-    if ("${lang}" STREQUAL "c")
+    if ("${lang}" STREQUAL "c" OR "${lang}" STREQUAL "C")
         set(lang_is_dynamic 0)
         set(lang_ext ".c")
         set(C_ENABLED 1)
@@ -1199,10 +1199,13 @@ if (TRUE)
     add_compile_definitions("MPI_ENABLED=${MPI_ENABLED}")
     add_compile_definitions("OMP_ENABLED=${OMP_ENABLED}")
 endif()
-if (${csid_is_intel} AND ${MPI_ENABLED})
-    set(MPI_Fortran_COMPILER_FLAGS "-static_mpi")
-    set(MPI_Fortran_LINK_FLAGS "-static_mpi")
-endif()
+
+#if (${csid_is_intel} AND ${MPI_ENABLED})
+#    #set(MPI_LINK_FLAGS "${MPI_LINK_FLAGS}" "-static_mpi")
+#    set(MPI_COMPILER_FLAGS "${MPI_COMPILER_FLAGS}" "-static_mpi")
+#    set(MPI_Fortran_LINK_FLAGS "${MPI_Fortran_LINK_FLAGS}" "-static_mpi")
+#    set(MPI_Fortran_COMPILE_OPTIONS "${MPI_Fortran_COMPILE_OPTIONS}" "-static_mpi")
+#endif()
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 # Determine the supported types kinds by the specified Fortran compiler.
@@ -1266,8 +1269,6 @@ if (TRUE)
                     "${pmfatal} Allowed values:\n"
                     "\n"
                     "${pmfatal} none: Source files will not be preprocessed.\n"
-                    "${pmfatal} gnu: Source files will be preprocessed according to the GNU Compiler syntax and toolset.\n"
-                    "${pmfatal} intel: Source files will be preprocessed according to the Intel Compiler syntax and toolset.\n"
                     "${pmfatal} generic: Source files will be preprocessed assuming a generic Compiler syntax and toolset.\n"
                     "${pmfatal} default: Source files will be preprocessed assuming the default Compiler syntax and toolset.\n"
                     "\n"

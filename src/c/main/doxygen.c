@@ -51,7 +51,7 @@
 /// [⛓](#ParaMonteLangDocumentation)
 /// \section ParaMonteLangDocumentation ParaMonte C Documentation Website
 ///
-/// The documentation for the latest version of the ParaMonte C library is always <a href="../../c/latest/html/index.html" target="_blank"><b>available on this page</b></a>.<br>
+/// The documentation for the latest version of the ParaMonte C library is always <a href="../../c/latest/index.html" target="_blank"><b>available on this page</b></a>.<br>
 ///
 /// [⛓](#ParaMonteLangModules)
 /// \section ParaMonteLangModules ParaMonte C Library Modules
@@ -63,7 +63,7 @@
 /// </ol>
 ///
 /// The ParaMonte C library is currently under active development to extend the library functionalities to other tasks supported by the [ParaMonte Fortran library](../../../fortran/latest/html).<br>
-/// For a full list of all available functionalities and modules, see the [modules listing](./namespaces.html) of this documentation website.<br>
+/// For a full list of all available functionalities and modules, see the [modules listing](./modules.html) of this documentation website.<br>
 ///
 /// Module                  | Functionality
 /// ------------------------|--------------
@@ -166,7 +166,7 @@
 /// +   The abbreviation `msn`      stands for **Multivariate Skew-Normal** mostly used in the context of the statistical MultiVariate Skew-Normal distribution.
 /// +   The abbreviation `mvn`      stands for **MultiVariate Normal** mostly used in the context of the statistical MultiVariate Normal distribution.
 /// +   The abbreviation `mvu`      stands for **MultiVariate Uniform** mostly used in the context of the statistical MultiVariate (ellipsoidal) Uniform distribution.
-/// +   The abbreviation `norm`     stands for **normal** in the context of statistical distributions or **normalization** factor. Example: `DistMultiNorm_type`.
+/// +   The abbreviation `norm`     stands for **normal** in the context of statistical distributions or **normalization** factor. Example: `distMultiNorm_type`.
 /// +   The abbreviation `normed`   stands for **normalized** mostly in the context of statistical samples. Example: `NormedSample`.
 /// +   The abbreviation `pdf`      stands for **Probability Density Function** in the context of statistics. Example: `getNormLogPDF()`.
 /// +   The abbreviation `pos`      stands for **positive**. Example: `getInvPosDefMat()`.

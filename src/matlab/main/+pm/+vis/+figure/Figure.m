@@ -59,7 +59,7 @@ classdef Figure < pm.matlab.Handle
         %>  For example, ``figure.color`` and ``figure.Color`` are the same,
         %>  and only one of the two will be processed.<br>
         %>
-        %>  \example{colormap}
+        %>  \example{figure}
         %>  \code{.m}
         %>
         %>      self.figure.units = pixels;
@@ -736,7 +736,7 @@ classdef Figure < pm.matlab.Handle
             %%%% Check the consistency of the file name.
             %%%%
 
-            if ~pm.introspection.istype(file, "string", 1)
+            if ~pm.introspection.verified(file, "string", 1)
                 help("pm.vis.figure.Figure");
                 disp("file = ");
                 disp(file);

@@ -135,8 +135,8 @@ Thumbs.db
 **/build
 **/trash
 **/temp
-**/bld
-**/bin
+**/_bld
+**/_bin
 **/R
 **/___*
 

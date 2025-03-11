@@ -86,7 +86,7 @@
 %>  \endcode
 %>
 %>  The ParaMonte MATLAB library currently contains a myriad of MATLAB *packages*.<br>
-%>  The ParaMonte MATLAB library is currently under active development to extend the library functionalities to other tasks supported by the [ParaMonte Fortran library](../../../fortran/latest/index.html).<br>
+%>  The ParaMonte MATLAB library is currently under active development to extend the library functionalities to other tasks supported by the [ParaMonte Fortran library](../../fortran/latest/index.html).<br>
 %>  For a full list of all available functionalities and modules, see the [files listing](./files.html) and [class listing](./annotated.html) of this documentation website.<br>
 %>
 %>  [⛓⛓](#ParaMonteLangModulesSamplers)
@@ -182,7 +182,7 @@
 %>  +   The abbreviation `msn`      stands for **Multivariate Skew-Normal** mostly used in the context of the statistical MultiVariate Skew-Normal distribution.
 %>  +   The abbreviation `mvn`      stands for **MultiVariate Normal** mostly used in the context of the statistical MultiVariate Normal distribution.
 %>  +   The abbreviation `mvu`      stands for **MultiVariate Uniform** mostly used in the context of the statistical MultiVariate (ellipsoidal) Uniform distribution.
-%>  +   The abbreviation `norm`     stands for **normal** in the context of statistical distributions or **normalization** factor. Example: `DistMultiNorm_type`.
+%>  +   The abbreviation `norm`     stands for **normal** in the context of statistical distributions or **normalization** factor. Example: `distMultiNorm_type`.
 %>  +   The abbreviation `normed`   stands for **normalized** mostly in the context of statistical samples. Example: `NormedSample`.
 %>  +   The abbreviation `pdf`      stands for **Probability Density Function** in the context of statistics. Example: `getNormLogPDF()`.
 %>  +   The abbreviation `pos`      stands for **positive**. Example: `getInvPosDefMat()`.
@@ -393,7 +393,17 @@
 %>                  );
 %>      samples = sampler.readSample();
 %>      sample = samples{1};
-%>      pm.vis.tile(sample.contents)
+%>      sample.vis.tile.line.make();
+%>
+%>  \endcode
+%>
+%>  The statement ``sample.vis.tile.line.make();`` in
+%>  the above is equivalent to the following set of lines:
+%>
+%>  \code{.m}
+%>
+%>      tile = pm.vis.TileLine(sample.df);
+%>      tile.make("coly", sample.slfc + 1 : sample.slfc + 4, "colc", "sampleLogFunc");
 %>
 %>  \endcode
 %>

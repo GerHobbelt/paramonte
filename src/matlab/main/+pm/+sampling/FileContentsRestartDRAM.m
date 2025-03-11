@@ -33,58 +33,79 @@ classdef FileContentsRestartDRAM < pm.sampling.FileContentsRestart
 
     properties(Access = public)
         %>
-        %>  ``meanAcceptanceRateSinceStart``    :   The real-valued MATLAB array of rank ``1`` of
-        %>                                          shape ``(1:self.count)`` containing the set of
-        %>                                          average MCMC acceptance rates of the sampler proposal
-        %>                                          distribution over the course of the simulation.<br>
+        %>  ``meanAcceptanceRateSinceStart``
+        %>
+        %>  The real-valued MATLAB array of rank ``1`` of
+        %>  shape ``(1:self.count)`` containing the set of
+        %>  average MCMC acceptance rates of the sampler proposal
+        %>  distribution over the course of the simulation.<br>
         %>
         meanAcceptanceRateSinceStart = [];
-        %
-        %   ``proposalAdaptiveScaleSq``         :   The real-valued MATLAB array of rank ``1`` of
-        %                                           shape ``(1:self.count)`` containing the set of
-        %                                           adaptive squared scale factors of the sampler proposal
-        %                                           distribution over the course of the simulation.<br>
-        %
+        %>
+        %>  ``proposalAdaptiveScaleSq``
+        %>
+        %>  The real-valued MATLAB array of rank ``1`` of
+        %>  shape ``(1:self.count)`` containing the set of
+        %>  adaptive squared scale factors of the sampler proposal
+        %>  distribution over the course of the simulation.<br>
+        %>
         proposalAdaptiveScaleSq = [];
-        %
-        %   ``proposalCor``                     :   The real-valued MATLAB array of rank ``3`` of
-        %                                           shape ``(self.ndim, self.ndim, self.count)`` containing
-        %                                           the set of correlation matrices of the proposal distribution
-        %                                           of the sampler, representing the evolution of the proposal
-        %                                           correlation matrix over the course of the simulation.<br>
-        %
+        %>
+        %>  ``proposalCor``
+        %>
+        %>  The real-valued MATLAB array of rank ``3`` of
+        %>  shape ``(self.ndim, self.ndim, self.count)`` containing
+        %>  the set of correlation matrices of the proposal distribution
+        %>  of the sampler, representing the evolution of the proposal
+        %>  correlation matrix over the course of the simulation.<br>
+        %>
         proposalCor = [];
-        %
-        %   ``proposalCov``                     :   The real-valued MATLAB array of rank ``3`` of
-        %                                           shape ``(1:self.ndim, 1:self.ndim, 1:self.count)`` containing
-        %                                           the set of covariance matrices of the proposal distribution
-        %                                           of the sampler, representing the evolution of the proposal
-        %                                           covariance matrix over the course of the simulation.<br>
-        %
+        %>
+        %>  ``proposalCov``
+        %>
+        %>  The real-valued MATLAB array of rank ``3`` of
+        %>  shape ``(1:self.ndim, 1:self.ndim, 1:self.count)`` containing
+        %>  the set of covariance matrices of the proposal distribution
+        %>  of the sampler, representing the evolution of the proposal
+        %>  covariance matrix over the course of the simulation.<br>
+        %>
         proposalCov = [];
-        %
-        %   ``proposalLogVolume``               :   The real-valued MATLAB array of rank ``1`` of
-        %                                           shape ``(1:self.count)`` containing the set of
-        %                                           ``log(determinant(covmat))`` of the proposal distribution
-        %                                           representing the evolution of mean of proposal distribution
-        %                                           over the course of the simulation.<br>
-        %
-        proposalLogVolume = [];
-        %
-        %   ``proposalMean``                    :   The real-valued MATLAB array of rank ``2`` of
-        %                                           shape ``(1:self.ndim, 1:self.count)`` containing
-        %                                           the set of mean vectors of the proposal distribution
-        %                                           of the sampler, representing the evolution of the proposal
-        %                                           mean over the course of the simulation.<br>
-        %
+        %>
+        %>  ``proposalCovLogVol``
+        %>
+        %>  The real-valued MATLAB array of rank ``1`` of
+        %>  shape ``(1:self.count)`` containing the set of
+        %>  ``log(determinant(covmat))`` of the proposal distribution
+        %>  representing the evolution of mean of proposal distribution
+        %>  over the course of the simulation.<br>
+        %>
+        proposalCovLogVol = [];
+        %>
+        %>  ``proposalMean``
+        %>
+        %>  The real-valued MATLAB array of rank ``2`` of
+        %>  shape ``(1:self.ndim, 1:self.count)`` containing
+        %>  the set of mean vectors of the proposal distribution
+        %>  of the sampler, representing the evolution of the proposal
+        %>  mean over the course of the simulation.<br>
+        %>
         proposalMean = [];
-        %
-        %   ``uniqueStateVisitCount``           :   The scalar MATLAB integer containing the number of
-        %                                           states uniquely visited within the domain of the
-        %                                           objective function up to the stage specified
-        %                                           within the specified restart file.<br>
-        %
+        %>
+        %>  ``uniqueStateVisitCount``
+        %>
+        %>  The scalar MATLAB integer containing the number of
+        %>  states uniquely visited within the domain of the
+        %>  objective function up to the stage specified
+        %>  within the specified restart file.<br>
+        %>
         uniqueStateVisitCount = [];
+        %>
+        %>  ``vis``
+        %>
+        %>  The scalar MATLAB ``struct`` containing the set of
+        %>  predefined visualizations for the restart data.<br>
+        %>
+        vis = [];
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,6 +137,22 @@ classdef FileContentsRestartDRAM < pm.sampling.FileContentsRestart
         %>
         %>  \endcode
         %>
+        %>  \example{FileContentsRestartDRAM}
+        %>  \include{lineno} example/sampling/FileContentsRestartDRAM/main.m
+        %>  \vis{FileContentsRestartDRAM}
+        %>  <br><br>
+        %>  \image html example/sampling/FileContentsRestartDRAM/FileContentsRestartDRAM.proposalCor.ellipse.12.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/FileContentsRestartDRAM/FileContentsRestartDRAM.proposalCov.ellipse.12.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/FileContentsRestartDRAM/FileContentsRestartDRAM.proposalCor.ellipse3.12.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/FileContentsRestartDRAM/FileContentsRestartDRAM.proposalCov.ellipse3.12.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/FileContentsRestartDRAM/FileContentsRestartDRAM.proposalCovLogVol.line.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/FileContentsRestartDRAM/FileContentsRestartDRAM.meanAcceptanceRateSinceStart.line.png width=700
+        %>
         %>  \final{FileContentsRestartDRAM}
         %>
         %>  \author
@@ -123,13 +160,15 @@ classdef FileContentsRestartDRAM < pm.sampling.FileContentsRestart
         %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
         %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
         function self = FileContentsRestartDRAM(file, silent)
+
             if  nargin < 2
                 silent = [];
             end
+
             self = self@pm.sampling.FileContentsRestart(file, silent, "ParaDRAM");
 
             %%%%
-            %%%% find the update count in the file.
+            %%%% Find the update count in the file.
             %%%%
 
             self.count = count(self.contents, 'uniqueStateVisitCount');
@@ -141,7 +180,7 @@ classdef FileContentsRestartDRAM < pm.sampling.FileContentsRestart
             cholupp = zeros(self.ndim, self.ndim);
             self.meanAcceptanceRateSinceStart   = zeros(self.count, 1);
             self.proposalAdaptiveScaleSq        = zeros(self.count, 1);
-            self.proposalLogVolume              = zeros(self.count, 1);
+            self.proposalCovLogVol              = zeros(self.count, 1);
             self.proposalMean                   = zeros(self.ndim, self.count);
             self.proposalCov                    = zeros(self.ndim, self.ndim, self.count);
             self.proposalCor                    = zeros(self.ndim, self.ndim, self.count);
@@ -160,7 +199,7 @@ classdef FileContentsRestartDRAM < pm.sampling.FileContentsRestart
                     self.meanAcceptanceRateSinceStart   (icount) = str2double(self.lineList(self.ilast + istart + 1));
                     self.uniqueStateVisitCount          (icount) = str2double(self.lineList(self.ilast + istart + 3));
                     self.proposalAdaptiveScaleSq        (icount) = str2double(self.lineList(self.ilast + istart + 5));
-                    self.proposalLogVolume              (icount) = str2double(self.lineList(self.ilast + istart + 7));
+                    self.proposalCovLogVol              (icount) = str2double(self.lineList(self.ilast + istart + 7));
                     istart = istart + 9;
                     iend = istart + self.ndim;
                     self.proposalMean(1 : self.ndim, icount) = str2double(self.lineList(self.ilast + istart : self.ilast + iend - 1));
@@ -178,7 +217,7 @@ classdef FileContentsRestartDRAM < pm.sampling.FileContentsRestart
             end
 
             %%%%
-            %%%% Ensure the instrinc ``corrcov`` is installed.
+            %%%% Ensure the intrinsic ``corrcov`` is installed.
             %%%%
 
             try
@@ -201,6 +240,95 @@ classdef FileContentsRestartDRAM < pm.sampling.FileContentsRestart
             if ~self.silent
                 self.spinner.spin(1);
                 self.checkpoint([]);
+            end
+
+            %%%%
+            %%%% Add the restart visualizations.
+            %%%%
+
+            try
+
+                self.vis = struct();
+                self.vis.cascade = struct();
+                silent_kws = {"silent", self.silent};
+
+                self.checkpoint("adding restart data visualization tools for proposal evolution...");
+
+                dims = self.ndim * (self.ndim - 1) / 2;
+                dimx = zeros(dims, 1);
+                dimy = zeros(dims, 1);
+                counter = 1;
+                for ix = 1 : self.ndim - 1
+                    for iy = 2 : self.ndim
+                        dimx(counter) = ix;
+                        dimy(counter) = iy;
+                        counter = counter + 1;
+                    end
+                end
+
+                for field = ["proposalCor", "proposalCov"]
+                    self.vis.(field) = struct();
+                    self.vis.(field).cascade = struct();
+                    self.vis.(field).cascade.ellipse = pm.vis.CascadeEllipse( @()self.(field) ...
+                                                                            , @()self.proposalMean ...
+                                                                            , [] ... color data
+                                                                            , "dimx", dimx, "dimy", dimy ...
+                                                                            , "names", self.domainAxisName ...
+                                                                            , silent_kws{:} ...
+                                                                            );
+                    self.vis.(field).cascade.ellipse3 = pm.vis.CascadeEllipse3  ( @()self.(field) ...
+                                                                                , @()self.proposalMean ...
+                                                                                , @()transpose(self.uniqueStateVisitCount) ...
+                                                                                , [] ... color data
+                                                                                , "axes", {"zscale", "log"} ...
+                                                                                , "dimx", dimx, "dimy", dimy ...
+                                                                                , "names", self.domainAxisName ...
+                                                                                , "zlabel", {"txt", "Unique State Visit Count"} ...
+                                                                                , silent_kws{:} ...
+                                                                                );
+                end
+
+                self.checkpoint("adding restart data visualization tools for other proposal properties...");
+
+                colnames =  [ "uniqueStateVisitCount" ...
+                            , "meanAcceptanceRateSinceStart" ...
+                            , "proposalAdaptiveScaleSq" ...
+                            , "proposalCovLogVol" ...
+                            ];
+                %fullnames = [ "Unique State Visit Count" ...
+                %            , "Mean Acceptance Rate Since Start" ...
+                %            , "Proposal Adaptive Scale-Squared" ...
+                %            , "Proposal Covriance Log-Volume" ...
+                %            ];
+                cdf = array2table(  [ self.(colnames(1))(:) ...
+                                    , self.(colnames(2))(:) ...
+                                    , self.(colnames(3))(:) ...
+                                    , self.(colnames(4))(:) ...
+                                    ]);
+                cdf.Properties.VariableNames = colnames;
+                self.vis.cascade.line = pm.vis.CascadeLine  ( cdf ...
+                                                            , "colx", colnames(1) ...
+                                                            , "coly", colnames(2 : end) ...
+                                                            , "axes", {"xscale", "log"} ...
+                                                            , "colormap", {"enabled", false} ...
+                                                            ..., "xlabel", {"txt", fullnames(1)} ...
+                                                            ..., "ylabel", {"txt", fullnames(2 : end)} ...
+                                                            , "plot", {"linewidth", 3} ...
+                                                            , silent_kws{:} ...
+                                                            );
+
+                self.checkpoint([]);
+
+            catch me
+
+                warning ( newline ...
+                        + "Failed to create the visualizations for the restart data." + newline ...
+                        + "Here is the error message:" + newline ...
+                        + newline ...
+                        + string(me.identifier) + newline + string(me.message) + newline ...
+                        + newline ...
+                        );
+
             end
 
         end % constructor

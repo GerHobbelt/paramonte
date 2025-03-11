@@ -14,9 +14,6 @@
 %>  \note
 %>  See below for information on the methods.<br>
 %>
-%>  \return
-%>  An object of class [pm.sampling.FileContentsReport](@ref FileContentsReport).<br>
-%>
 %>  \final{FileContentsReport}
 %>
 %>  \author
@@ -27,56 +24,103 @@ classdef FileContentsReport < pm.io.FileContents
 
     properties(Access = public)
         %>
-        %>  ``stats``       :   The scalar MATLAB ``struct`` containing the set of
-        %>                      computed properties extracted from the report file.<br>
+        %>  ``stats``
+        %>
+        %>  The scalar MATLAB ``struct`` containing the set of
+        %>  computed properties extracted from the report file.<br>
         %>
         stats = struct();
         %>
-        %>  ``contents``    :   The scalar MATLAB string containing the entire
-        %>                      contents of the report file with all Carriage Return
-        %>                      characters removed (relevant only to Windows OS).<br>
+        %>  ``contents``
+        %>
+        %>  The scalar MATLAB string containing the entire
+        %>  contents of the report file with all Carriage Return
+        %>  characters removed (relevant only to Windows OS).<br>
         %>
         contents = [];
         %>
-        %>  ``lineList``    :   The vector of MATLAB strings containing the set of
-        %>                      all lines in the report file with all Carriage Return
-        %>                      and New Line characters removed.<br>
+        %>  ``lineList``
+        %>
+        %>  The vector of MATLAB strings containing the set of
+        %>  all lines in the report file with all Carriage Return
+        %>  and New Line characters removed.<br>
         %>
         lineList = [];
         %>
-        %>  ``vis``         :   The scalar MATLAB ``struct`` containing the set of
-        %>                      predefined visualizations for the output data.<br>
+        %>  ``vis``
+        %>
+        %>  The scalar MATLAB ``struct`` containing the set of
+        %>  predefined visualizations for the output data.<br>
         %>
         vis = [];
         %>
-        %>  ``banner``      :   The scalar MATLAB ``string`` containing the ParaMonte
-        %>                      library banner as appearing in the report file.<br>
+        %>  ``banner``
+        %>
+        %>  The scalar MATLAB ``string`` containing the ParaMonte
+        %>  library banner as appearing in the report file.<br>
         %>
         banner = "";
         % %
-        % %   setup
+        % %   ``setup``
         % %
-        % %       The scalar MATLAB ``struct`` containing the sampler
-        % %       setup information extracted from the report file.
+        % %   The scalar MATLAB ``struct`` containing the sampler
+        % %   setup information extracted from the report file.
         % %
         % setup = struct();
         % %
-        % %   spec
+        % %   ``spec``
         % %
-        % %       The scalar MATLAB ``struct`` containing the set of
-        % %       simulation specifications extracted from the report file.
+        % %   The scalar MATLAB ``struct`` containing the set of
+        % %   simulation specifications extracted from the report file.
         % %
         % spec = struct();
     end
 
     properties(Hidden)
-        %iend = 0;
+        %>
+        %>  ``lineListLen``
+        %>
+        %>  This is an internal class variable inaccessible to the end users.<br>
+        %>
         lineListLen = [];
+        %>
+        %>  ``indentLen``
+        %>
+        %>  The scalar MATLAB integer representing the number of indentation
+        %>  characters at the beginning of each description line in the report file.<br>
+        %>  This is an internal class variable inaccessible to the end users.<br>
+        %>
         indentLen = 4; % indent length of the records
-        dsymLen = 2; % assume a minimum length of two of decoration symbols.
-        dsym = ''; % decoration symbol to be determined at runtime (currently ``%``).
+        %>
+        %>  ``dsymLen``
+        %>
+        %>  The scalar MATLAB integer representing the minimum length of two of decoration symbols.<br>
+        %>  This is an internal class variable inaccessible to the end users.<br>
+        %>
+        dsymLen = 2;
+        %>
+        %>  ``dsym``
+        %>
+        %>  The scalar MATLAB string representing the decoration symbol used in
+        %>  the report file, to be determined at runtime (currently ``%``).<br>
+        %>  This is an internal class variable inaccessible to the end users.<br>
+        %>
+        dsym = '';
+        %>
+        %>  ``prefix``
+        %>
+        %>  The scalar MATLAB string representing the prefix used in the description lines of the report file.<br>
+        %>  This is an internal class variable inaccessible to the end users.<br>
+        %>
         prefix = ' - NOTE: ';
+        %>
+        %>  ``method``
+        %>
+        %>  The scalar MATLAB string representing the sample name.<br>
+        %>  This is an internal class variable inaccessible to the end users.<br>
+        %>
         method = '';
+        %iend = 0;
     end
 
     methods(Access = public)
@@ -113,6 +157,14 @@ classdef FileContentsReport < pm.io.FileContents
         %>      contents = pm.sampling.FileContentsReport(file, silent, method)
         %>
         %>  \endcode
+        %>
+        %>  \example{FileContentsReport}
+        %>  \include{lineno} example/sampling/FileContentsReport/main.m
+        %>  \vis{FileContentsReport}
+        %>  <br><br>
+        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.parallelism.speedup.scaling.strong.sameeff.png width=700
+        %>  <br><br>
+        %>  \image html example/sampling/Paradram/himmelblau/Paradram.himmelblau.parallelism.speedup.scaling.strong.zeroeff.png width=700
         %>
         %>  \final{FileContentsReport}
         %>
@@ -239,9 +291,14 @@ classdef FileContentsReport < pm.io.FileContents
                             fid = fopen(tempfile, "w");
                             fprintf(fid, self.concat(strtrim(self.lineList(ibeg : iend - 1))));
                             fclose(fid);
-                            value = readtable(tempfile);
-                            %self.(strtrim(item)).value = value;
-                            eval(['self.', strtrim(item), '.value = value;']);
+                            df = readtable(tempfile);
+                            %if  numel(df.Properties.VariableNames) == 1
+                            %    if  strcmpi(df.Properties.VariableNames(1), "Var1")
+                            %        df.Properties.VariableNames(1) = "value";
+                            %    end
+                            %end
+                            %self.(strtrim(item)).df = df;
+                            eval(['self.', strtrim(item), '.df = df;']);
                         end
                     end
 
@@ -277,31 +334,27 @@ classdef FileContentsReport < pm.io.FileContents
             %%%% Add the parallel scaling visualizations.
             %%%%
 
+            silent_kws = {"silent", self.silent};
+
             try
-                %self.vis = struct();
-                %self.vis.parallelism = struct();
-                %self.vis.parallelism = struct();
-                for parcond = ["optimal", "perfect"]
-                    %self.vis.parallelism.(parcond) = struct();
-                    %self.vis.parallelism.(parcond).scaling = struct();
-                    %self.vis.parallelism.(parcond).scaling.strong = struct();
-                    %self.vis.parallelism.(parcond).scaling.strong.lineScatter = ...
-                    self.stats.parallelism.(parcond).scaling.strong.vis = struct();
-                    self.stats.parallelism.(parcond).scaling.strong.vis.desc = ...
-                    "This component is added in the post-processing phase to facilitate quick " + ...
-                    "visualization of the parallel scaling behavior of the sampler under the " + parcond + " parallel conditions.";
-                    self.stats.parallelism.(parcond).scaling.strong.vis.lineScatter = ...
-                    pm.vis.PlotLineScatter  ( self.stats.parallelism.(parcond).scaling.strong.value ...
+                for parcond = ["sameeff", "zeroeff"]
+                    self.stats.parallelism.speedup.scaling.strong.(parcond).vis = struct();
+                    self.stats.parallelism.speedup.scaling.strong.(parcond).vis.desc ...
+                    = "This component is added in the post-processing phase to facilitate quick " ...
+                    + "visualization of the parallel scaling behavior of the sampler under the " + parcond + " parallel conditions.";
+                    self.stats.parallelism.speedup.scaling.strong.(parcond).vis.lineScatter = ...
+                    pm.vis.PlotLineScatter  ( self.stats.parallelism.speedup.scaling.strong.(parcond).df ...
                                             , "colx", 1, "coly", 2, "colc", 2, "axes", {"xscale", "log"} ...
                                             , "scatter", {"size", 10, "color", pm.vis.color.rgb("red")} ...
                                             ..., "colormap", {"enabled", false, "map", "autumn"} ...
                                             , "plot", {"linewidth", 2.5} ...
+                                            , silent_kws{:} ...
                                             );
                 end
             catch me
                 warning ( newline ...
                         + "Failed to create the visualizations for the parallelization scaling behavior of the sampler." + newline ...
-                        + "It is possible that the component ``stats.parallelism.(parcond).scaling.strong.value`` of the " + newline ...
+                        + "It is possible that the component ``stats.parallelism.speedup.scaling.strong.(parcond).df`` of the " + newline ...
                         + "output ``report`` object of class ``pm.sampling.FileContentsReport`` does not exist, where " + newline ...
                         + "the string `parcond` can be either ``optimal`` or ``perfect``." + newline ...
                         + "Here is the error message:" + newline ...
@@ -320,23 +373,24 @@ classdef FileContentsReport < pm.io.FileContents
                 %%%% Set up the Cyclic Geometric fit to parallel processes contributions.
                 %%%%
 
-                cgfit = @(iproc, successProb, normFac, processCount) successProb .* normFac .* (1 - successProb).^(iproc - 1) ./ (1 - (1 - successProb).^processCount);
+                cgfit = @(iproc, successProb, normFac, processCount) ...
+                successProb .* normFac .* (1 - successProb).^(iproc - 1) ./ (1 - (1 - successProb).^processCount);
 
                 %%%%
                 %%%% Set up the data frame containing the processes contributions and its Cyclic Geometric fit to parallel processes contributions.
                 %%%%
 
-                dfpc = self.stats.parallelism.current.process.contribution.count.value;
+                dfpc = self.stats.parallelism.process.contribution.count.current.df;
                 dfpc.cyclicGeometricFit = cgfit ( dfpc.processID ...
-                                                , self.stats.parallelism.current.process.contribution.fit.value.successProb ...
-                                                , self.stats.parallelism.current.process.contribution.fit.value.normFac ...
-                                                , self.stats.parallelism.current.process.count.value.Var1 ...
+                                                , self.stats.parallelism.process.contribution.count.current.fit.df.successProb ...
+                                                , self.stats.parallelism.process.contribution.count.current.fit.df.normFac ...
+                                                , self.stats.parallelism.process.count.current.df.Var1 ...
                                                 );
-                self.stats.parallelism.current.process.contribution.vis = struct();
-                self.stats.parallelism.current.process.contribution.vis.desc = ...
+                self.stats.parallelism.process.contribution.count.current.vis = struct();
+                self.stats.parallelism.process.contribution.count.current.vis.desc = ...
                 "This component is added in the post-processing phase to facilitate quick " + ...
                 "visualization of the contributions of the parallel processes to the final chain.";
-                self.stats.parallelism.current.process.contribution.vis.line = ...
+                self.stats.parallelism.process.contribution.count.current.vis.line = ...
                 pm.vis.PlotLine ( dfpc ...
                                 , "colx", "processID", "coly", 2:3, "axes", {"xscale", "log", "yscale", "log"} ...
                                 , "ylabel", {"txt", "Accepted-Sample Contribution"} ...
@@ -344,6 +398,7 @@ classdef FileContentsReport < pm.io.FileContents
                                 , "colormap", {"enabled", false} ...
                                 , "legend", {"enabled", true} ...
                                 , "plot", {"linewidth", 2.5} ...
+                                , silent_kws{:} ...
                                 );
             catch me
                 warning ( newline ...

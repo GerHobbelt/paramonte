@@ -23,8 +23,10 @@ classdef Sampler < pm.matlab.Handle
 
     properties(Access = public)
         %>
-        %>  ``input``   :   Optional scalar MATLAB string representing the path to an external
-        %>                  input file that contains the simulation specification namelist(s).
+        %>  ``input``
+        %>
+        %>  The ``public`` scalar MATLAB string representing the path to an external
+        %>  input file that contains the simulation specification namelist(s).<br>
         %>
         %>  \warning
         %>  <b>Use this optional argument only if you know what you are doing</b>.<br>
@@ -34,74 +36,83 @@ classdef Sampler < pm.matlab.Handle
         %>
         input = "";
         %>
-        %>  ``checked`` :   Optional scalar MATLAB logical.<br>
-        %>                  If set to ``true``, then the checked (verified) versions of the
-        %>                  ParaMonte MATLAB shared libraries will be used for simulations.<br>
-        %>                  This means that most function calls and computations will be
-        %>                  checked at runtime to ensure correctness, at the cost of
-        %>                  noticeably slower runtime simulation speeds.<br>
-        %>                  Set this option to ``true`` only for diagnostics, testing, and development.<br>
-        %>                  If set to empty, the sampler will first search for the non-checked version
-        %>                  and if none found, will search for a checked version of the library.<br>
+        %>  ``checked``
+        %>
+        %>  The ``public`` scalar MATLAB logical.<br>
+        %>  If set to ``true``, then the checked (verified) versions of the
+        %>  ParaMonte MATLAB shared libraries will be used for simulations.<br>
+        %>  This means that most function calls and computations will be
+        %>  checked at runtime to ensure correctness, at the cost of
+        %>  noticeably slower runtime simulation speeds.<br>
+        %>  Set this option to ``true`` only for diagnostics, testing, and development.<br>
+        %>  If set to empty, the sampler will first search for the non-checked version
+        %>  and if none found, will search for a checked version of the library.<br>
         %>
         checked = [];
         %>
-        %>  ``mpiname`` :   Optional scalar MATLAB string representing the (vendor) name of the
-        %>                  MPI runtime library. The following three library names are supported:<br>
-        %>                  <ol>
-        %>                      <li>    ``"impi"``      :   The Intel MPI runtime library (Windows/Linux).<br>
-        %>                      <li>    ``"mpich"``     :   The MPICH MPI runtime library (Linux/macOS).<br>
-        %>                      <li>    ``"openmpi"``   :   The OpenMPI runtime library (Linux/macOS).<br>
-        %>                  </ol>
-        %>                  By default, you should set this argument to [pm.lib.mpi.choice()](@ref choice)
-        %>                  to enable the right preferred choice of MPI-enabled ParaMonte libraries.<br>
-        %>                  If for any reason, you want to use a non-preferred non-default MPI library,
-        %>                  you can set the MPI library name explicitly as in the above list.<br>
-        %>                  Beware that you must launch MATLAB with an ``mpiexec`` binary that
-        %>                  comes from the same MPI library vendor specified for ``mpiname``.<br>
-        %>                  Note that the MPI-parallel ParaMonte shared libraries
-        %>                  corresponding to the specified value for ``mpiname``
-        %>                  may not exist in the ParaMonte package.<br>
-        %>                  For example,<br>
-        %>                  <ol>
-        %>                      <li>    On Windows, only ParaMonte library
-        %>                              builds with Intel MPI are supported.<br>
-        %>                      <li>    On Linux, the ParaMonte library builds with
-        %>                              all MPI libraries listed above are supported,
-        %>                              but there is no guarantee of their availability in
-        %>                              the package. Only the ParaMonte library builds with
-        %>                              Intel MPI (``"impi"``) are guaranteed to exist,
-        %>                              unless user builds the ParaMonte MATLAB package
-        %>                              from GitHub source for the desired MPI library.<br>
-        %>                      <li>    On Darwin (macOS), only the ParaMonte shared library
-        %>                              builds with MPICH and OpenMPI libraries are supported,
-        %>                              but there is no guarantee of their availability in the
-        %>                              package. Only the ParaMonte library builds with OpenMPI
-        %>                              (``"openmpi"``) are guaranteed to exist, unless user
-        %>                              builds the ParaMonte MATLAB package from GitHub
-        %>                              source for the desired specified MPI library.<br>
-        %>                  </ol>
-        %>                  \warning
-        %>                  <b>USE THIS OPTIONAL ARGUMENT ONLY IF YOU KNOW ITS RAMIFICATIONS</b>.<br>
-        %>                  This option should rarely be needed in any normal simulation.<br>
-        %>                  The default value for ``mpiname`` is an empty string, implying
-        %>                  no use of MPI-enabled ParaMonte library routines.<br>
+        %>  ``mpiname``
+        %>
+        %>  The ``public`` scalar MATLAB string representing the (vendor) name of the
+        %>  MPI runtime library. The following three library names are supported:<br>
+        %>  <ol>
+        %>      <li>    ``"impi"``      :   The Intel MPI runtime library (Windows/Linux).<br>
+        %>      <li>    ``"mpich"``     :   The MPICH MPI runtime library (Linux/macOS).<br>
+        %>      <li>    ``"openmpi"``   :   The OpenMPI runtime library (Linux/macOS).<br>
+        %>  </ol>
+        %>  By default, you should set this argument to [pm.lib.mpi.choice()](@ref choice)
+        %>  to enable the right preferred choice of MPI-enabled ParaMonte libraries.<br>
+        %>  If for any reason, you want to use a non-preferred non-default MPI library,
+        %>  you can set the MPI library name explicitly as in the above list.<br>
+        %>  Beware that you must launch MATLAB with an ``mpiexec`` binary that
+        %>  comes from the same MPI library vendor specified for ``mpiname``.<br>
+        %>  Note that the MPI-parallel ParaMonte shared libraries
+        %>  corresponding to the specified value for ``mpiname``
+        %>  may not exist in the ParaMonte package.<br>
+        %>  For example,<br>
+        %>  <ol>
+        %>      <li>    On Windows, only ParaMonte library
+        %>              builds with Intel MPI are supported.<br>
+        %>      <li>    On Linux, the ParaMonte library builds with
+        %>              all MPI libraries listed above are supported,
+        %>              but there is no guarantee of their availability in
+        %>              the package. Only the ParaMonte library builds with
+        %>              Intel MPI (``"impi"``) are guaranteed to exist,
+        %>              unless user builds the ParaMonte MATLAB package
+        %>              from GitHub source for the desired MPI library.<br>
+        %>      <li>    On Darwin (macOS), only the ParaMonte shared library
+        %>              builds with MPICH and OpenMPI libraries are supported,
+        %>              but there is no guarantee of their availability in the
+        %>              package. Only the ParaMonte library builds with OpenMPI
+        %>              (``"openmpi"``) are guaranteed to exist, unless user
+        %>              builds the ParaMonte MATLAB package from GitHub
+        %>              source for the desired specified MPI library.<br>
+        %>  </ol>
+        %>
+        %>  \warning
+        %>  <b>Use this optional argument only if you know its ramifications</b>.<br>
+        %>  This option should rarely be needed in any normal simulation.<br>
+        %>  The default value for ``mpiname`` is an empty string, implying
+        %>  no use of MPI-enabled ParaMonte library routines.<br>
         %>
         mpiname = "";
         %>
-        %>  ``silent``  :   Optional logical (Boolean) indicator which is ``false`` by default.<br>
-        %>                  If it is set to ``true``, it will silence all output postprocessing messages.<br>
+        %>  ``silent``
         %>
-        %>                  \note
-        %>                  Setting ``mpiname`` to a non-empty string
-        %>                  will automatically set ``silent`` to ``true``.<br>
+        %>  The ``public`` scalar MATLAB logical (Boolean) indicator which is ``false`` by default.<br>
+        %>  If it is set to ``true``, it will silence all output postprocessing messages.<br>
+        %>
+        %>  \note
+        %>  Setting ``mpiname`` to a non-empty string
+        %>  will automatically set ``silent`` to ``true``.<br>
         %>
         silent = false;
         %>
-        %>  ``spec``    :   A MATLAB structure containing all simulation specifications.<br>
-        %>                  All specifications are set to appropriate default values at runtime.<br>
-        %>                  Set the `spec` attributes to the desired values of your choice
-        %>                  to override the default simulation specifications.<br>
+        %>  ``spec``
+        %>
+        %>  The ``public`` MATLAB structure containing all simulation specifications.<br>
+        %>  All specifications are set to appropriate default values at runtime.<br>
+        %>  Set the `spec` attributes to the desired values of your choice
+        %>  to override the default simulation specifications.<br>
         %>
         spec = [];
     end
@@ -109,29 +120,134 @@ classdef Sampler < pm.matlab.Handle
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties(Access = public, Hidden)
+        %>
+        %>  ``mexname``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing the name of the MEX file containing all ParaMonte sampler interfaces.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         mexname = "pm_sampling";
+        %>
+        %>  ``libtype``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing the type of the ParaMonte Fortran library that is to be called.<br>
+        %>  Although both ``static`` and ``shared`` may be possible, this value must always remain as ``shared``.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         libtype = "shared";
+        %>
+        %>  ``partype``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing the parallelization type of the ParaMonte Fortran library that is to be called.<br>
+        %>  Although the default value is ``serial``, the class methods will internally set this component to the right parallelization type at runtime.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         partype = "serial";
+        %>
+        %>  ``memtype``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing the memory usage type of the ParaMonte Fortran library that is to be called.<br>
+        %>  Although both ``heap`` and ``stack`` may be possible, this value must always remain as ``heap``.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         memtype = "heap";
+        %>
+        %>  ``bldtype``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing the build type of the ParaMonte Fortran library that is to be called.<br>
+        %>  The value of this component is determined at runtime depending on the availability of the ParaMonte Fortran library.<br>
+        %>  The runtime value is among the values returned by the ParaMonte MATLAB library function [pm.lib.bldtypes()](@ref bldtypes).<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         bldtype = ""; % build type
+        %>
+        %>  ``clstype``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing the type of the ParaMonte Fortran library parallelization that is to be called.<br>
+        %>  Although the default value is ``serial``, the class methods will internally set this component to the right parallelization type at runtime.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         clstype = ""; % compiler/linker suite
+        %>
+        %>  ``name``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing the name of the user-created object of superclass [pm.sampling.Sampler](@ref Sampler).<br>
+        %>  This name is determined at runtime via the MATLAB intrinsic function ``inputname()``.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         name = "self";
+        %>
+        %>  ``weblinks``
+        %>
+        %>  A ``Hidden`` scalar MATLAB object of class [pm.lib.weblinks](@ref weblinks) containing the relevant ParaMonte library web links.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         weblinks = [];
+        %>
+        %>  ``matpath``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing the contents of the MATLAB ``path`` variable at runtime.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         matpath = []; % MATLAB paths.
+        %>
+        %>  ``method``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing the name of the ParaMonte sampler subclass that the user has instantiated at runtime.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         method = "";
+        %>
+        %>  ``ndim``
+        %>
+        %>  A ``Hidden`` scalar MATLAB whole-number containing the user-specified value
+        %>  for the number of dimensions of the mathematical density function to be sampled.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         ndim = [];
-        %njob = [];
+        %>
+        %>  ``nml``
+        %>
+        %>  A ``Hidden`` scalar MATLAB string containing all the sampler specifications to be passed to the sampler as a Fortran namelist.<br>
+        %>
+        %>  \warning
+        %>  This ``Hidden`` class component must not be accessed by the end users of the library.<br>
+        %>
         nml = [];
         %>
-        %>  ``libspec`` :   Optional scalar MATLAB string containing a list of colon-(:)-separated
-        %>                  configurations of the kernel shared library to be used for the sampling task.<br>
-        %>                  The most important of all is the compiler suite with which the library is built.<br>
+        %>  ``libspec``
         %>
-        %>                  \warning
-        %>                  <b>Use this optional argument only if you know what you are doing</b>.<br>
-        %>                  The specified value for ``libspec`` is parsed internally to match a
-        %>                  corresponding library path name within the ParaMonte library.<br>
-        %>                  The simulations will fail if no such directory can be found.<br>
+        %>  Optional scalar MATLAB string containing a list of colon-(:)-separated
+        %>  configurations of the kernel shared library to be used for the sampling task.<br>
+        %>  The most important of all is the compiler suite with which the library is built.<br>
+        %>
+        %>  \warning
+        %>  <b>Use this optional argument only if you know what you are doing</b>.<br>
+        %>  The specified value for ``libspec`` is parsed internally to match a
+        %>  corresponding library path name within the ParaMonte library.<br>
+        %>  The simulations will fail if no such directory can be found.<br>
         %>
         libspec = "nocheck";
     end
@@ -139,13 +255,14 @@ classdef Sampler < pm.matlab.Handle
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     methods(Access = public)
+
         %>  \brief
         %>  Return a scalar object of class [pm.sampling.Sampler``.<br>
         %>
         %>  \details
         %>  This is the constructor of the class [pm.sampling.Sampler](@ref Sampler).<br>
         %>  This class is not meant to be accessed by the end users.<br>
-        %>  It merely serves as the blueprint for the sampler subclasses
+        %>  It merely serves as the blueprint for the subclasses of [pm.sampling.Sampler](@ref Sampler)
         %>  accessible to the end users.<br>
         %>
         %>  \param[in]  method  :   The input scalar MATLAB string containing
@@ -214,68 +331,11 @@ classdef Sampler < pm.matlab.Handle
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        %>  \brief
-        %>  Generate and return the relevant Post-Processing Message (ppm) for the current ParaMonte
-        %>  sampler to be displayed on the MATLAB command line after the sampling is complete.<br>
-        %>
-        %>  \details
-        %>  This is a ``private`` dynamic method of the [pm.sampling.Paradram](@ref Paradram) sampler class.<br>
-        %>  This method is not meant to be used or accessed by the end users.<br>
-        %>
-        %>  \param[in]  self    :   The input parent object of class [pm.sampling.Sampler](@ref Sampler)
-        %>                          which is **implicitly** passed to this dynamic method (not by the user).<br>
-        %>
-        %>  \note
-        %>  This is an internal method of the class [pm.sampling.Sampler](@ref Sampler).
-        %>
-        %>  \final{getppm}
-        %>
-        %>  \author
-        %>  \AmirShahmoradi, September 1, 2012, 12:00 AM, National Institute for Fusion Studies, The University of Texas at Austin%>
-        function ppm = getppm(self)
-            ppm = "Use the following object methods to read the generated basic output files: " + newline ...
-                + newline ...
-                + pm.io.tab + self.name + ".readChain()    % Return a list of the contents of the output chain file(s)." + newline ...
-                + pm.io.tab + self.name + ".readSample()   % Return a list of i.i.d. sample(s) from the output sample file(s)." + newline ...
-                + pm.io.tab + self.name + ".readReport()   % Return a list of summary report(s) from the output report file(s)." + newline ...
-                + pm.io.tab + self.name + ".readRestart()  % Return a list of the contents of the ASCII output restart file(s)." + newline ...
-                + pm.io.tab + self.name + ".readProgress() % Return a list of the contents of the output progress file(s)." + newline ...
-                ;
-        end
+        ppm = getppm(self)
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        %>  \brief
-        %>  Finalize the ParaMonte MATLAB sampler simulation run and return nothing.<br>
-        %>
-        %>  \details
-        %>  This is a ``private`` and ``Hidden`` dynamic method of the class [pm.sampling.Sampler](@ref Sampler).<br>
-        %>
-        %>  \param[in]  self    :   The input parent object of class [pm.sampling.Sampler](@ref Sampler)
-        %>                          which is **implicitly** passed to this dynamic method (not by the user).<br>
-        %>
-        %>  \final{finalize}
-        %>
-        %>  \author
-        %>  \JoshuaOsborne, May 21 2024, 12:10 AM, University of Texas at Arlington<br>
-        %>  \AmirShahmoradi, September 1, 2012, 12:00 AM, National Institute for Fusion Studies, The University of Texas at Austin%>
-        function finalize(self)
-            if  self.partype == "openmp"
-                if ~self.silent
-                    delete(gcp("nocreate"));
-                else
-                    evalc('delete(gcp("nocreate"))');
-                end
-            end
-            munlock(self.mexname);
-            clear(self.mexname);
-            path(self.matpath);
-            if  self.clstype == "gnu"
-                setenv('GFORTRAN_STDIN_UNIT' , '-1');
-                setenv('GFORTRAN_STDOUT_UNIT', '-1');
-                setenv('GFORTRAN_STDERR_UNIT', '-1');
-            end
-        end
+        finalize(self)
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

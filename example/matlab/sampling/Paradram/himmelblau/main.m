@@ -10,13 +10,16 @@ sampler.spec.outputStatus = "retry";
 sampler.spec.proposalStart = [-5, 5];
 sampler.spec.outputFileName = "himmelblau";
 sampler.spec.randomSeed = 28457353; % make sampling reproducible.
-sampler.spec.outputChainSize = 30000; % Use a small chain size for illustration.
+%sampler.spec.outputChainSize = 30000; % Use a small chain size for illustration.
 sampler.spec.parallelismNumThread = []; % Set this to a positive number to request that many parallel threads for the sampling.
 sampler.spec.outputRestartFileFormat = "ascii";
 % Set ``mpiname`` to ``pm.lib.mpi.choice()`` or your choice of MPI
 % library ("intel", "openmpi", "mpich", ...) for MPI-parallel applications.
 sampler.mpiname = ''; %pm.lib.mpi.choice();
-sampler.silent = ~isempty(sampler.mpiname);
+
+%%%% Developer Warning:
+%%%% Enable `silent` mode when generating the ParaMonte MATLAB documentation for a cleaner doc.
+sampler.silent = true; %~isempty(sampler.mpiname);
 
 %%%%
 %%%% Run the sampler.
@@ -59,13 +62,13 @@ chain.vis.proposalAdaptation.scatter.savefig("Paradram.himmelblau.proposalAdapta
 %%%%
 
 chain.vis.triplex.lshc2.make();
-p.savefig("Paradram.himmelblau.triplex.lshc2.png", "-m3");
+chain.vis.triplex.lshc2.savefig("Paradram.himmelblau.triplex.lshc2.png", "-m3");
 
 chain.vis.triplex.lshc3.make();
-p.savefig("Paradram.himmelblau.triplex.lshc3.png", "-m3");
+chain.vis.triplex.lshc3.savefig("Paradram.himmelblau.triplex.lshc3.png", "-m3");
 
 chain.vis.triplex.lshcf.make();
-p.savefig("Paradram.himmelblau.triplex.lshcf.png", "-m3");
+chain.vis.triplex.lshcf.savefig("Paradram.himmelblau.triplex.lshcf.png", "-m3");
 
 %%%%
 %%%% The number `chain.slfc` corresponds to the data column with header "sampleLogFunc"`.
@@ -101,10 +104,10 @@ p.savefig("Paradram.himmelblau.proposalCov.png", "-m3");
 report = sampler.readReport();
 report = report{1};
 
-for partype = ["optimal", "perfect"]
-    report.stats.parallelism.(partype).scaling.strong.vis.lineScatter.make();
-    report.stats.parallelism.(partype).scaling.strong.vis.lineScatter.savefig("Paradram.himmelblau.parallelism." + partype + ".scaling.strong.png", "-m3");
-    %p = pm.vis.PlotLineScatter(report.stats.parallelism.(partype).scaling.strong.value, "colx", "1", "coly", "2", "colc", "2");
+for parcond = ["sameeff", "zeroeff"]
+    report.stats.parallelism.speedup.scaling.strong.(parcond).vis.lineScatter.make();
+    report.stats.parallelism.speedup.scaling.strong.(parcond).vis.lineScatter.savefig("Paradram.himmelblau.parallelism.speedup.scaling.strong." + parcond + ".png", "-m3");
+    %p = pm.vis.PlotLineScatter(report.stats.parallelism.speedup.scaling.strong.(parcond).df, "colx", "1", "coly", "2", "colc", "2");
     %p.make("axes", {"xscale", "log"}, "plot", {"linewidth", 2}, "scatter", {"size", 7});
-    %p.savefig("Paradram.himmelblau.parallelism." + partype + ".scaling.strong.png", "-m3");
+    %p.savefig("Paradram.himmelblau.parallelism.speedup.scaling.strong." + parcond + ".png", "-m3");
 end

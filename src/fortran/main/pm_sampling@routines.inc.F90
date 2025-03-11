@@ -23,7 +23,7 @@
 !>  \final
 !>
 !>  \author
-!>  \AmirShahmoradi, September 1, 2012, 12:00 AM, National Institute for Fusion Studies, The University of Texas at Austin
+!>  \AmirShahmoradi, September 1, 2012, 12:00 AM, National Institute for Fusion Studies, The University of Texas Austin<br>
 
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -180,6 +180,40 @@ end if;
 #else
 #error  "Unrecognized interface."
 #endif
+        !>  \bug
+        !>  \status \unresolved
+        !>  \source \ifort{2021.11.1 20231117}
+        !>  \desc
+        !>  \ifort returns an *already allocated error with the statement `call setResized(scaling, lenScaling)` which persists in both release and debug modes.<br>
+        !>  The full debug message is the following:<br>
+        !>  \code{.sh}
+        !>      forrtl: severe (151): allocatable array is already allocated
+        !>      Image              PC                Routine            Line        Source
+        !>      libparamonte.so    00007FCFBA641EB8  Unknown               Unknown  Unknown
+        !>      libparamonte.so    00007FCFB6E6D4A3  pm_arrayresize_MP         170  pm_arrayResize@routines.inc.F90
+        !>      libparamonte.so    00007FCFB72B5BD6  pm_parallelism_MP          77  pm_parallelism@routines.inc.F90
+        !>      libparamonte.so    00007FCFB6263F43  pm_sampling_MP_ge         394  pm_sampling@routines.inc.F90
+        !>      libparamonte.so    00007FCFB61F0194  runParaDRAMD              136  pm_sampling@routines.inc.F90
+        !>  \endcode
+        !>  Note that the line numbers for this file in the message above have changed because of code change in this file.<br>
+        !>  This error does not occur when the library is compiled with \gfortran{13}.<br>
+        !>  This error does not occur when the library is compiled with \ifx{2025.0.0 20241008}.<br>
+        !>  It seems like this error occurs because of placing the following typed variable `speedup`
+        !>  in the `forkjoin_parallelism_block` below.<br>
+        !>  \remedy{2.0.0}
+        !>  For now, the type definition and the typed variable declaration are taken out of the block and placed below.<br>
+        !>  This must be checked with newer Intel compilers as `ifort` is being phased out by Intel.<br>
+        type :: scaling_type
+            real(RKG) :: maxval
+            integer(IK) :: maxloc
+            real(RKG), allocatable :: scaling(:)
+            integer(IK), allocatable :: numproc(:)
+        end type
+        type :: speedup_type
+            type(scaling_type) :: sameeff, zeroeff
+        end type
+        type(speedup_type) :: speedup
+
         character(*,SKG), parameter :: PROCEDURE_NAME = MODULE_NAME//SKG_"@getErrSampling()"
        !character(*,SKG), parameter :: NL1 = new_line(SKG_"a"), NL2 = NL1//NL1
         integer(IK) :: ndimp1, idim, iq
@@ -350,152 +384,103 @@ end if;
                 call spec%disp%show(stat%avgCommPerFunCall, format = format)
                 call spec%disp%note%show("This is the average time cost of parallel inter-process communications per used (accepted or rejected or delayed-rejection) function call, in seconds.")
 
-                !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                call spec%disp%show("stats.parallelism.current.process.count")
-                call spec%disp%show(spec%image%count, format = format)
-                call spec%disp%note%show("This is the number of images/processes/threads used in this simulation.")
-
-#if             CAF_ENABLED || MPI_ENABLED || OMP_ENABLED
-                if (spec%image%count == 1_IK) then
-                    spec%msg = spec%method%val//SKG_" is used in parallel mode with only one image/process/thread. This can be computationally inefficient. &
-                    &Consider using the serial version of the code or provide more processes at runtime if it seems to be beneficial as discussed below."
-                    call spec%disp%note%show(spec%msg, unit = output_unit)!, format = format, tmsize = 3_IK, bmsize = 1_IK)
-                end if
-#endif
-
                 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                ! Find individual image contributions and the Cyclic Geometric fit to the contributions.
+                !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% begin fork-join parallelism section %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                imageContribution_block: block
+                forkjoin_parallelism_block: block
 
-                    real(RKG) :: successProbNormFac(2)
-                    integer(IK) :: pidSuccessLen, iell
-                    integer(IK), allocatable :: index(:), cntSuccess(:), pidSuccess(:)
-
-                    call setResized(index, spec%image%count)
-                    call setResized(cntSuccess, spec%image%count)
-                    call setResized(pidSuccess, spec%image%count)
-                    call setUnique(stat%cfc%processID, unique = pidSuccess, lenUnique = pidSuccessLen, count = cntSuccess)
-
-                    if (pidSuccessLen < spec%image%count) then
-                        pidSuccess(pidSuccessLen + 1 :) = getComplementRange(pidSuccess(1 : pidSuccessLen), start = 1_IK, stop = spec%image%count, step = 1_IK)
-                        cntSuccess(pidSuccessLen + 1 :) = 0_IK
-                    end if
-                    call setSorted(pidSuccess, index)
-                    pidSuccess(:) = pidSuccess(index)
-                    cntSuccess(:) = cntSuccess(index)
-
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                    call spec%disp%show("stats.parallelism.current.process.contribution.count")
-                    call spec%disp%show(css_type([character(15) :: "processID", "count"]), format = spec%reportFile%format%fixform, bmsize = 0_IK)
-                    do iell = 1, spec%image%count
-                        write(spec%reportFile%unit, spec%reportFile%format%integer) iell, cntSuccess(iell)
-                    end do
-                    call spec%disp%skip(count = spec%disp%bmsize)
-                    spec%msg = SKG_"These are the contributions of individual processes to the construction of the output chain of the "//spec%method%val//SKG_" sampler. &
-                    &Each count value represents the total number of accepted states (useful contributions to the simulation) by the corresponding processor, starting &
-                    &from the first processor to the last. This information is mainly useful in synchronous parallel Fork-Join (singleChain) simulations. &
-                    &Ideally, one would desire equal contributions from all processes to the final output chain, although this is never the case."
-                    call spec%disp%note%show(spec%msg)
-
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                    call spec%disp%show("stats.parallelism.current.process.contribution.fit")
-                    call spec%disp%show(css_type([character(15) :: "successProb", "normFac"]), format = spec%reportFile%format%fixform, bmsize = 0_IK)
-                    if (spec%parallelism%is%forkJoin) then
-                        pidSuccess = pack(pidSuccess, 0 < cntSuccess)
-                        cntSuccess = pack(cntSuccess, 0 < cntSuccess)
-                        err%occurred = isFailedGeomCyclicFit(pidSuccess, cntSuccess, spec%image%count, successProbNormFac(1), successProbNormFac(2))
-                        if (err%occurred) then
-                            call spec%disp%show(css_type([character(15) :: "NaN", "NaN"]), format = spec%reportFile%format%fixform, bmsize = 0_IK)
-                            err%occurred = .false._LK
-                        else
-                            call spec%disp%show(successProbNormFac, format = spec%reportFile%format%allreal, tmsize = 0_IK)
-                        end if
-                    else
-                        successProbNormFac = [1._RKG, real(cntSuccess(size(cntSuccess, 1, IK)), RKG)]
-                        call spec%disp%show(successProbNormFac, format = spec%reportFile%format%allreal, tmsize = 0_IK)
-                    end if
-                    call spec%disp%skip(count = spec%disp%bmsize)
-                    spec%msg =  SKG_"These are the two parameters of the Cyclic Geometric fit to the distribution of the processor contributions to the construction &
-                                    &of the final output chain of visited states. The processor contributions are reported in the first column of the output chain file. &
-                                    &The processor contribution frequencies are listed above. The fit has the following form: "//NL2// &
-                                SKG_"    processConstribution(i) ="//NL1//&
-                                    SKG_"successProb * normFac * (1 - successProb)^(i - 1) / (1 - (1 - successProb)^processCount)"//NL2// &
-                                SKG_"where `i` is the ID of the processor (starting from index `1`), `processCount` is the total number of &
-                                    &processes used in the simulation, `successProb` is equivalent to an effective sampling efficiency computed &
-                                    &from the contributions of individual processes to the output chain, and `normFac` is a normalization constant."
-                    call spec%disp%note%show(spec%msg)
-
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                end block imageContribution_block
-
-                !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% begin speedup compute %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                blockParallelSpeedup: block
-
-                    integer(IK) :: scalingMaxLoc, iell
+                    integer(IK) :: iell
                     integer(IK), parameter :: nscol = 5_IK
-                    integer(IK), allocatable :: numproc(:)
-                    real(RKG), allocatable :: scaling(:)
-                    real(RKG) :: scalingMaxVal
 
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                    ! Compute the effective efficiency from the processor contributions and the current strong scaling.
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    !!!!
+                    !!!! First compute the fork-join strong scaling for the same and zero efficiency scenarios.
+                    !!!!
 
                     ! \todo
                     ! The specified epsilon values for `parSecTime` and `comSecTime` are points of weakness of the following call
                     ! if the computers of the future civilization are roughly 1 billion times or more faster than the current 2020 technologies.
                     ! Therefore, a more robust solution is required for cases where the entire simulation is a dry run of the old existing simulation.
                     ! This situation is, however, such a rare occurrence that does not merit further investment in the current version of the library.
-                    call setForkJoinScaling ( conProb = real(stat%numFunCallAccepted, RKG) / real(stat%numFunCallAcceptedRejected, RKG) & ! LCOV_EXCL_LINE
+                    call setForkJoinScaling ( conProb = real(stat%numFunCallAccepted, RKG) / real(stat%numFunCallAcceptedRejected, RKG) & ! current sampling efficiency. ! LCOV_EXCL_LINE
                                             , seqSecTime = epsilon(1._RKG) & ! LCOV_EXCL_LINE time cost of the sequential section of the code, which is negligible here
                                             , comSecTime = real(stat%avgCommPerFunCall, RKG) / spec%image%count & ! LCOV_EXCL_LINE
                                             , parSecTime = real(stat%avgTimePerFunCall, RKG) & ! LCOV_EXCL_LINE
                                             , scalingMinLen = max(10_IK, spec%image%count * 2_IK) & ! LCOV_EXCL_LINE
-                                            , scalingMaxLoc = scalingMaxLoc & ! LCOV_EXCL_LINE
-                                            , scalingMaxVal = scalingMaxVal & ! LCOV_EXCL_LINE
-                                            , numproc = numproc & ! LCOV_EXCL_LINE
-                                            , scaling = scaling & ! LCOV_EXCL_LINE
+                                            , scalingMaxLoc = speedup%sameeff%maxloc & ! LCOV_EXCL_LINE
+                                            , scalingMaxVal = speedup%sameeff%maxval & ! LCOV_EXCL_LINE
+                                            , numproc = speedup%sameeff%numproc & ! LCOV_EXCL_LINE
+                                            , scaling = speedup%sameeff%scaling & ! LCOV_EXCL_LINE
+                                            )
+                    call setForkJoinScaling ( conProb = 0._RKG & ! zero sampling efficiency. ! LCOV_EXCL_LINE
+                                            , seqSecTime = epsilon(1._RKG) & ! LCOV_EXCL_LINE time cost of the sequential section of the code, which is negligible here
+                                            , comSecTime = real(stat%avgCommPerFunCall, RKG) / spec%image%count & ! LCOV_EXCL_LINE
+                                            , parSecTime = real(stat%avgTimePerFunCall, RKG) & ! LCOV_EXCL_LINE
+                                            , scalingMinLen = max(10_IK, spec%image%count * 2_IK) & ! LCOV_EXCL_LINE
+                                            , scalingMaxLoc = speedup%zeroeff%maxloc & ! LCOV_EXCL_LINE
+                                            , scalingMaxVal = speedup%zeroeff%maxval & ! LCOV_EXCL_LINE
+                                            , numproc = speedup%zeroeff%numproc & ! LCOV_EXCL_LINE
+                                            , scaling = speedup%zeroeff%scaling & ! LCOV_EXCL_LINE
                                             )
 
                     !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                    call spec%disp%show("stats.parallelism.current.speedup")
-                    call spec%disp%show(scaling(spec%image%count), format = format)
+                    call spec%disp%show("stats.parallelism.process.count.current")
+                    call spec%disp%show(spec%image%count, format = format)
+                    call spec%disp%note%show("This is the number of images/processes/threads used in this simulation.")
+
+#if                 CAF_ENABLED || MPI_ENABLED || OMP_ENABLED
+                    if (spec%image%count == 1_IK) then
+                        spec%msg = spec%method%val//SKG_" is used in parallel mode with only one image/process/thread. This can be computationally inefficient. &
+                        &Consider using the serial version of the code or provide more processes at runtime if it seems to be beneficial as discussed below."
+                        call spec%disp%note%show(spec%msg, unit = output_unit)!, format = format, tmsize = 3_IK, bmsize = 1_IK)
+                    end if
+#endif
+
+                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                    call spec%disp%show("stats.parallelism.process.count.optimal.sameeff")
+                    call spec%disp%show(speedup%sameeff%maxloc, format = format)
+                    spec%msg = SKG_"This is the predicted optimal number of physical computing processes for "//spec%parallelism%val// & ! LCOV_EXCL_LINE
+                    SKG_" parallelization model, assuming the same (current) sampling efficiency and parallel communication overhead as in this simulation."
+                    call spec%disp%note%show(spec%msg)
+
+                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                    call spec%disp%show("stats.parallelism.process.count.optimal.zeroeff")
+                    call spec%disp%show(speedup%zeroeff%maxloc, format = format)
+                    spec%msg = "This is the predicted number of physical computing processes for "//spec%parallelism%val// & ! LCOV_EXCL_LINE
+                    SKG_" parallelization model, assuming zero sampling efficiency and the same (current) parallel communication overhead as in this simulation. &
+                    &This sampling task will likely NOT benefit from any additional computing processes beyond this predicted optimal count, "// & ! LCOV_EXCL_LINE
+                    getStr(speedup%zeroeff%maxloc)//SKG_", in the above, under the ideal synchronous fork-join parallelism scenario. &
+                    &This is true for any value of sampling efficiency given the current parallel communication overhead. &
+                    &Keep in mind that the predicted optimal number of processes in this zero-efficiency sampling scenario is only an &
+                    &estimate whose accuracy depends on many runtime factors, including the topology of the parallel communication network used, &
+                    &the number of processes per node, and the number of tasks to each processor or node."
+                    call spec%disp%note%show(spec%msg)
+
+                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                    call spec%disp%show("stats.parallelism.speedup.current")
+                    call spec%disp%show(speedup%sameeff%scaling(spec%image%count), format = format)
                     spec%msg = "This is the estimated maximum speedup gained via "//spec%parallelism%val// & ! LCOV_EXCL_LINE
                     SKG_" parallelization model compared to serial mode given the current parallel communication overhead."
                     call spec%disp%note%show(spec%msg)
 
                     !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                    call spec%disp%show("stats.parallelism.optimal.process.count")
-                    call spec%disp%show(scalingMaxLoc, format = format)
-                    spec%msg = SKG_"This is the predicted optimal number of physical computing processes for "//spec%parallelism%val// & ! LCOV_EXCL_LINE
-                    SKG_" parallelization model, given the current sampling efficiency and parallel communication overhead."
-                    call spec%disp%note%show(spec%msg)
-
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
                     spec%msg = ""
-                    call spec%disp%show("stats.parallelism.optimal.speedup")
-                    call spec%disp%show(scalingMaxVal, format = format)
-                    if (spec%parallelism%is%forkJoin .and. scaling(spec%image%count) < 1._RKG) then
-                        spec%msg = "The time cost of calling the user-provided objective function must be at least "//getStr(1._RKG / scaling(spec%image%count), SK_"(g0.6)")//&
-                        SKG_" times more (that is, ~"//getStr(10**6 * stat%avgTimePerFunCall / scaling(spec%image%count), SK_"(g0.6)")//" microseconds) to see any performance benefits from "//&
+                    call spec%disp%show("stats.parallelism.speedup.optimal.sameeff")
+                    call spec%disp%show(speedup%sameeff%maxval, format = format)
+                    if (spec%parallelism%is%forkJoin .and. speedup%sameeff%scaling(spec%image%count) < 1._RKG) then
+                        spec%msg = "The time cost of calling the user-provided objective function must be at least "//getStr(1._RKG / speedup%sameeff%scaling(spec%image%count), SK_"(g0.6)")//&
+                        SKG_" times more (that is, ~"//getStr(10**6 * stat%avgTimePerFunCall / speedup%sameeff%scaling(spec%image%count), SK_"(g0.6)")//" microseconds) to see any performance benefits from "//&
                         spec%parallelism%val//SKG_" parallelization model for this simulation. "
-                        if (scalingMaxLoc == 1_IK) then
+                        if (speedup%sameeff%maxloc == 1_IK) then
                             spec%msg = spec%msg//SKG_"Consider simulating in serial mode in the future (if used within the same computing environment and with the same configuration as used here)."
                         else
-                            spec%msg = spec%msg//SKG_"Consider simulating on "//getStr(scalingMaxLoc)//&
-                            SKG_" processors in the future (if used within the same computing environment and with the same configuration as used here)."
+                            spec%msg = spec%msg//SKG_"Consider simulating on "//getStr(speedup%sameeff%maxloc)//&
+                            SKG_" processes in the future (if used within the same computing environment and with the same configuration as used here)."
                         end if
                         if (.not. spec%outputSplashMode%is%silent) call spec%disp%note%show(spec%msg, unit = output_unit, tmsize = spec%disp%tmsize, bmsize = spec%disp%bmsize)
                         spec%msg = NL1//spec%msg
@@ -506,11 +491,92 @@ end if;
 
                     !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                    call spec%disp%show("stats.parallelism.optimal.scaling.strong")
+                    call spec%disp%show("stats.parallelism.speedup.optimal.zeroeff")
+                    call spec%disp%show(speedup%zeroeff%maxval, format = format)
+                    spec%msg = SKG_"This is the predicted optimal maximum speedup gained via `"//spec%parallelism%val// & ! LCOV_EXCL_LINE
+                    SKG_"` parallelization model, assuming the ideal zero-efficiency sampling and &
+                    &the same (current) parallel communication overhead as in this simulation."
+                    call spec%disp%note%show(spec%msg)
+
+                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                    !!!!
+                    !!!! Find individual image contributions and the Cyclic Geometric fit to the contributions.
+                    !!!!
+
+                    imageContribution_block: block
+
+                        integer(IK) :: pidSuccessLen
+                        real(RKG) :: successProbNormFac(2)
+                        integer(IK), allocatable :: index(:), cntSuccess(:), pidSuccess(:)
+
+                        call setResized(index, spec%image%count)
+                        call setResized(cntSuccess, spec%image%count)
+                        call setResized(pidSuccess, spec%image%count)
+                        call setUnique(stat%cfc%processID, unique = pidSuccess, lenUnique = pidSuccessLen, count = cntSuccess)
+
+                        if (pidSuccessLen < spec%image%count) then
+                            pidSuccess(pidSuccessLen + 1 :) = getComplementRange(pidSuccess(1 : pidSuccessLen), start = 1_IK, stop = spec%image%count, step = 1_IK)
+                            cntSuccess(pidSuccessLen + 1 :) = 0_IK
+                        end if
+                        call setSorted(pidSuccess, index)
+                        pidSuccess(:) = pidSuccess(index)
+                        cntSuccess(:) = cntSuccess(index)
+
+                        !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                        call spec%disp%show("stats.parallelism.process.contribution.count.current")
+                        call spec%disp%show(css_type([character(15) :: "processID", "count"]), format = spec%reportFile%format%fixform, bmsize = 0_IK)
+                        do iell = 1, spec%image%count
+                            write(spec%reportFile%unit, spec%reportFile%format%integer) iell, cntSuccess(iell)
+                        end do
+                        call spec%disp%skip(count = spec%disp%bmsize)
+                        spec%msg = SKG_"These are the contributions of individual processes to the construction of the output chain of the "//spec%method%val//SKG_" sampler. &
+                        &Each count value represents the total number of accepted states (useful contributions to the simulation) by the corresponding processor, starting &
+                        &from the first processor to the last. This information is mainly useful in synchronous parallel Fork-Join (singleChain) simulations. &
+                        &Ideally, one would desire equal contributions from all processes to the final output chain, although this is never the case."
+                        call spec%disp%note%show(spec%msg)
+
+                        !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                        call spec%disp%show("stats.parallelism.process.contribution.count.current.fit")
+                        call spec%disp%show(css_type([character(15) :: "successProb", "normFac"]), format = spec%reportFile%format%fixform, bmsize = 0_IK)
+                        if (spec%parallelism%is%forkJoin) then
+                            pidSuccess = pack(pidSuccess, 0 < cntSuccess)
+                            cntSuccess = pack(cntSuccess, 0 < cntSuccess)
+                            err%occurred = isFailedGeomCyclicFit(pidSuccess, cntSuccess, spec%image%count, successProbNormFac(1), successProbNormFac(2))
+                            if (err%occurred) then
+                                call spec%disp%show(css_type([character(15) :: "NaN", "NaN"]), format = spec%reportFile%format%fixform, bmsize = 0_IK)
+                                err%occurred = .false._LK
+                            else
+                                call spec%disp%show(successProbNormFac, format = spec%reportFile%format%allreal, tmsize = 0_IK)
+                            end if
+                        else
+                            successProbNormFac = [1._RKG, real(cntSuccess(size(cntSuccess, 1, IK)), RKG)]
+                            call spec%disp%show(successProbNormFac, format = spec%reportFile%format%allreal, tmsize = 0_IK)
+                        end if
+                        call spec%disp%skip(count = spec%disp%bmsize)
+                        spec%msg =  SKG_"These are the two parameters of the Cyclic Geometric fit to the distribution of the processor contributions to the construction &
+                                        &of the final output chain of visited states. The processor contributions are reported in the first column of the output chain file. &
+                                        &The processor contribution frequencies are listed above. The fit has the following form: "//NL2// &
+                                    SKG_"    processConstribution(i) ="//NL1//&
+                                        SKG_"successProb * normFac * (1 - successProb)^(i - 1) / (1 - (1 - successProb)^processCount)"//NL2// &
+                                    SKG_"where `i` is the ID of the processor (starting from index `1`), `processCount` is the total number of &
+                                        &processes used in the simulation, `successProb` is equivalent to an effective sampling efficiency computed &
+                                        &from the contributions of individual processes to the output chain, and `normFac` is a normalization constant."
+                        call spec%disp%note%show(spec%msg)
+
+                        !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                    end block imageContribution_block
+
+                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                    call spec%disp%show("stats.parallelism.speedup.scaling.strong.sameeff")
                     call spec%disp%show(css_type([character(15) :: "processCount", "speedup"]), format = spec%reportFile%format%fixform, bmsize = 0_IK)
-                    do iell = 1, size(scaling, 1, IK)
-                        write(spec%reportFile%unit, spec%reportFile%format%intreal) numproc(iell), scaling(iell)
-                        !call spec%disp%show(scaling(iell : min(iell + nscol - 1_IK, size(scaling, 1, IK))), format = scalingFormat, tmsize = 0_IK, bmsize = 0_IK)
+                    do iell = 1, size(speedup%sameeff%scaling, 1, IK)
+                        write(spec%reportFile%unit, spec%reportFile%format%intreal) speedup%sameeff%numproc(iell), speedup%sameeff%scaling(iell)
+                        !call spec%disp%show(speedup%sameeff%scaling(iell : min(iell + nscol - 1_IK, size(speedup%sameeff%scaling, 1, IK))), format = scalingFormat, tmsize = 0_IK, bmsize = 0_IK)
                     end do
                     call spec%disp%skip(count = spec%disp%bmsize)
                     spec%msg = SKG_"This is the predicted strong-scaling speedup behavior of the "//spec%parallelism%val//SKG_" parallelization model, &
@@ -518,66 +584,23 @@ end if;
                     call spec%disp%note%show(spec%msg)
 
                     !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                    ! Compute the perfect-efficiency parallel scaling under any sampling efficiency.
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                    ! \todo
-                    ! The specified epsilon double precision values for `parSecTime` and `comSecTime` are points of weakness of the following
-                    ! call if the computers of the future civilization are roughly 1 billion times or more faster than the current 2020 technologies.
-                    ! Therefore, a more robust solution is required for cases where the entire simulation is a dry run of the old existing simulation.
-                    ! This situation is, however, such a rare occurrence that does not merit further investment in the current version of the library.
-                    call setForkJoinScaling ( conProb = 0._RKG & ! LCOV_EXCL_LINE
-                                            , seqSecTime = epsilon(1._RKG) & ! LCOV_EXCL_LINE time cost of the sequential section of the code, which is negligible here
-                                            , comSecTime = real(stat%avgCommPerFunCall, RKG) / spec%image%count & ! LCOV_EXCL_LINE
-                                            , parSecTime = real(stat%avgTimePerFunCall, RKG) & ! LCOV_EXCL_LINE
-                                            , scalingMinLen = max(10_IK, spec%image%count * 2_IK) & ! LCOV_EXCL_LINE
-                                            , scalingMaxVal = scalingMaxVal & ! LCOV_EXCL_LINE
-                                            , scalingMaxLoc = scalingMaxLoc & ! LCOV_EXCL_LINE
-                                            , numproc = numproc & ! LCOV_EXCL_LINE
-                                            , scaling = scaling & ! LCOV_EXCL_LINE
-                                            )
-
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                    call spec%disp%show("stats.parallelism.perfect.process.count")
-                    call spec%disp%show(scalingMaxLoc, format = format)
-                    spec%msg = "This is the predicted number of physical computing processes for "//spec%parallelism%val// & ! LCOV_EXCL_LINE
-                    SKG_" parallelization model, under a perfect scenario (approaching 0% sampling efficiency) for this sampling problem, given the current parallel communication overhead. &
-                    &This simulation will likely NOT benefit from any additional computing processors beyond the predicted perfect-scenario optimal number, "//getStr(scalingMaxLoc)//SKG_", in the above. &
-                    &This is true for any value of sampling efficiency given the current parallel communication overhead. Keep in mind that the predicted optimal number of processors in a perfect-scenario &
-                    &(approaching 0% sampling efficiency) is just an estimate whose accuracy depends on many runtime factors, including the topology of the communication network being used, the number of processors per node, &
-                    &and the number of tasks to each processor or node."
-                    call spec%disp%note%show(spec%msg)
-
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                    call spec%disp%show("stats.parallelism.perfect.speedup")
-                    call spec%disp%show(scalingMaxVal, format = format)
-                    spec%msg = SKG_"This is the predicted optimal maximum speedup gained via "//spec%parallelism%val//SKG_" parallelization model, &
-                    &given the current parallel communication overhead in the above and under a perfect scenario (approaching 0% sampling efficiency)."
-                    call spec%disp%note%show(spec%msg)
-
-                    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                    call spec%disp%show("stats.parallelism.perfect.scaling.strong")
+                    call spec%disp%show("stats.parallelism.speedup.scaling.strong.zeroeff")
                     call spec%disp%show(css_type([character(15) :: "processCount", "speedup"]), format = spec%reportFile%format%fixform, bmsize = 0_IK)
-                    do iell = 1, size(scaling, 1, IK)
-                        write(spec%reportFile%unit, spec%reportFile%format%intreal) numproc(iell), scaling(iell)
-                        !call spec%disp%show(scaling(iell : min(iell + nscol - 1_IK, size(scaling, 1, IK))), format = scalingFormat, tmsize = 0_IK, bmsize = 0_IK)
+                    do iell = 1, size(speedup%zeroeff%scaling, 1, IK)
+                        write(spec%reportFile%unit, spec%reportFile%format%intreal) speedup%zeroeff%numproc(iell), speedup%zeroeff%scaling(iell)
+                        !call spec%disp%show(speedup%zeroeff%scaling(iell : min(iell + nscol - 1_IK, size(speedup%zeroeff%scaling, 1, IK))), format = scalingFormat, tmsize = 0_IK, bmsize = 0_IK)
                     end do
                     call spec%disp%skip(count = spec%disp%bmsize)
                     spec%msg = SKG_"This is the predicted strong-scaling speedup behavior of the "//spec%parallelism%val//SKG_" parallelization model, &
-                    &under a perfect scenario (approaching 0% sampling efficiency), given the current parallel communication overhead, &
+                    &assuming an ideal synchronous fork-join parallelism scenario (with 0% sampling efficiency), given the current parallel communication overhead, &
                     &for increasing numbers of processes, starting from a single process."
                     call spec%disp%note%show(spec%msg)
 
                     !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                end block blockParallelSpeedup
+                end block forkjoin_parallelism_block
 
-
-                !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% end speedup compute %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
                 call spec%disp%show("stats.domain.logVolume")
@@ -586,6 +609,19 @@ end if;
 
                 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+#if             ParaDRAM_ENABLED || ParaDISE_ENABLED
+                if (spec%image%is%first .and. .not. spec%outputSplashMode%is%silent) then
+                    call spec%disp%note%show("Computing the statistical properties of the Markov chain...", unit = output_unit)
+                end if
+                call spec%disp%text%wrap(NL1//SKG_"The statistical properties of the Markov chain"//NL1)
+#elif           ParaNest_ENABLED
+                if (spec%image%is%first .and. .not. spec%outputSplashMode%is%silent) then
+                    call spec%disp%note%show("Computing the statistical properties of the output chain...", unit = output_unit)
+                end if
+                call spec%disp%text%wrap(NL1//SKG_"The statistical properties of the output chain"//NL1)
+#else
+#error          "Unrecognized sampler."
+#endif
                 SET_DRAMDISE(call spec%disp%show("stats.chain.verbose.logFunc.max.val"))
                 SET_ParaNest(call spec%disp%show("stats.chain.uniques.logFunc.max.val"))
                 call spec%disp%show(stat%chain%mode%val, format = format)
@@ -648,11 +684,6 @@ end if;
                 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 ! Compute the statistical properties of the MCMC chain
                 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-                if (spec%image%is%first .and. .not. spec%outputSplashMode%is%silent) then
-                    call spec%disp%note%show("Computing the statistical properties of the Markov chain...", unit = output_unit)
-                end if
-                call spec%disp%text%wrap(NL1//SKG_"The statistical properties of the Markov chain"//NL1)
 
                 ! Compute the covariance and correlation upper-triangle matrices.
 

@@ -1086,7 +1086,7 @@ for %%C in ("!list_fc:;=" "!") do (
 
                                             if !MATLAB_FOUND!==false (
 
-                                                if defined matlabroot (
+                                                if  defined matlabroot (
                                                     set "MATLAB_ROOT_DIR_TEMP=!matlabroot!"
                                                     echo.!pmnote! !BoldYellow!Searching for user-specified MATLAB installation at: !MATLAB_ROOT_DIR_TEMP! !ColorReset!
                                                 ) else (
@@ -1308,7 +1308,7 @@ if  "!zipperFound!"=="" (
     echo.
 ) else (
     echo.
-    echo.!pmnote! !BoldGreen!Generating the the binary archive zip file using !zipperName! at:!ColorReset! "!ddir!"
+    echo.!pmnote! !BoldGreen!Generating the binary archive zip file using !zipperName! at:!ColorReset! "!ddir!"
     echo.
     call :NORMALIZEPATH "!ddir!"
     if  exist "!ddir!" (

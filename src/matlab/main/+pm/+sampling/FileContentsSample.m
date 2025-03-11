@@ -17,46 +17,60 @@
 %>  \final{FileContentsSample}
 %>
 %>  \author
-%>  \JoshuaOsborne, May 21 2024, 3:32 AM, University of Texas at Arlington<br>
+%>  \AmirShahmoradi, 3:31 PM Friday, November 8, 2024, Dallas, TX<br>
 %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
-%>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
 classdef FileContentsSample < pm.io.FileContentsTabular
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties(Access = public)
         %>
-        %>  ``ndim``    :   The scalar MATLAB integer representing the number of
-        %>                  dimensions of the domain of the objective function sampled.<br>
-        %>                  This integer is also the number of columns in the file that
-        %>                  correspond that contain the sampled states from the domain
-        %>                  of the mathematical objective function.<br>
+        %>  ``ndim``
+        %>
+        %>  The scalar MATLAB integer representing the number of
+        %>  dimensions of the domain of the objective function sampled.<br>
+        %>  This integer is also the number of columns in the file that
+        %>  correspond that contain the sampled states from the domain
+        %>  of the mathematical objective function.<br>
         %>
         ndim = 0;
         %>
-        %>  ``slfc``    :   The scalar MATLAB integer representing the column
-        %>                  index of the dataframe component ``df`` that contains
-        %>                  the natural logarithm of the objective function values
-        %>                  corresponding to the sampled states next to this column,
-        %>                  such that the following relationship holds.<br>
-        %>                  \code{.m}
-        %>                      FileContentsSample.ndim = FileContentsSample.ncol - FileContentsSample.slfc;
-        %>                  \endcode
-        %>                  While this column index can be readily inferred by exploring
-        %>                  the contents of the dataframe component, this column index is also
-        %>                  computed and explicitly offered to conveniently slice the values of
-        %>                  the sampled states and their corresponding log-function values.<br>
+        %>  ``slfc``
+        %>
+        %>  The scalar MATLAB integer representing the column
+        %>  index of the dataframe component ``df`` that contains
+        %>  the natural logarithm of the objective function values
+        %>  corresponding to the sampled states next to this column,
+        %>  such that the following relationship holds.<br>
+        %>
+        %>  \code{.m}
+        %>      FileContentsSample.ndim = FileContentsSample.ncol - FileContentsSample.slfc;
+        %>  \endcode
+        %>
+        %>  While this column index can be readily inferred by exploring
+        %>  the contents of the dataframe component, this column index is also
+        %>  computed and explicitly offered to conveniently slice the values of
+        %>  the sampled states and their corresponding log-function values.<br>
         %>
         slfc = 0;
         %>
-        %>  ``stats``   :   The scalar MATLAB object containing the set of
-        %>                  computed properties of the contents of the file.<br>
+        %>  ``stats``
+        %>
+        %>  The scalar MATLAB object containing the set of
+        %>  computed properties of the contents of the file.<br>
+        %>  This component is populated by the subclasses automatically.<br>
+        %>  It can also be manually constructed by calling the ``Hidden`` class method
+        %>  [pm.sampling.FileContentsSample::setstats](@ref FileContentsSample::setstats).<br>
         %>
         stats = [];
         %>
-        %>  ``vis``     :   The scalar MATLAB ``struct`` containing the set of
-        %>                  predefined visualizations for the output data.<br>
+        %>  ``vis``
         %>
+        %>  The scalar MATLAB ``struct`` containing the set of
+        %>  predefined visualizations for the output data.<br>
+        %>  This component is populated by the subclasses automatically.<br>
+        %>  It can also be manually constructed by calling the ``Hidden`` class method
+        %>  [pm.sampling.FileContentsSample::setvis](@ref FileContentsSample::setvis).<br>
         vis = [];
     end
 
@@ -64,10 +78,16 @@ classdef FileContentsSample < pm.io.FileContentsTabular
 
     properties(Hidden)
         %>
-        %>  ``slfcname``    :   The scalar MATLAB string representing the column
-        %>                      name of the dataframe component ``df`` that contains
-        %>                      the natural logarithm of the objective function values
-        %>                      corresponding to the sampled states next to this column.<br>
+        %>  ``slfcname``
+        %>
+        %>  The ``Hidden`` scalar MATLAB string representing
+        %>  the column name of the dataframe component ``df`` that
+        %>  contains the natural logarithm of the objective function
+        %>  values corresponding to the sampled states next to this column.<br>
+        %>
+        %>  \warning
+        %>  This is an internal ``Hidden`` class attribute
+        %>  that is inaccessible to the end users.<br>
         %>
         slfcname = "sampleLogFunc";
     end
@@ -80,6 +100,8 @@ classdef FileContentsSample < pm.io.FileContentsTabular
 
         %>  \brief
         %>  Return a scalar object of class [pm.sampling.FileContentsSample](@ref FileContentsSample).<br>
+        %>
+        %>  \details
         %>  This is the constructor of the class [pm.sampling.FileContentsSample](@ref FileContentsSample).<br>
         %>
         %>  \param[in]  file    :   The input scalar MATLAB string containing the path to an external file.<br>
@@ -104,135 +126,8 @@ classdef FileContentsSample < pm.io.FileContentsTabular
         %>
         %>  \endcode
         %>
-        %>  \example{FileContentsSample}
-        %>  \include{lineno} example/sampling/FileContentsSample/main.m
-        %>  \vis{FileContentsSample}
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.contour.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.contour.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.contour.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.contour3.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.contour3.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.contour3.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.contourf.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.contourf.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.contourf.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.histfit.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.histfit.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.histfit.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.histogram.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.histogram.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.histogram.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.histogram2.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.histogram2.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.histogram2.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.line.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.line.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.line.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.line3.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.line3.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.line3.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.lineScatter.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.lineScatter.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.lineScatter.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.lineScatter3.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.lineScatter3.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.lineScatter3.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.scatter.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.scatter.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.scatter.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.scatter3.1.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.scatter3.2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.cascade.scatter3.3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.contour.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.contour3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.contourf.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.histfit.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.histogram.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.histogram2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.line.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.line3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.lineScatter.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.lineScatter3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.scatter.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.plot.scatter3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.contour.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.contour3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.contourf.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.histfit.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.histogram.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.histogram2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.line.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.line3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.lineScatter.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.lineScatter3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.scatter.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.tile.scatter3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.triplex.lshc2.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.triplex.lshc3.png width=700
-        %>  <br><br>
-        %>  \image html example/sampling/FileContentsSample/FileContentsSample.triplex.lshcf.png width=700
+        %>  \note
+        %>  See the documentations of the subclasses of this class for example usage.<br>
         %>
         %>  \final{FileContentsSample}
         %>
@@ -272,24 +167,79 @@ classdef FileContentsSample < pm.io.FileContentsTabular
             end
 
             %%%%
-            %%%% statistics.
+            %%%% statistics (actual computations are all done in the ``setstats`` method and respective subclasses).
             %%%%
+
+            %self.setstats();
+
+            %%%%
+            %%%% visualization (actual visualization setup are all done in ``setvis`` method and the respective subclasses).
+            %%%%
+
+            %self.setvis();
+
+        end
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    end
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    methods(Access = public, Hidden)
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        %>  \brief
+        %>  Compute the statistics of the parent object of class [pm.sampling.FileContentsSample](@ref FileContentsSample)
+        %>  and store the results in the respective fields of the ``stats`` attribute of the parent object.<br>
+        %>
+        %>  \brief
+        %>  This is a dynamic ``Hidden`` method of class [pm.sampling.FileContentsSample](@ref FileContentsSample).<br>
+        %>  It is **inaccessible** to the end users of the library.<br>
+        %>
+        %>  \param[in]  self    :   The input parent object of class [pm.sampling.FileContentsSample](@ref FileContentsSample)
+        %>                          which is **implicitly** passed to this dynamic method (not by the user).<br>
+        %>
+        %>  \interface{setstats}
+        %>  \code{.m}
+        %>
+        %>      contents = pm.sampling.FileContentsSample();
+        %>
+        %>      contents.setstats();
+        %>
+        %>  \endcode
+        %>
+        %>  \final{setstats}
+        %>
+        %>  \author
+        %>  \AmirShahmoradi, 2:11 PM Friday, November 8, 2024, Dallas, TX<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
+        function setstats(self)
 
             self.stats = struct();
 
+            self.checkpoint("adding the stats components...", false);
+
+            %%%%
             %%%% Add chain cormat.
+            %%%%
 
             self.checkpoint("computing the sample correlation matrix...", false);
             self.stats.cor = pm.stats.Cor(self.df(:, self.slfc + 1 : end));
             self.checkpoint();
 
+            %%%%
             %%%% Add chain covmat.
+            %%%%
 
             self.checkpoint("computing the sample covariance matrix...", false);
             self.stats.cov = pm.stats.Cov(self.df(:, self.slfc + 1 : end));
             self.checkpoint();
 
+            %%%%
             %%%% Add chain acf.
+            %%%%
 
             self.checkpoint("computing the sample autocorrelation...", false);
             self.stats.acf = pm.stats.AutoCorr(self.df(:, self.slfc : end));
@@ -298,7 +248,9 @@ classdef FileContentsSample < pm.io.FileContentsTabular
             self.stats.max = struct("val", [], "loc", []);
             self.stats.min = struct("val", [], "loc", []);
 
+            %%%%
             %%%% The `{:,:}` slice is essential in MATLAB ~2020a.
+            %%%%
 
             [self.stats.max.val, self.stats.max.loc] = max(self.df{:,:});
             [self.stats.min.val, self.stats.min.loc] = min(self.df{:,:});
@@ -306,81 +258,129 @@ classdef FileContentsSample < pm.io.FileContentsTabular
             self.stats.std = std(self.df{:,:});
 
             %%%%
-            %%%% visualization.
+            %%%% Add the ACF stats information.
             %%%%
 
-            colf = self.slfc;
-            cols = self.slfc + [1 : self.ndim];
+            self.stats.acf = pm.stats.AutoCorr(@()self.df);
+
+            %%%%
+            %%%% Add the correlation/covariance matrix information.
+            %%%%
+
+            self.stats.cor = pm.stats.Cor(@()self.df);
+            self.stats.cov = pm.stats.Cov(@()self.df);
+
+            self.checkpoint();
+
+        end
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        %>  \brief
+        %>  Compute the statistics of the parent object of class [pm.sampling.FileContentsSample](@ref FileContentsSample)
+        %>  and store the results in the respective fields of the ``stats`` attribute of the parent object.<br>
+        %>
+        %>  \brief
+        %>  This is a dynamic ``Hidden`` method of class [pm.sampling.FileContentsSample](@ref FileContentsSample).<br>
+        %>  It is **inaccessible** to the end users of the library.<br>
+        %>
+        %>  \param[in]  self    :   The input parent object of class [pm.sampling.FileContentsSample](@ref FileContentsSample)
+        %>                          which is **implicitly** passed to this dynamic method (not by the user).<br>
+        %>
+        %>  \interface{setvis}
+        %>  \code{.m}
+        %>
+        %>      contents = pm.sampling.FileContentsSample();
+        %>
+        %>      contents.setvis();
+        %>
+        %>  \endcode
+        %>
+        %>  \final{setvis}
+        %>
+        %>  \author
+        %>  \AmirShahmoradi, 2:12 PM Friday, November 8, 2024, Dallas, TX<br>
+        %>  \FatemehBagheri, May 20 2024, 1:25 PM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
+        function setvis(self)
 
             self.vis = struct();
 
+            self.checkpoint("adding the visualization components...", false);
+
+            colf = self.slfc;
+            cols = self.slfc + [1 : self.ndim];
+            silent_kws = {"silent", self.silent};
+
             self.vis.cascade = struct();
 
-            self.vis.cascade.line = pm.vis.CascadeLine(@()self.df, "coly", cols, "colc", colf);
-            self.vis.cascade.scatter = pm.vis.CascadeScatter(@()self.df, "coly", cols, "colc", colf);
-            self.vis.cascade.lineScatter = pm.vis.CascadeLineScatter(@()self.df, "coly", cols, "colc", colf);
+            self.vis.cascade.line = pm.vis.CascadeLine(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
+            self.vis.cascade.scatter = pm.vis.CascadeScatter(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
+            self.vis.cascade.lineScatter = pm.vis.CascadeLineScatter(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
 
-            self.vis.cascade.line3 = pm.vis.CascadeLine3(@()self.df, "coly", cols, "colz", colf, "colc", colf);
-            self.vis.cascade.scatter3 = pm.vis.CascadeScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf);
-            self.vis.cascade.lineScatter3 = pm.vis.CascadeLineScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf);
+            self.vis.cascade.line3 = pm.vis.CascadeLine3(@()self.df, "coly", cols, "colz", colf, "colc", colf, silent_kws{:});
+            self.vis.cascade.scatter3 = pm.vis.CascadeScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf, silent_kws{:});
+            self.vis.cascade.lineScatter3 = pm.vis.CascadeLineScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf, silent_kws{:});
 
-            self.vis.cascade.histfit = pm.vis.CascadeHistfit(@()self.df, "colx", cols);
-            self.vis.cascade.histogram = pm.vis.CascadeHistogram(@()self.df, "colx", cols);
-            self.vis.cascade.histogram2 = pm.vis.CascadeHistogram2(@()self.df, "colx", cols, "coly", colf);
+            self.vis.cascade.histfit = pm.vis.CascadeHistfit(@()self.df, "colx", cols, silent_kws{:});
+            self.vis.cascade.histogram = pm.vis.CascadeHistogram(@()self.df, "colx", cols, silent_kws{:});
+            self.vis.cascade.histogram2 = pm.vis.CascadeHistogram2(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
 
-            self.vis.cascade.contour = pm.vis.CascadeContour(@()self.df, "colx", cols, "coly", colf);
-            self.vis.cascade.contourf = pm.vis.CascadeContourf(@()self.df, "colx", cols, "coly", colf);
-            self.vis.cascade.contour3 = pm.vis.CascadeContour3(@()self.df, "colx", cols, "coly", colf);
+            self.vis.cascade.contour = pm.vis.CascadeContour(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
+            self.vis.cascade.contourf = pm.vis.CascadeContourf(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
+            self.vis.cascade.contour3 = pm.vis.CascadeContour3(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
 
             self.vis.plot = struct();
 
-            self.vis.plot.line = pm.vis.PlotLine(@()self.df, "coly", cols, "colc", colf);
-            self.vis.plot.scatter = pm.vis.PlotScatter(@()self.df, "coly", cols, "colc", colf);
-            self.vis.plot.lineScatter = pm.vis.PlotLineScatter(@()self.df, "coly", cols, "colc", colf);
+            self.vis.plot.line = pm.vis.PlotLine(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
+            self.vis.plot.scatter = pm.vis.PlotScatter(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
+            self.vis.plot.lineScatter = pm.vis.PlotLineScatter(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
 
-            self.vis.plot.line3 = pm.vis.PlotLine3(@()self.df, "coly", cols, "colc", colf);
-            self.vis.plot.scatter3 = pm.vis.PlotScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf);
-            self.vis.plot.lineScatter3 = pm.vis.PlotLineScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf);
+            self.vis.plot.line3 = pm.vis.PlotLine3(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
+            self.vis.plot.scatter3 = pm.vis.PlotScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf, silent_kws{:});
+            self.vis.plot.lineScatter3 = pm.vis.PlotLineScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf, silent_kws{:});
 
-            self.vis.plot.histfit = pm.vis.PlotHistfit(@()self.df, "colx", cols);
-            self.vis.plot.histogram = pm.vis.PlotHistogram(@()self.df, "colx", cols);
-            self.vis.plot.histogram2 = pm.vis.PlotHistogram2(@()self.df, "colx", colf, "coly", cols);
+            self.vis.plot.histfit = pm.vis.PlotHistfit(@()self.df, "colx", cols, silent_kws{:});
+            self.vis.plot.histogram = pm.vis.PlotHistogram(@()self.df, "colx", cols, silent_kws{:});
+            self.vis.plot.histogram2 = pm.vis.PlotHistogram2(@()self.df, "colx", colf, "coly", cols, silent_kws{:});
 
-            self.vis.plot.contour = pm.vis.PlotContour(@()self.df, "colx", cols, "coly", colf);
-            self.vis.plot.contourf = pm.vis.PlotContourf(@()self.df, "colx", cols, "coly", colf);
-            self.vis.plot.contour3 = pm.vis.PlotContour3(@()self.df, "colx", cols, "coly", colf);
+            self.vis.plot.contour = pm.vis.PlotContour(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
+            self.vis.plot.contourf = pm.vis.PlotContourf(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
+            self.vis.plot.contour3 = pm.vis.PlotContour3(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
 
             self.vis.tile = struct();
 
-            self.vis.tile.line = pm.vis.TileLine(@()self.df, "coly", cols, "colc", colf);
-            self.vis.tile.scatter = pm.vis.TileScatter(@()self.df, "coly", cols, "colc", colf);
-            self.vis.tile.lineScatter = pm.vis.TileLineScatter(@()self.df, "coly", cols, "colc", colf);
+            self.vis.tile.line = pm.vis.TileLine(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
+            self.vis.tile.scatter = pm.vis.TileScatter(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
+            self.vis.tile.lineScatter = pm.vis.TileLineScatter(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
 
-            self.vis.tile.line3 = pm.vis.TileLine3(@()self.df, "coly", cols, "colc", colf);
-            self.vis.tile.scatter3 = pm.vis.TileScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf);
-            self.vis.tile.lineScatter3 = pm.vis.TileLineScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf);
+            self.vis.tile.line3 = pm.vis.TileLine3(@()self.df, "coly", cols, "colc", colf, silent_kws{:});
+            self.vis.tile.scatter3 = pm.vis.TileScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf, silent_kws{:});
+            self.vis.tile.lineScatter3 = pm.vis.TileLineScatter3(@()self.df, "coly", cols, "colz", colf, "colc", colf, silent_kws{:});
 
-            self.vis.tile.histfit = pm.vis.TileHistfit(@()self.df, "colx", cols);
-            self.vis.tile.histogram = pm.vis.TileHistogram(@()self.df, "colx", cols);
-            self.vis.tile.histogram2 = pm.vis.TileHistogram2(@()self.df, "colx", colf, "coly", cols);
+            self.vis.tile.histfit = pm.vis.TileHistfit(@()self.df, "colx", cols, silent_kws{:});
+            self.vis.tile.histogram = pm.vis.TileHistogram(@()self.df, "colx", cols, silent_kws{:});
+            self.vis.tile.histogram2 = pm.vis.TileHistogram2(@()self.df, "colx", colf, "coly", cols, silent_kws{:});
 
-            self.vis.tile.contour = pm.vis.TileContour(@()self.df, "colx", cols, "coly", colf);
-            self.vis.tile.contourf = pm.vis.TileContourf(@()self.df, "colx", cols, "coly", colf);
-            self.vis.tile.contour3 = pm.vis.TileContour3(@()self.df, "colx", cols, "coly", colf);
+            self.vis.tile.contour = pm.vis.TileContour(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
+            self.vis.tile.contourf = pm.vis.TileContourf(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
+            self.vis.tile.contour3 = pm.vis.TileContour3(@()self.df, "colx", cols, "coly", colf, silent_kws{:});
 
             self.vis.triplex.lshc2 = pm.vis.Triplex ( pm.vis.SubplotLineScatter(@()self.df, "colx", cols, "coly", cols, "colc", colf, "colorbar", {"enabled", false}) ...
                                                     , pm.vis.SubplotHistogram(@()self.df, "colx", cols) ...
                                                     , pm.vis.SubplotContour(@()self.df, "colx", cols, "coly", cols, "colorbar", {"enabled", false}) ...
+                                                    , silent_kws{:} ...
                                                     );
 
             self.vis.triplex.lshcf = pm.vis.Triplex ( pm.vis.SubplotLineScatter(@()self.df, "colx", cols, "coly", cols, "colc", colf, "colorbar", {"enabled", false}) ...
                                                     , pm.vis.SubplotHistogram(@()self.df, "colx", cols) ...
                                                     , pm.vis.SubplotContourf(@()self.df, "colx", cols, "coly", cols, "colorbar", {"enabled", false}) ...
+                                                    , silent_kws{:} ...
                                                     );
 
             self.vis.triplex.lshc3 = pm.vis.Triplex ( pm.vis.SubplotLineScatter(@()self.df, "colx", cols, "coly", cols, "colc", colf, "colorbar", {"enabled", false}) ...
                                                     , pm.vis.SubplotHistogram(@()self.df, "colx", cols) ...
                                                     , pm.vis.SubplotContour3(@()self.df, "colx", cols, "coly", cols, "colorbar", {"enabled", false}) ...
+                                                    , silent_kws{:} ...
                                                     );
 
             %if  5 < ndim
@@ -390,52 +390,11 @@ classdef FileContentsSample < pm.io.FileContentsTabular
             %    self.vis.triplex.layout.tiling.tile.width = [];
             %end
 
+            self.checkpoint();
+
         end
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-        % %>  \brief
-        % %>  Visualize, quickly and minimally, a selected subset of the contents of the parent object and return nothing.<br>
-        % %>
-        % %>  \details
-        % %>  All visualizations created belong to the ``vis`` component of the parent object.<br>
-        % %>  This method is merely convenience to automate some of the most desired visualizations in the ``vis`` component.<br>
-        % %>
-        % %>  \param[in]  self    :   The input/output parent object of class [pm.sampling.FileContentsSample](@ref FileContentsSample)
-        % %>                          which is **implicitly** passed to this dynamic method (not by the user).<br>
-        % %>
-        % %>  \interface{visit}
-        % %>  \code{.m}
-        % %>
-        % %>      sample = pm.sampling.FileContentsSample(file);
-        % %>      sample.visit();
-        % %>
-        % %>  \endcode
-        % %>
-        % %>  \warning
-        % %>  This method is to be only used for post-processing of the output
-        % %>  chain file(s) of an already finished simulation. It is NOT meant to
-        % %>  be called by all processes in parallel mode, although it is possible.<br>
-        % %>
-        % %>  \example{visit}
-        % %>  \include{lineno} example/sampling/Paradram/visit/main.m
-        % %>  \include{lineno} example/sampling/Paradram/visit/main.out.m
-        % %>  \vis{visit}
-        % %>  \image html example/sampling/FileContentsSample/visit/FileContentsSample.visit.domain.png width=700
-        % %>  <br><br>
-        % %>  \image html example/sampling/FileContentsSample/visit/FileContentsSample.visit.traceplot.png width=700
-        % %>  <br><br>
-        % %>  \image html example/sampling/FileContentsSample/visit/FileContentsSample.visit.proposalAdaptation.png width=700
-        % %>
-        % %>  \final{visit}
-        % %>
-        % %>  \author
-        % %>  \AmirShahmoradi, May 16 2016, 9:03 AM, Oden Institute for Computational Engineering and Sciences (ICES), UT Austin<br>
-        % function visit(self, pattern, sep)
-        % 
-        % end
-        % 
-        % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     end
 

@@ -87,6 +87,10 @@ classdef Triplex < pm.vis.figure.Figure
         %>
         %>  The MATLAB ``cell`` vector of length `nrow``, containing the diagonal y-tick labels.<br>
         %>
+        %>  \warning
+        %>  This is an internal ``Hidden`` class attribute
+        %>  that is inaccessible to the end users.<br>
+        %>
         diagYTick = struct();
     end
 
@@ -103,7 +107,7 @@ classdef Triplex < pm.vis.figure.Figure
         %>  This is the constructor of the class [pm.vis.Triplex](@ref Triplex).<br>
         %>  The input dataset to each plot section is assumed to be common among all plots (though not necessarily).<br>
         %>  As such, all axes labels and tick marks of all subplots are dropped by default,
-        %>  except for subplots in the the left and bottom boundaries of the figure.<br>
+        %>  except for subplots in the left and bottom boundaries of the figure.<br>
         %>
         %>  If any of the three input subplot types has colorbar, it is disabled for individual subplots.<br>
         %>  Instead, universal colorbar(s) will be added to the right and top sides of the Triplex plot.<br>
@@ -312,10 +316,6 @@ classdef Triplex < pm.vis.figure.Figure
         %>  \brief
         %>  Preset the tiling settings before making it.<br>
         %>
-        %>  \warning
-        %>  This method causes side-effects by manipulating
-        %>  the existing attributes of the object.<br>
-        %>
         %>  \param[in]  self        :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
@@ -330,6 +330,10 @@ classdef Triplex < pm.vis.figure.Figure
         %>      g.premake(varargin);
         %>
         %>  \endcode
+        %>
+        %>  \warning
+        %>  This method causes side-effects by manipulating
+        %>  the existing attributes of the object.<br>
         %>
         %>  \final{premake}
         %>
@@ -406,10 +410,6 @@ classdef Triplex < pm.vis.figure.Figure
         %>  \details
         %>  The subplots are made by calling their ``make()`` methods.<br>
         %>
-        %>  \warning
-        %>  This method has side-effects by manipulating
-        %>  the existing attributes of the parent object.<br>
-        %>
         %>  \param[in]  self        :   The **implicitly-passed** input argument representing the parent object of the method.<br>
         %>  \param[in]  varargin    :   Any ``property, value`` pair of the parent object.<br>
         %>                              If the property is a ``struct()``, then its value must be given as a cell array,
@@ -424,6 +424,10 @@ classdef Triplex < pm.vis.figure.Figure
         %>      g.make(varargin);
         %>
         %>  \endcode
+        %>
+        %>  \warning
+        %>  This method has side-effects by manipulating
+        %>  the existing attributes of the parent object.<br>
         %>
         %>  \final{make}
         %>
@@ -453,7 +457,9 @@ classdef Triplex < pm.vis.figure.Figure
                 for irow = 1 : self.layout.tiling.nrow
 
                     iplt = iplt + 1;
-                    spinner.spin(iplt / numel(self.tile));
+                    if ~self.silent
+                        spinner.spin(iplt / numel(self.tile));
+                    end
 
                     %%%%
                     %%%% Copy data from template to the current tile.
@@ -629,7 +635,19 @@ classdef Triplex < pm.vis.figure.Figure
                 end
             end
 
-            disp("done in " + sprintf("%.6f", string(timer.toc())) + " seconds.");
+            try
+                self.setAxesLimits();
+            catch me
+                warning ( newline ...
+                        + string(me.identifier) + " : " + string(me.message) + newline ...
+                        + "Failed to readjust the subplot limits. skipping..." + newline ...
+                        + newline ...
+                        );
+            end
+
+            if ~self.silent
+                disp("done in " + sprintf("%.6f", string(timer.toc())) + " seconds.");
+            end
 
         end % function
 
@@ -686,16 +704,130 @@ classdef Triplex < pm.vis.figure.Figure
                         );
             end
             for icol = 1 : size(self.tile, 2)
-                for irow = 1 : size(self.tile, 2)
-                    self.tile{irow,icol}.fout.axes.XLabel.Rotation = degx;
-                    self.tile{irow,icol}.fout.axes.YLabel.Rotation = degy;
-                    self.tile{irow,icol}.fout.axes.XLabel.VerticalAlignment = "top";
-                    self.tile{irow,icol}.fout.axes.YLabel.VerticalAlignment = "middle";
-                    self.tile{irow,icol}.fout.axes.XLabel.HorizontalAlignment = "right";
-                    self.tile{irow,icol}.fout.axes.YLabel.HorizontalAlignment = "right";
+                for irow = 1 : size(self.tile, 1)
+                    self.tile{irow, icol}.fout.axes.XLabel.Rotation = degx;
+                    self.tile{irow, icol}.fout.axes.YLabel.Rotation = degy;
+                    self.tile{irow, icol}.fout.axes.XLabel.VerticalAlignment = "top";
+                    self.tile{irow, icol}.fout.axes.YLabel.VerticalAlignment = "middle";
+                    self.tile{irow, icol}.fout.axes.XLabel.HorizontalAlignment = "right";
+                    self.tile{irow, icol}.fout.axes.YLabel.HorizontalAlignment = "right";
                 end
             end
         end % rotateAxesLabels
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        %>  \brief
+        %>  Set the axes x-y limits of the subplots that are currently
+        %>  present in the GridPlot to the input user-provided values.<br>
+        %>
+        %>  \param[in]  self    :   The **implicitly-passed** input argument representing the parent object of the method.<br>
+        %>  \param[in]  limits  :   A MATLAB ``cell`` vector of maximum length ``max(size(self.tile))``,
+        %>                          each element of which corresponds to one row of the Triplex plot, from the top-left corner.<br>
+        %>                          Each element of the cell array must be a real vector of length ``2`` whose values determine the
+        %>                          lower and upper limits of the vertical axis of the corresponding subplot in the visualization.<br>
+        %>                          The the axes limits of all subplots whose corresponding elements in the input cell array ``limits``
+        %>                          are set to empty ``[]``, will be set to the appropriate default value
+        %>                          taken from the maximum range possible in the relevant plots.<br>
+        %>                          (**optional**, default = ``cell(max(size(self.tile)), 1)``)
+        %>
+        %>  \interface{setAxesLimits}
+        %>  \code{.m}
+        %>
+        %>      g = pm.vis.Triplex(lower, diago, upper, varargin);
+        %>      g.make(varargin);
+        %>
+        %>      g.setAxesLimits(); % reset all axes limits to the maximum ranges among all relevant plots.
+        %>      g.setAxesLimits({}); % reset all axes limits to the maximum ranges among all relevant plots.
+        %>      g.setAxesLimits(limits); % reset all axes limits to the custom ranges among all relevant plots.
+        %>
+        %>  \endcode
+        %>
+        %>  \example{setAxesLimits}
+        %>  \code{.m}
+        %>
+        %>      g = pm.vis.Triplex(lower, diago, upper, varargin);
+        %>      g.make(varargin);
+        %>
+        %>      g.setAxesLimits({[-10,10], [-20, 0]})
+        %>      g.setAxesLimits({[-10,10], [], [-20, 0]}) % the limits for the second variable will remain unchanged.
+        %>
+        %>  \endcode
+        %>
+        %>  \warning
+        %>  This method has side-effects by manipulating the existing attributes of the parent object.<br>
+        %>
+        %>  \final{setAxesLimits}
+        %>
+        %>  \author
+        %>  \AmirShahmoradi, July 7 2024, 12:53 AM, NASA Goddard Space Flight Center (GSFC), Washington, D.C.<br>
+        function setAxesLimits(self, limits)
+
+            if  nargin < 2
+                limits = {};
+            end
+
+            %%%%
+            %%%% Check the ``limits`` length.
+            %%%%
+
+            if  numel(limits) == 0
+                limits = cell(max(size(self.tile)), 1);
+            else
+                if  numel(limits) > max(size(self.tile))
+                    help("pm.vis.Triplex.setAxesLimits");
+                    disp("numel(limits)");
+                    disp( numel(limits) );
+                    error   ( newline ...
+                            + "The input ``limits`` must be a cell array of maximum length " + string(max(size(self.tile))) + "." + newline ...
+                            + "The input value is " + strjoin(string(limits),", ") + newline ...
+                            + "For more information, see the documentation displayed above." + newline ...
+                            + newline ...
+                            );
+                end
+            end
+
+            %%%%
+            %%%% Check the ``limits`` elements lengths.
+            %%%%
+
+            for iell = 1 : numel(limits)
+                limitsElementLen = numel(limits{iell});
+                if  limitsElementLen == 0
+                    limits{iell} = [-Inf, +Inf];
+                    for irow = 1 : size(self.tile, 2)
+                        %if ~self.tile{irow, iell}.type.is.d1; end
+                        if ~isempty(self.tile{irow, iell})% && strcmpi(self.tile{irow, iell}.fout.axes.Visible, "on")
+                            limits{iell}(1) = max(limits{iell}(1), self.tile{irow, iell}.fout.axes.XLim(1));
+                            limits{iell}(2) = min(limits{iell}(2), self.tile{irow, iell}.fout.axes.XLim(2));
+                        end
+                    end
+                elseif limitsElementLen ~= 2
+                    error   ( newline ...
+                            + "The element ``" + string(iell) + "`` of the input cell array ``limits`` is invalid. " + newline ...
+                            + "The limits specified by the input cell must be either vectors of length two, or empty vectors." + newline ...
+                            + "You have entered the following value for the element " + string(iell) + ": " + newline ...
+                            + newline ...
+                            + pm.io.tab + strjoin(string(limits{iell})) + newline ...
+                            + newline ...
+                            );
+                end
+            end
+
+            for icol = 1 : size(self.tile, 2)
+                for irow = 1 : size(self.tile, 1)
+                    if ~isempty(self.tile{irow, icol})% && strcmpi(self.tile{irow, icol}.fout.axes.Visible, "on")
+                        xlim(self.tile{irow, icol}.fout.axes, limits{icol}(:));
+                        if  icol ~= irow
+                            %|| (icol == 1 && irow == 1 && ~isempty(self.tile{irow, icol + 1})) ...
+                            %|| (icol == size(self.tile, 2) && irow == size(self.tile, 1) && ~isempty(self.tile{irow, icol - 1}))
+                            ylim(self.tile{irow, icol}.fout.axes, limits{irow}(:));
+                        end
+                    end
+                end
+            end
+
+        end
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

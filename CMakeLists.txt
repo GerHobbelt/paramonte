@@ -39,7 +39,6 @@
 #       make example
 #       make benchmark
 
-
 cmake_minimum_required(VERSION 3.18)
 
 #cmake_policy(VERSION 3.10...3.23)
@@ -1406,6 +1405,7 @@ if (MATLAB_ENABLED)
     if ("${matlabroot}" STREQUAL "")
         message(NOTICE "${pmattn} ${BoldYellow}Searching for MATLAB...${ColorReset}")
     else()
+        set(Matlab_ROOT "${matlabroot}")
         set(Matlab_ROOT_DIR "${matlabroot}")
         message(NOTICE "${pmattn} Searching for MATLAB in the specified installation root directory: ${matlabroot}")
     endif()
@@ -1817,7 +1817,8 @@ endif()
 foreach(fitem ${fresh})
     if ("${fitem}" STREQUAL "ddir" OR "${fitem}" STREQUAL "all")
         message(NOTICE "${pmattn} Purging the entire ParaMonte library deploy directory: \"${paramonte_bin_dir}/\"")
-        file(REMOVE_RECURSE "${paramonte_bin_dir}/")
+        file(REMOVE_RECURSE "${paramonte_bin_dir}/${libname}*")
+        file(REMOVE_RECURSE "${paramonte_bin_dir}/${libname}")
         break()
     endif()
 endforeach()

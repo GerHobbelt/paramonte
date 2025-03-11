@@ -622,17 +622,38 @@ classdef Axes < pm.matlab.Handle
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+    properties(Access = public)
+        %>
+        %>  ``silent``
+        %>
+        %>  The scalar MATLAB logical (Boolean) indicator which is ``false`` by default.<br>
+        %>  If it is set to ``true``, it will silence all output postprocessing
+        %>  messages (except warnings and errors).<br>
+        %>
+        silent = false;
+    end
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     properties(Access = public, Hidden)
         %>
         %>  ``type``
         %>
         %>  An auxiliary MATLAB ``struct`` containing plot type information.
         %>
+        %>  \warning
+        %>  This is an internal ``Hidden`` class attribute
+        %>  that is inaccessible to the end users.<br>
+        %>
         type = struct();
         %>
         %>  ``cenabled``
         %>
         %>  An auxiliary scalar MATLAB ``logical`` that is true if plot is color-mapped.
+        %>
+        %>  \warning
+        %>  This is an internal ``Hidden`` class attribute
+        %>  that is inaccessible to the end users.<br>
         %>
         cenabled = [];
     end

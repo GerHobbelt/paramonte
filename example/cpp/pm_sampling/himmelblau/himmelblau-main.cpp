@@ -22,18 +22,17 @@
 //
 //      https://github.com/cdslaborg/paramonte/blob/main/LICENSE.md
 //
-#include <math.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include "pm_sampling.h"
+#include <cmath>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include "pm_sampling.hpp"
 // The `runParaDRAM` and `REAL` macros can be set to other possibilities.
 #define runParaDRAM runParaDRAMD
 #define REAL double
 #define NDIM 2
 
-REAL getLogFunc(REAL state[], int32_t ndim){
+static REAL getLogFunc(REAL state[], int32_t ndim){
     //
     //  Return the negative natural logarithm of Himmelblau function at the specified state.
     //  See also: https://en.wikipedia.org/wiki/Himmelblau%27s_function
@@ -45,7 +44,13 @@ REAL getLogFunc(REAL state[], int32_t ndim){
     return logFunc;
 }
 
-int main()
+
+#if defined(BUILD_MONOLITHIC)
+#define main paramonte_himmelblau_cpp_example_main
+#endif
+
+extern "C"
+int main(void)
 {
     int32_t failed;
     const char* input = "./input.nml"; // null-terminated string. It can be empty or NULL.
@@ -53,15 +58,17 @@ int main()
     // Call the ParaDRAM Adaptive MCMC sampler with the requested floating point precision.
 
     failed = runParaDRAM(&getLogFunc, NDIM, input);
-    if (failed != 0) exit(failed);
+    if (failed != 0) return failed;
 
     // Call the ParaDRAM Adaptive MCMC sampler with the requested floating point precision with an internal namelist input specifications.
 
     failed = runParaDRAM(&getLogFunc, NDIM, "&paradram parallelismNumThread = 16, outputChainSize = 30000, parallelismMpiFinalizeEnabled = false /");
-    if (failed != 0) exit(failed);
+    if (failed != 0) return failed;
 
     // Call the ParaDRAM Adaptive MCMC sampler with the requested floating point precision without input specifications.
 
     failed = runParaDRAM(&getLogFunc, NDIM, NULL);
-    if (failed != 0) exit(failed);
+    if (failed != 0) return failed;
+
+	return 0;
 }

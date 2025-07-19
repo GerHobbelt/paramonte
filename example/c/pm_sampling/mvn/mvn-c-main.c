@@ -33,7 +33,7 @@
 #define REAL double
 #define NDIM 4
 
-REAL getLogFunc(REAL state[], int32_t ndim){
+static REAL getLogFunc(REAL state[], int32_t ndim){
     //
     //  Return the natural logarithm of a `ndim`-dimensional Multivariate Normal (MVN)
     //  probability density function (PDF) with the Mean and Covariance Matrix as defined below.
@@ -82,7 +82,11 @@ REAL getLogFunc(REAL state[], int32_t ndim){
     return logFunc;
 }
 
-int main()
+#if defined(BUILD_MONOLITHIC)
+#define main paramonte_mvn_c_example_main
+#endif
+
+int main(void)
 {
     int32_t failed;
     const char* input = "./input.nml"; // null-terminated string. It can be empty or NULL.
@@ -90,15 +94,17 @@ int main()
     // Call the ParaDRAM Adaptive MCMC sampler with the requested floating point precision.
 
     failed = runParaDRAM(&getLogFunc, NDIM, input);
-    if (failed != 0) exit(failed);
+    if (failed != 0) return failed;
 
     // Call the ParaDRAM Adaptive MCMC sampler with the requested floating point precision with an internal namelist input specifications.
 
     failed = runParaDRAM(&getLogFunc, NDIM, "&paradram parallelismNumThread = 16, outputChainSize = 30000, parallelismMpiFinalizeEnabled = false /");
-    if (failed != 0) exit(failed);
+    if (failed != 0) return failed;
 
     // Call the ParaDRAM Adaptive MCMC sampler with the requested floating point precision without input specifications.
 
     failed = runParaDRAM(&getLogFunc, NDIM, NULL);
-    if (failed != 0) exit(failed);
+    if (failed != 0) return failed;
+
+	return 0;
 }
